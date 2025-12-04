@@ -1,5 +1,5 @@
 class AppConfig {
-  static const String baseUrl = "https://mondial-unaskingly-kent.ngrok-free.dev/api";
+  static const String baseUrl = "https://api.event-management-digital-ocean.online/api";
 
   // 🔹 Auth Endpoints
   static const String login = "/auth/login";
