@@ -175,4 +175,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get venue => 'المكان';
+
+  @override
+  String get profile_name => 'الاسم';
+
+  @override
+  String get profile_email => 'البريد الإلكتروني';
+
+  @override
+  String get profile_phone => 'رقم الهاتف';
+
+  @override
+  String get profile_university => 'الجامعة';
+
+  @override
+  String get profile_department => 'القسم';
+
+  @override
+  String get profile_major => 'التخصص';
 }

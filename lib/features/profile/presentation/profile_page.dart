@@ -1,107 +1,11 @@
 import 'package:event_app/core/theme/app_text_styles.dart';
-import 'package:event_app/features/profile/domain/update_profile_model.dart';
 import 'package:event_app/features/profile/domain/profile_model.dart';
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_scaffold.dart';
-
-void _showUpdateProfileDialog(BuildContext context, WidgetRef ref, Profile profile) {
-  final formKey = GlobalKey<FormState>();
-  final firstNameController = TextEditingController(text: profile.firstName);
-  final lastNameController = TextEditingController(text: profile.lastName);
-  final bioController = TextEditingController(text: profile.bio);
-  final universityController = TextEditingController(text: profile.university);
-  final departmentController = TextEditingController(text: profile.department);
-  final majorController = TextEditingController(text: profile.major);
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Update Profile'),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: firstNameController,
-                decoration: InputDecoration(labelText: 'First Name'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-              ),
-              TextFormField(
-                controller: lastNameController,
-                decoration: InputDecoration(labelText: 'Last Name'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-              ),
-              TextFormField(
-                controller: bioController,
-                decoration: InputDecoration(labelText: 'Bio'),
-                maxLines: 3,
-              ),
-              TextFormField(
-                controller: universityController,
-                decoration: InputDecoration(labelText: 'University'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-              ),
-              TextFormField(
-                controller: departmentController,
-                decoration: InputDecoration(labelText: 'Department'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-              ),
-              TextFormField(
-                controller: majorController,
-                decoration: InputDecoration(labelText: 'Major'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                final updatedProfile = UpdateProfile(
-                  id: profile.id,
-                  title: profile.title,
-                  firstName: firstNameController.text,
-                  lastName: lastNameController.text,
-                  bio: bioController.text,
-                  university: universityController.text,
-                  department: departmentController.text,
-                  major: majorController.text,
-                );
-
-                ref.read(updateProfileProvider(updatedProfile));
-                Navigator.pop(context);
-              }
-            },
-            child: Text('Save'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-void _changeLanguage(BuildContext context, WidgetRef ref, String language) async {
-  final response = await ref.read(profileRepositoryProvider).changeLanguage(language);
-  if (response) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.languageUpdated(language))),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.languageUpdateFailed)),
-    );
-  }
-}
+import 'package:event_app/features/profile/presentation/update_profile_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -109,11 +13,14 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileProvider);
+    final locale = ref.watch(languageProvider);
 
     return AppScaffold(
       body: profileAsync.when(
         loading: () => Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error', style: AppTextStyles.bodyMedium)),
+        error: (error, stack) => Center(
+          child: Text('Error: $error', style: AppTextStyles.bodyMedium),
+        ),
         data: (profile) => SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,9 +32,15 @@ class ProfilePage extends ConsumerWidget {
                   children: [
                     Flexible(
                       child: Align(
-                        alignment: Alignment.topLeft, // Positioned in the corner
+                        alignment:
+                            Alignment.topLeft, // Positioned in the corner
                         child: IconButton(
-                          onPressed: () => _showUpdateProfileDialog(context, ref, profile),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateProfilePage(profile: profile),
+                            ),
+                          ),
                           icon: Icon(
                             Icons.edit,
                             color: Theme.of(context).colorScheme.primary,
@@ -139,10 +52,26 @@ class ProfilePage extends ConsumerWidget {
                     ),
                     Flexible(
                       child: DropdownButton<String>(
-                        value: profile.preferredLanguage,
-                        onChanged: (String? newLanguage) {
+                        value: ref.watch(languageProvider).languageCode, // Synchronize with languageProvider
+                        onChanged: (String? newLanguage) async {
                           if (newLanguage != null) {
-                            _changeLanguage(context, ref, newLanguage);
+                            try {
+                              // Update the app's language
+                              ref.read(languageProvider.notifier).setLanguage(newLanguage);
+
+                              // Call the changeLanguageProvider
+                              await ref.read(changeLanguageProvider(newLanguage).future);
+
+                              // Show success feedback
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(AppLocalizations.of(context)!.languageUpdated(newLanguage))),
+                              );
+                            } catch (e) {
+                              // Show error feedback
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(AppLocalizations.of(context)!.languageUpdateFailed)),
+                              );
+                            }
                           }
                         },
                         items: [
@@ -161,10 +90,12 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
               Stack(
-                clipBehavior: Clip.none, // Allow the image to overflow the container
+                clipBehavior:
+                    Clip.none, // Allow the image to overflow the container
                 children: [
                   Container(
-                    height: 200, // Kept the original height of the blue container
+                    height:
+                        200, // Kept the original height of the blue container
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -185,13 +116,17 @@ class ProfilePage extends ConsumerWidget {
                     ),
                   ),
                   Positioned(
-                    top: 150, // Positioned the image to overlap the blue container
-                    left: MediaQuery.of(context).size.width / 2 - 95, // Centered the image
+                    top:
+                        150, // Positioned the image to overlap the blue container
+                    left:
+                        MediaQuery.of(context).size.width / 2 -
+                        95, // Centered the image
                     child: CircleAvatar(
                       radius: 70, // Kept the image size consistent
                       backgroundImage: profile.profileImageUrl != null
                           ? NetworkImage(profile.profileImageUrl!)
-                          : AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                          : AssetImage('assets/images/default_avatar.png')
+                                as ImageProvider,
                       backgroundColor: Colors.white,
                     ),
                   ),
@@ -212,25 +147,52 @@ class ProfilePage extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.school, color: Theme.of(context).colorScheme.primary),
+                            Icon(
+                              Icons.school,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                             const SizedBox(width: 8),
-                            Text('University: ${profile.university}', style: AppTextStyles.bodyMedium),
+                            Text(
+                              'University: ',
+                              style: AppTextStyles.headlineSmall,
+                            ),
+                            Text(
+                              '${profile.university}',
+                              style: AppTextStyles.bodyMedium,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(Icons.apartment, color: Theme.of(context).colorScheme.primary),
+                            Icon(
+                              Icons.apartment,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                             const SizedBox(width: 8),
-                            Text('Department: ${profile.department}', style: AppTextStyles.bodyMedium),
+                            Text(
+                              'Department: ',
+                              style: AppTextStyles.headlineSmall,
+                            ),
+                            Text(
+                              '${profile.department}',
+                              style: AppTextStyles.bodyMedium,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(Icons.book, color: Theme.of(context).colorScheme.primary),
+                            Icon(
+                              Icons.book,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                             const SizedBox(width: 8),
-                            Text('Major: ${profile.major}', style: AppTextStyles.bodyMedium),
+                            Text('Major: ', style: AppTextStyles.headlineSmall),
+                            Text(
+                              '${profile.major}',
+                              style: AppTextStyles.bodyMedium,
+                            ),
                           ],
                         ),
                       ],
@@ -238,7 +200,7 @@ class ProfilePage extends ConsumerWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 15),
               if (profile.bio != null && profile.bio!.isNotEmpty)
                 Padding(
@@ -253,8 +215,12 @@ class ProfilePage extends ConsumerWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
+                          Icon(
+                            Icons.info_outline,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           const SizedBox(width: 8),
+                          Text('Bio: ', style: AppTextStyles.headlineSmall),
                           Expanded(
                             child: Text(
                               profile.bio!,
@@ -269,7 +235,7 @@ class ProfilePage extends ConsumerWidget {
             ],
           ),
         ),
-      )
-      );
-    }
+      ),
+    );
   }
+}

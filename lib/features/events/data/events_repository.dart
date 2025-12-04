@@ -1,28 +1,17 @@
+import 'package:event_app/core/base/base_api_repository.dart';
+
 import '../../../core/config/app_config.dart';
 import '../../../core/network/api_client.dart';
 import '../domain/event_model.dart';
 import '../domain/event_details_model.dart';
 
-class EventsRepository {
-  final ApiClient _apiClient;
+class EventsRepository extends BaseApiRepository<EventModel>{
 
-  EventsRepository(this._apiClient);
+    EventsRepository(ApiClient client)
+      : super(client, (json) => EventModel.fromJson(json));
 
-  Future<List<EventModel>> getEvents() async {
-    final response = await _apiClient.client.get(AppConfig.getEvents);
+  Future<List<EventModel>> getEvents() async => await fetchList(AppConfig.getEvents);
 
-    final list = response.data["data"]["items"];
+  Future<EventDetailsModel> getEventDetails(int eventId) async => await fetchSingleGeneric<EventDetailsModel>(AppConfig.getEventDetails(eventId), (json) => EventDetailsModel.fromJson(json));
 
-    if (list is! List) {
-      return [];
-    }
-
-    return list.map((e) => EventModel.fromJson(e)).toList();
-  }
-
-  Future<EventDetailsModel> getEventDetails(int eventId) async {
-    final response = await _apiClient.client.get(AppConfig.getEventDetails(eventId));
-
-    return EventDetailsModel.fromJson(response.data as Map<String, dynamic>);
-  }
-}
+ }

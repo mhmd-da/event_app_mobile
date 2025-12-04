@@ -1,22 +1,13 @@
+import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/core/config/app_config.dart';
 import 'package:event_app/core/network/api_client.dart';
 import '../domain/faqs_model.dart';
 
+class FaqsRepository  extends BaseApiRepository<Faq>{
 
-class FaqsRepository {
-  final ApiClient _apiClient;
+    FaqsRepository(ApiClient client)
+      : super(client, (json) => Faq.fromJson(json));
 
-  FaqsRepository(this._apiClient);
+  Future<List<Faq>> getFaqs(int eventId) async => await fetchList(AppConfig.getFaqs(eventId)); 
 
-Future<List<Faq>> getFaqs(int eventId) async {
-    final response = await _apiClient.client.get(AppConfig.getFaqs(eventId));
-
-    final list = response.data["data"]["items"];
-
-    if (list is! List) {
-      return [];
-    }
-
-    return list.map((e) => Faq.fromJson(e)).toList();
-  }
 }

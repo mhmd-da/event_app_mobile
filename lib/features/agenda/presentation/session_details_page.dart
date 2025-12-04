@@ -35,23 +35,23 @@ class SessionDetailsPage extends ConsumerWidget {
                 label: Text(isRegisteredNow ? 'Remove from Agenda' : 'Add to Agenda'),
                 icon: isRegisteredNow ? Icon(Icons.remove_circle_outline) : Icon(Icons.check_circle_outline),
                   onPressed: () async {
-                    var response = '';
                     try {
+                      var response = '';
                       if (isRegisteredNow) {
-                        response = await ref.read(sessionCancellationProvider(session.id).future); // ✅ calls API
+                        response = await ref.watch(sessionCancellationProvider(session.id).future); // Corrected usage
                       } else {
-                        response = await ref.read(sessionRegistrationProvider(session.id).future); // ✅ calls API
+                        response = await ref.watch(sessionRegistrationProvider(session.id).future); // Corrected usage
                       }
-                      // 2. Update UI registration state 👇 put it here
+
+                      // Update UI registration state
                       ref.read(sessionPanelStateProvider(session.id).notifier).state = !isRegisteredNow;
 
-                      // 3. Optional: show feedback
+                      // Show feedback
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(session.isRegistered ? "Removed ✅" : "Added ✅")),
+                        SnackBar(content: Text(isRegisteredNow ? "Removed ✅" : "Added ✅")),
                       );
 
-                      print("API Called Successfully 🚀 $response"); // debugging line
-
+                      print("API Called Successfully 🚀 $response"); // Debugging line
                     } catch (e) {
                       print("API Call Failed ❌: $e");
                     }

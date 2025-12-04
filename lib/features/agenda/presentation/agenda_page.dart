@@ -1,8 +1,6 @@
 import 'package:event_app/core/theme/app_decorations.dart';
-import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
-import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';

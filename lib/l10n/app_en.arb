@@ -62,6 +62,12 @@
   "languageUpdated": "Language updated to {language}",
   "languageUpdateFailed": "Failed to update language",
   "changeLanguage": "Change Language",
-  "venue": "Venue"
+  "venue": "Venue",
+  "profile_name": "Name",
+  "profile_email": "Email",
+  "profile_phone": "Phone",
+  "profile_university": "University",
+  "profile_department": "Department",
+  "profile_major": "Major"
 }
 

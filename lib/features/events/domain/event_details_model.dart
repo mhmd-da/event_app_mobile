@@ -22,17 +22,15 @@ class EventDetailsModel {
   });
 
   factory EventDetailsModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>;
-
     return EventDetailsModel(
-      id: data['id'] as int,
-      name: data['name'] as String,
-      description: data['description'] as String?,
-      venue: data['venue'] != null ? Venue.fromJson(data['venue']) : null,
-      startDate: DateTime.parse(data['startDate'] as String),
-      endDate: DateTime.parse(data['endDate'] as String),
-      bannerImageUrl: data['bannerImageUrl'] as String?,
-      schedule: (data['schedule'] as List<dynamic>)
+      id: json['id'] as int,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      venue: json['venue'] != null ? Venue.fromJson(json['venue']) : null,
+      startDate: DateTime.parse(json['startDate'] as String),
+      endDate: DateTime.parse(json['endDate'] as String),
+      bannerImageUrl: json['bannerImageUrl'] as String?,
+      schedule: (json['schedule'] as List<dynamic>)
           .map((e) => EventDaySchedule.fromJson(e as Map<String, dynamic>))
           .toList(),
     );

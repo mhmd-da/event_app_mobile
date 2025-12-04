@@ -1,7 +1,4 @@
-import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-
-import 'app_colors.dart';
 
 class AppTextStyles {
 

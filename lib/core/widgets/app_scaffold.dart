@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../features/events/presentation/events_page.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_colors.dart';
 
 class AppScaffold extends StatelessWidget {
   final String? title;
@@ -26,7 +27,15 @@ class AppScaffold extends StatelessWidget {
       appBar: title == null
           ? null
           : AppBar(
-        title: Text(title!),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+          ),
+        ),
+        title: Text(
+          title!,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white),
+        ),
         centerTitle: centerTitle,
         actions: [
           IconButton(
@@ -43,6 +52,7 @@ class AppScaffold extends StatelessWidget {
           )
         ],
       ),
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.page),

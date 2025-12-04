@@ -427,6 +427,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Venue'**
   String get venue;
+
+  /// No description provided for @profile_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get profile_name;
+
+  /// No description provided for @profile_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profile_email;
+
+  /// No description provided for @profile_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get profile_phone;
+
+  /// No description provided for @profile_university.
+  ///
+  /// In en, this message translates to:
+  /// **'University'**
+  String get profile_university;
+
+  /// No description provided for @profile_department.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get profile_department;
+
+  /// No description provided for @profile_major.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get profile_major;
 }
 
 class _AppLocalizationsDelegate

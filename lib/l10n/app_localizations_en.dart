@@ -175,4 +175,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get venue => 'Venue';
+
+  @override
+  String get profile_name => 'Name';
+
+  @override
+  String get profile_email => 'Email';
+
+  @override
+  String get profile_phone => 'Phone';
+
+  @override
+  String get profile_university => 'University';
+
+  @override
+  String get profile_department => 'Department';
+
+  @override
+  String get profile_major => 'Major';
 }

@@ -61,5 +61,12 @@
   "faqs": "الأسئلة الشائعة",
   "languageUpdated": "تم تحديث اللغة إلى {language}",
   "languageUpdateFailed": "فشل في تحديث اللغة",
-  "changeLanguage": "تغيير اللغة"
+  "changeLanguage": "تغيير اللغة",
+
+  "profile_name": "الاسم",
+  "profile_email": "البريد الإلكتروني",
+  "profile_phone": "رقم الهاتف",
+  "profile_university": "الجامعة",
+  "profile_department": "القسم",
+  "profile_major": "التخصص"
 }

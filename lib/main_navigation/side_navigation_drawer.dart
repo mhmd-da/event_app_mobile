@@ -40,9 +40,15 @@ class SideNavigationDrawer extends ConsumerWidget {
           child: Column(
             children: [
               DrawerHeader(
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                ),
                 child: Align(
                   alignment: Alignment.bottomLeft,
-                  child: Text(AppLocalizations.of(context)!.appTitle, style: Theme.of(context).textTheme.headlineSmall),
+                  child: Text(
+                    AppLocalizations.of(context)!.appTitle,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white),
+                  ),
                 ),
               ),
               Expanded(
@@ -117,11 +123,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                       label: AppLocalizations.of(context)!.profile,
                       selected: currentIndex == 3,
                       onTap: () => ref.read(mainNavigationIndexProvider.notifier).state = 3,
-                    ),
-                    tile(
-                      icon: Icons.info_outline,
-                      label: AppLocalizations.of(context)!.eventInfo,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Event Info'))),
                     ),
                     tile(
                       icon: Icons.contact_page_outlined,

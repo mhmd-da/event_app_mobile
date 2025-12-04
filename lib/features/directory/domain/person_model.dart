@@ -1,4 +1,6 @@
-class PersonModel {
+import 'package:event_app/core/base/base_model.dart';
+
+class PersonModel extends BaseModel {
   final int id;
   final String title;
   final String gender;

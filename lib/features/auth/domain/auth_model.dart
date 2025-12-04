@@ -1,4 +1,6 @@
-class AuthModel {
+import 'package:event_app/core/base/base_model.dart';
+
+class AuthModel extends BaseModel {
   final String token;
   final DateTime expiryDate;
 
@@ -8,11 +10,9 @@ class AuthModel {
   });
 
   factory AuthModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
-
     return AuthModel(
-      token: data['token'],
-      expiryDate: DateTime.parse(data['expiry_date']),
+      token: json['token'],
+      expiryDate: DateTime.parse(json['expiry_date']),
     );
   }
 }

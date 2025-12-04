@@ -1,4 +1,6 @@
-class SessionModel {
+import 'package:event_app/core/base/base_model.dart';
+
+class SessionModel extends BaseModel {
   final int id;
   final String? name;
   final String description;

@@ -1,4 +1,6 @@
 import 'package:event_app/core/widgets/app_list_tile.dart';
+import 'package:event_app/features/faqs/presentation/faqs_page.dart';
+import 'package:event_app/features/venue/presentation/venue_page.dart';
 import 'package:flutter/material.dart';
 
 class VenueInfoList extends StatelessWidget {
@@ -12,7 +14,10 @@ class VenueInfoList extends StatelessWidget {
           leadingIcon: Icons.map,
           title: "Venue Map",
           subtitle: "View all halls and rooms",
-          onTap: () {},
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const VenuePage()),
+          ),
         ),
         const SizedBox(height: 8),
         AppListTile(
@@ -26,7 +31,10 @@ class VenueInfoList extends StatelessWidget {
           leadingIcon: Icons.help_center_outlined,
           title: "FAQs",
           subtitle: "Common questions",
-          onTap: () {},
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => FaqsPage()),
+          ),
         ),
         const SizedBox(height: 8),
         AppListTile(

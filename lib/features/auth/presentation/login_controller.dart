@@ -1,9 +1,10 @@
+import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/storage/secure_storage_service.dart';
 import '../data/auth_repository.dart';
 import 'login_state.dart';
 
-final authRepositoryProvider = Provider((ref) => AuthRepository());
+final authRepositoryProvider = Provider((ref) => AuthRepository(ref.watch(apiClientProvider)));
 final secureStorageProvider = Provider((ref) => SecureStorageService());
 
 final loginControllerProvider =
