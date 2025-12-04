@@ -1,0 +1,28 @@
+class EventModel {
+  final int id;
+  final String name;
+  final String? location;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String? bannerImageUrl;
+
+  EventModel({
+    required this.id,
+    required this.name,
+    this.location,
+    required this.startDate,
+    required this.endDate,
+    this.bannerImageUrl,
+  });
+
+  factory EventModel.fromJson(Map<String, dynamic> json) {
+    return EventModel(
+      id: json['id'] as int,
+      name: json['name'] ?? '',
+      location: json['location'],
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      bannerImageUrl: json['bannerImageUrl'],
+    );
+  }
+}

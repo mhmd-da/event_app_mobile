@@ -1,0 +1,67 @@
+{
+  "@@locale": "en",
+  "hello": "Hello",
+  "language": "Language",
+  "english": "English",
+  "arabic": "Arabic",
+  "welcomeMessage": "Welcome to the Event App",
+
+  "noEventSelected": "No event selected",
+  "home": "Home",
+  "agenda": "Agenda",
+  "profile": "Profile",
+  "sessions": "Sessions",
+
+  "appTitle": "Event App"
+  ,
+  "toggleLanguage": "Toggle language",
+  "mySchedule": "My Schedule",
+  "errorLoadingSchedule": "Error loading schedule",
+  "noSessionsInYourSchedule": "No sessions in your schedule",
+  "noSessionsFound": "No sessions found",
+  "mentors": "Mentors",
+  "noMentorsFound": "No mentors found",
+  "errorLoadingMentors": "Error loading mentors",
+  "speakers": "Speakers",
+  "noSpeakersFound": "No speakers found",
+  "errorLoadingSpeakers": "Error loading speakers",
+  "noSessionsLinkedYet": "No sessions linked yet.",
+  "selectEvent": "Select Event",
+  "speakersLabel": "🎤 Speakers",
+  "mentorsLabel": "🧠 Mentors"
+  ,
+  "searchHint": "Search by name, company or position..."
+  ,
+  "about": "About"
+  ,
+  "somethingWentWrong": "Something went wrong",
+  "noSessionsAvailable": "No sessions available",
+  "browseAllSessionsBanner": "Browse all sessions, speakers, and event schedule"
+  ,
+  "past": "Past",
+  "ongoing": "Ongoing",
+    "future": "Future",
+    "workshops": "Workshops",
+    "roundtables": "Roundtables",
+    "mentorship": "Mentorship",
+    "resources": "Resources",
+    "notifications": "Notifications",
+    "sponsors": "Sponsors",
+    "partners": "Partners",
+    "exhibitions": "Exhibitions",
+    "eventInfo": "Event Info"
+,
+  "welcomeBack": "Welcome Back!",
+  "loginToContinue": "Login to continue your event journey.",
+  "emailLabel": "Email,ID, Phone Number",
+  "password": "Password",
+  "continueButton": "Continue",
+  "dontHaveAccountRegister": "Don’t have an account? Register",
+  "contactUs": "Contact Us",
+  "faqs": "FAQs",
+  "languageUpdated": "Language updated to {language}",
+  "languageUpdateFailed": "Failed to update language",
+  "changeLanguage": "Change Language",
+  "venue": "Venue"
+}
+

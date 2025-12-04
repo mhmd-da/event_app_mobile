@@ -1,0 +1,40 @@
+import 'package:event_app/features/directory/domain/person_model.dart';
+import 'package:flutter/material.dart';
+import 'package:event_app/l10n/app_localizations.dart';
+
+class PersonDetailsPage extends StatelessWidget {
+  final PersonModel person;
+  const PersonDetailsPage(this.person, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.speakers)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
+          children: [
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(person.profileImageUrl ?? ""),
+              ),
+            ),
+            Center(
+              child: Text("${person.title} ${person.firstName} ${person.lastName}",
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
+            Text("${person.companyName} - ${person.position}", textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic)),
+
+            const Divider(),
+
+            Text(person.bio?? "", style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
+  }
+}
