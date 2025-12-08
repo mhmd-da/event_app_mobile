@@ -20,6 +20,10 @@ class SecureStorageService {
     }
   }
 
+  Future<void> saveUserId(int userId) async {
+    await storage.write(key: "user_id", value: userId.toString());
+  }
+
   Future<String?> getToken() async {
     return await storage.read(key: "token");
   }
@@ -28,6 +32,14 @@ class SecureStorageService {
     var key = await storage.read(key: "event_id");
     if(key == null)
       return 1;
+
+    return int.parse(key);
+  }
+
+  Future<int> getUserId() async {
+    var key = await storage.read(key: "user_id");
+    if(key == null)
+      return 0;
 
     return int.parse(key);
   }

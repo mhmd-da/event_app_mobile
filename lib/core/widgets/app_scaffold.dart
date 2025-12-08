@@ -39,7 +39,7 @@ class AppScaffold extends StatelessWidget {
         centerTitle: centerTitle,
         actions: [
           IconButton(
-            icon: const Icon(Icons.event_available),
+            icon: const Icon(Icons.event_available_outlined, color: Colors.white),
             tooltip: "Change Event",
             onPressed: () {
               Navigator.push(

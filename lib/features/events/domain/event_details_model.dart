@@ -7,7 +7,7 @@ class EventDetailsModel {
   final DateTime startDate;
   final DateTime endDate;
   final String? bannerImageUrl;
-  final List<EventDaySchedule> schedule;
+  //final List<EventDaySchedule> schedule;
   final Venue? venue;
 
   EventDetailsModel({
@@ -18,7 +18,7 @@ class EventDetailsModel {
     required this.startDate,
     required this.endDate,
     required this.bannerImageUrl,
-    required this.schedule,
+    //required this.schedule,
   });
 
   factory EventDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -30,76 +30,76 @@ class EventDetailsModel {
       startDate: DateTime.parse(json['startDate'] as String),
       endDate: DateTime.parse(json['endDate'] as String),
       bannerImageUrl: json['bannerImageUrl'] as String?,
-      schedule: (json['schedule'] as List<dynamic>)
-          .map((e) => EventDaySchedule.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      //schedule: (json['schedule'] as List<dynamic>)
+      //    .map((e) => EventDaySchedule.fromJson(e as Map<String, dynamic>))
+      //    .toList(),
     );
   }
 }
 
-class EventDaySchedule {
-  final DateTime day;
-  final List<EventCategorySchedule> categories;
+// class EventDaySchedule {
+//   final DateTime day;
+//   final List<EventCategorySchedule> categories;
 
-  EventDaySchedule({
-    required this.day,
-    required this.categories,
-  });
+//   EventDaySchedule({
+//     required this.day,
+//     required this.categories,
+//   });
 
-  factory EventDaySchedule.fromJson(Map<String, dynamic> json) {
-    return EventDaySchedule(
-      day: DateTime.parse(json['day'] as String),
-      categories: (json['categories'] as List<dynamic>)
-          .map((c) => EventCategorySchedule.fromJson(c as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-}
+//   factory EventDaySchedule.fromJson(Map<String, dynamic> json) {
+//     return EventDaySchedule(
+//       day: DateTime.parse(json['day'] as String),
+//       categories: (json['categories'] as List<dynamic>)
+//           .map((c) => EventCategorySchedule.fromJson(c as Map<String, dynamic>))
+//           .toList(),
+//     );
+//   }
+// }
 
-class EventCategorySchedule {
-  final String category;
-  final List<EventSession> sessions;
+// class EventCategorySchedule {
+//   final String category;
+//   final List<EventSession> sessions;
 
-  EventCategorySchedule({
-    required this.category,
-    required this.sessions,
-  });
+//   EventCategorySchedule({
+//     required this.category,
+//     required this.sessions,
+//   });
 
-  factory EventCategorySchedule.fromJson(Map<String, dynamic> json) {
-    return EventCategorySchedule(
-      category: json['category'] as String,
-      sessions: (json['sessions'] as List<dynamic>)
-          .map((s) => EventSession.fromJson(s as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-}
+//   factory EventCategorySchedule.fromJson(Map<String, dynamic> json) {
+//     return EventCategorySchedule(
+//       category: json['category'] as String,
+//       sessions: (json['sessions'] as List<dynamic>)
+//           .map((s) => EventSession.fromJson(s as Map<String, dynamic>))
+//           .toList(),
+//     );
+//   }
+// }
 
-class EventSession {
-  final int id;
-  final String name;
-  final String location;
-  final String startTime;
-  final String endTime;
+// class EventSession {
+//   final int id;
+//   final String name;
+//   final String location;
+//   final String startTime;
+//   final String endTime;
 
-  EventSession({
-    required this.id,
-    required this.name,
-    required this.location,
-    required this.startTime,
-    required this.endTime,
-  });
+//   EventSession({
+//     required this.id,
+//     required this.name,
+//     required this.location,
+//     required this.startTime,
+//     required this.endTime,
+//   });
 
-  factory EventSession.fromJson(Map<String, dynamic> json) {
-    return EventSession(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      location: json['location'] as String,
-      startTime: json['startTime'] as String,
-      endTime: json['endTime'] as String,
-    );
-  }
-}
+//   factory EventSession.fromJson(Map<String, dynamic> json) {
+//     return EventSession(
+//       id: json['id'] as int,
+//       name: json['name'] as String,
+//       location: json['location'] as String,
+//       startTime: json['startTime'] as String,
+//       endTime: json['endTime'] as String,
+//     );
+//   }
+// }
 
 
 

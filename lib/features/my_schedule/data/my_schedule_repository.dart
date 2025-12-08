@@ -8,6 +8,6 @@ class MyScheduleRepository extends BaseApiRepository<MyScheduleModel>{
     MyScheduleRepository(ApiClient client)
       : super(client, (json) => MyScheduleModel.fromJson(json));
 
-  Future<List<MyScheduleModel>> getMySchedule(int eventId) async => await fetchList(AppConfig.getMySchedule(eventId)); 
+  Future<List<MyScheduleModel>> getMySchedule() async => await fetchList(AppConfig.getMySchedule); 
 
 }

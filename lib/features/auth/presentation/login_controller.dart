@@ -1,4 +1,5 @@
 import 'package:event_app/core/network/api_client_provider.dart';
+import 'package:event_app/features/auth/domain/auth_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/storage/secure_storage_service.dart';
 import '../data/auth_repository.dart';
@@ -33,6 +34,37 @@ class LoginController extends StateNotifier<LoginState> {
     } catch (e) {
       state = state.copyWith(
           isLoading: false, errorMessage: "Login failed. Check credentials.");
+    }
+  }
+
+  Future<void> loginWithCode(String otp) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+
+      final auth = await _repo.verifyCode(await _storage.getUserId(), otp);
+
+      await _storage.saveAuth(auth);
+
+      state = state.copyWith(isLoading: false, isLoggedIn: true);
+
+    } catch (e) {
+      state = state.copyWith(
+          isLoading: false, errorMessage: "Login failed. Check credentials.");
+    }
+  }
+
+  Future<void> logout() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+      await _storage.clear();
+
+      state = state.copyWith(isLoading: false, isLoggedIn: false);
+
+    } catch (e) {
+      state = state.copyWith(
+          isLoading: false, errorMessage: "Logout failed. Please try again.");
     }
   }
 }

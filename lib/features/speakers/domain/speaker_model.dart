@@ -1,6 +1,6 @@
 import 'package:event_app/core/base/base_model.dart';
 
-class PersonModel extends BaseModel {
+class SpeakerModel extends BaseModel {
   final int id;
   final String title;
   final String gender;
@@ -14,7 +14,7 @@ class PersonModel extends BaseModel {
   final String? linkedinUrl;
   final String? twitterUrl;
 
-  PersonModel({
+  SpeakerModel({
     required this.id,
     required this.title,
     required this.gender,
@@ -29,8 +29,8 @@ class PersonModel extends BaseModel {
     this.twitterUrl,
   });
 
-  factory PersonModel.fromJson(Map<String, dynamic> json) {
-    return PersonModel(
+  factory SpeakerModel.fromJson(Map<String, dynamic> json) {
+    return SpeakerModel(
       id: json['id'] as int,
       title: json['title'] ?? '',
       gender: json['gender'] ?? '',

@@ -8,11 +8,9 @@ class SessionRepository extends BaseApiRepository<SessionModel> {
     SessionRepository(ApiClient client)
       : super(client, (json) => SessionModel.fromJson(json));
 
-  Future<List<SessionModel>> getSessions(int eventId) async => await fetchList(AppConfig.getSessions(eventId)); 
+  Future<List<SessionModel>> getSessionsForAgenda() async => await fetchList(AppConfig.getSessionsForAgenda); 
 
-  Future<List<SessionModel>> getSessionsForAgenda(int eventId) async => await fetchList(AppConfig.getSessionsForAgenda(eventId)); 
+  Future<bool> registerSession(int sessionId) async  => await postData<bool>(AppConfig.registerSession(sessionId), null);
 
-  Future<String> registerSession(int sessionId) async  => await postData<String>(AppConfig.registerSession(sessionId), null);
-
-  Future<String> cancelSessionRegistration(int sessionId) async  => await postData<String>(AppConfig.cancelSessionRegistration(sessionId), null);
+  Future<bool> cancelSessionRegistration(int sessionId) async  => await postData<bool>(AppConfig.cancelSessionRegistration(sessionId), null);
 }

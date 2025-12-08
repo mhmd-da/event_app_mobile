@@ -8,6 +8,6 @@ class FaqsRepository  extends BaseApiRepository<Faq>{
     FaqsRepository(ApiClient client)
       : super(client, (json) => Faq.fromJson(json));
 
-  Future<List<Faq>> getFaqs(int eventId) async => await fetchList(AppConfig.getFaqs(eventId)); 
+  Future<List<Faq>> getFaqs() async => await fetchList(AppConfig.getFaqs); 
 
 }

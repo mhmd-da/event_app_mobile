@@ -463,6 +463,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Major'**
   String get profile_major;
+
+  /// No description provided for @groupByTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Show by Time'**
+  String get groupByTime;
+
+  /// No description provided for @groupByTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Show by Track'**
+  String get groupByTrack;
+
+  /// No description provided for @groupByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Show by Category'**
+  String get groupByCategory;
+
+  /// No description provided for @allTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'All Tracks'**
+  String get allTracks;
+
+  /// No description provided for @allCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get allCategories;
+
+  /// No description provided for @sessionSpeakers.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Speakers'**
+  String get sessionSpeakers;
+
+  /// No description provided for @poweredBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Powered By'**
+  String get poweredBy;
+
+  /// No description provided for @addToAgenda.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Agenda'**
+  String get addToAgenda;
+
+  /// No description provided for @removeFromAgenda.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Agenda'**
+  String get removeFromAgenda;
+
+  /// No description provided for @addedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Added successfully!'**
+  String get addedSuccess;
+
+  /// No description provided for @removedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed successfully!'**
+  String get removedSuccess;
+
+  /// No description provided for @actionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed. Please try again.'**
+  String get actionFailed;
+
+  /// No description provided for @mentorshipSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentorship Sessions'**
+  String get mentorshipSessions;
+
+  /// No description provided for @mentorshipTimeSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentorship Time Slots'**
+  String get mentorshipTimeSlots;
+
+  /// No description provided for @noTimeSlotsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No time slots available.'**
+  String get noTimeSlotsAvailable;
+
+  /// No description provided for @errorLoadingTimeSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading time slots.'**
+  String get errorLoadingTimeSlots;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @unregister.
+  ///
+  /// In en, this message translates to:
+  /// **'Unregister'**
+  String get unregister;
+
+  /// No description provided for @maxCapacityReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Capacity Reached'**
+  String get maxCapacityReached;
+
+  /// No description provided for @registered.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered'**
+  String get registered;
+
+  /// No description provided for @available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get registerTitle;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get title;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @bio.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get bio;
+
+  /// No description provided for @university.
+  ///
+  /// In en, this message translates to:
+  /// **'University'**
+  String get university;
+
+  /// No description provided for @department.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get department;
+
+  /// No description provided for @major.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get major;
+
+  /// No description provided for @preferredLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Language'**
+  String get preferredLanguage;
+
+  /// No description provided for @profileImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Image'**
+  String get profileImage;
+
+  /// No description provided for @registerButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get registerButton;
+
+  /// No description provided for @verificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Code'**
+  String get verificationCode;
+
+  /// No description provided for @verifyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verifyButton;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @verifyCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Code'**
+  String get verifyCodeTitle;
+
+  /// No description provided for @otpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP'**
+  String get otpLabel;
+
+  /// No description provided for @otpError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid OTP'**
+  String get otpError;
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP'**
+  String get resendOtp;
+
+  /// No description provided for @resendOtpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP in'**
+  String get resendOtpIn;
+
+  /// No description provided for @seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get fieldRequired;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get invalidEmail;
+
+  /// No description provided for @weakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak.'**
+  String get weakPassword;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed. Please try again.'**
+  String get registrationFailed;
+
+  /// No description provided for @firstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your first name'**
+  String get firstNameHint;
+
+  /// No description provided for @lastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your last name'**
+  String get lastNameHint;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 }
 
 class _AppLocalizationsDelegate

@@ -193,4 +193,160 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_major => 'Major';
+
+  @override
+  String get groupByTime => 'Show by Time';
+
+  @override
+  String get groupByTrack => 'Show by Track';
+
+  @override
+  String get groupByCategory => 'Show by Category';
+
+  @override
+  String get allTracks => 'All Tracks';
+
+  @override
+  String get allCategories => 'All Categories';
+
+  @override
+  String get sessionSpeakers => 'Session Speakers';
+
+  @override
+  String get poweredBy => 'Powered By';
+
+  @override
+  String get addToAgenda => 'Add to Agenda';
+
+  @override
+  String get removeFromAgenda => 'Remove from Agenda';
+
+  @override
+  String get addedSuccess => 'Added successfully!';
+
+  @override
+  String get removedSuccess => 'Removed successfully!';
+
+  @override
+  String get actionFailed => 'Action failed. Please try again.';
+
+  @override
+  String get mentorshipSessions => 'Mentorship Sessions';
+
+  @override
+  String get mentorshipTimeSlots => 'Mentorship Time Slots';
+
+  @override
+  String get noTimeSlotsAvailable => 'No time slots available.';
+
+  @override
+  String get errorLoadingTimeSlots => 'Error loading time slots.';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get unregister => 'Unregister';
+
+  @override
+  String get maxCapacityReached => 'Max Capacity Reached';
+
+  @override
+  String get registered => 'Registered';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get registerTitle => 'Register';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get bio => 'Bio';
+
+  @override
+  String get university => 'University';
+
+  @override
+  String get department => 'Department';
+
+  @override
+  String get major => 'Major';
+
+  @override
+  String get preferredLanguage => 'Preferred Language';
+
+  @override
+  String get profileImage => 'Profile Image';
+
+  @override
+  String get registerButton => 'Register';
+
+  @override
+  String get verificationCode => 'Verification Code';
+
+  @override
+  String get verifyButton => 'Verify';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get verifyCodeTitle => 'Verify Code';
+
+  @override
+  String get otpLabel => 'Enter OTP';
+
+  @override
+  String get otpError => 'Please enter a valid OTP';
+
+  @override
+  String get resendOtp => 'Resend OTP';
+
+  @override
+  String get resendOtpIn => 'Resend OTP in';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get fieldRequired => 'This field is required.';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email address.';
+
+  @override
+  String get weakPassword => 'Password is too weak.';
+
+  @override
+  String get registrationFailed => 'Registration failed. Please try again.';
+
+  @override
+  String get firstNameHint => 'Enter your first name';
+
+  @override
+  String get lastNameHint => 'Enter your last name';
+
+  @override
+  String get settings => 'Settings';
 }

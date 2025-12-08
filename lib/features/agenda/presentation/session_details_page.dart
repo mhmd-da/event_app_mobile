@@ -6,6 +6,7 @@ import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:event_app/l10n/app_localizations.dart';
 
 class SessionDetailsPage extends ConsumerWidget {
   const SessionDetailsPage({super.key, required this.session});
@@ -14,7 +15,9 @@ class SessionDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isRegisteredNow = ref.watch(sessionPanelStateProvider(session.id));
+    final isRegisteredNow = ref.watch(
+      sessionRegistrationStateProvider(session),
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(session.name ?? '')),
@@ -23,79 +26,93 @@ class SessionDetailsPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Session Overview Card ---
             _buildSessionCard(context),
-
             const SizedBox(height: AppSpacing.section),
-
-            // --- Check-in Button ---
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                label: Text(isRegisteredNow ? 'Remove from Agenda' : 'Add to Agenda'),
-                icon: isRegisteredNow ? Icon(Icons.remove_circle_outline) : Icon(Icons.check_circle_outline),
-                  onPressed: () async {
-                    try {
-                      var response = '';
-                      if (isRegisteredNow) {
-                        response = await ref.watch(sessionCancellationProvider(session.id).future); // Corrected usage
-                      } else {
-                        response = await ref.watch(sessionRegistrationProvider(session.id).future); // Corrected usage
-                      }
-
-                      // Update UI registration state
-                      ref.read(sessionPanelStateProvider(session.id).notifier).state = !isRegisteredNow;
-
-                      // Show feedback
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(isRegisteredNow ? "Removed ✅" : "Added ✅")),
-                      );
-
-                      print("API Called Successfully 🚀 $response"); // Debugging line
-                    } catch (e) {
-                      print("API Call Failed ❌: $e");
-                    }
-                  },
-                style: AppDecorations.primaryButton(context),
-              ),
-            ),
-
+            _buildRegistrationButton(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
-
-            // --- Reminder Chip ---
             if (session.startTime != null) _buildReminderChip(context),
-
             const SizedBox(height: AppSpacing.section),
-
-            // --- Speakers List Section ---
             if (session.speakers.isNotEmpty)
               _buildSection(
                 context,
-                title: 'Session Speakers',
+                title: AppLocalizations.of(context)!.sessionSpeakers,
                 child: _buildPersonList(context, session.speakers),
               ),
-
             const SizedBox(height: AppSpacing.section),
-
-            // --- Sponsors Logos Section ---
             if (session.sponsors.isNotEmpty)
               _buildSection(
                 context,
-                title: 'Powered By',
+                title: AppLocalizations.of(context)!.poweredBy,
                 child: _buildLogoList(context, session.sponsors),
               ),
-
             const SizedBox(height: AppSpacing.section),
-
-            // --- Partners Logos Section ---
             if (session.partners.isNotEmpty)
               _buildSection(
                 context,
-                title: 'Partners',
+                title: AppLocalizations.of(context)!.partners,
                 child: _buildLogoList(context, session.partners),
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildRegistrationButton(
+    BuildContext context,
+    WidgetRef ref,
+    bool isRegisteredNow,
+  ) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        label: Text(
+          isRegisteredNow
+              ? AppLocalizations.of(context)!.removeFromAgenda
+              : AppLocalizations.of(context)!.addToAgenda,
+        ),
+        icon: Icon(
+          isRegisteredNow
+              ? Icons.remove_circle_outline
+              : Icons.check_circle_outline,
+        ),
+        onPressed: () async {
+          try {
+            var response = false;
+            if (isRegisteredNow) {
+              response = await ref
+                  .watch(sessionRepositoryProvider)
+                  .cancelSessionRegistration(session.id);
+            } else {
+              response = await ref
+                  .watch(sessionRepositoryProvider)
+                  .registerSession(session.id);
+            }
+            Future.microtask(() {
+              ref
+                      .read(sessionRegistrationStateProvider(session).notifier)
+                      .state =
+                  !isRegisteredNow;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isRegisteredNow
+                      ? AppLocalizations.of(context)!.removedSuccess
+                      : AppLocalizations.of(context)!.addedSuccess,
+                ),
+              ),
+            );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.actionFailed),
+              ),
+            );
+          }
+        },
+        style: AppDecorations.primaryButton(context),
       ),
     );
   }
@@ -207,9 +224,16 @@ class SessionDetailsPage extends ConsumerWidget {
               '${person.firstName} ${person.lastName}',
               style: AppTextStyles.bodyMedium,
             ),
-            subtitle: Text(person.title ?? '', style: AppTextStyles.bodySmall),
+            subtitle: Text(person.title, style: AppTextStyles.bodySmall),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => SpeakerDetailsPage(person),
+              //   ),
+              // );
+            },
           ),
         );
       }).toList(),

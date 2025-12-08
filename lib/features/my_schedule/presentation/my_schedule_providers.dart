@@ -1,5 +1,4 @@
 import 'package:event_app/core/network/api_client_provider.dart';
-import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
 import 'package:event_app/features/my_schedule/data/my_schedule_repository.dart';
 import 'package:event_app/features/my_schedule/domain/my_schedule_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,13 +8,7 @@ final myScheduleRepositoryProvider = Provider<MyScheduleRepository>((ref) {
 });
 
 final myScheduleProvider = FutureProvider<List<MyScheduleModel>>((ref) async {
-  final event = ref.watch(selectedEventProvider);
-
-  if (event == null) return [];
-
-  return ref
-      .watch(myScheduleRepositoryProvider)
-      .getMySchedule(event.id);
+    return ref.watch(myScheduleRepositoryProvider).getMySchedule();
 });
 
 final scheduleViewModeProvider = StateProvider<ScheduleViewMode>((ref) {

@@ -1,10 +1,10 @@
-import 'package:event_app/features/directory/domain/person_model.dart';
+import 'package:event_app/features/speakers/domain/speaker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 
-class PersonDetailsPage extends StatelessWidget {
-  final PersonModel person;
-  const PersonDetailsPage(this.person, {super.key});
+class SpeakerDetailsPage extends StatelessWidget {
+  final SpeakerModel person;
+  const SpeakerDetailsPage(this.person, {super.key});
 
   @override
   Widget build(BuildContext context) {
