@@ -4,7 +4,7 @@
   "language": "Language",
   "english": "English",
   "arabic": "Arabic",
-  "welcomeMessage": "Welcome to the Event App",
+  "welcomeMessage": "Welcome to KSU Tamkeen X 2026",
 
   "noEventSelected": "No event selected",
   "home": "Home",
@@ -12,7 +12,7 @@
   "profile": "Profile",
   "sessions": "Sessions",
 
-  "appTitle": "Event App"
+  "appTitle": "KSU Tamkeen X 2026"
   ,
   "toggleLanguage": "Toggle language",
   "mySchedule": "My Schedule",

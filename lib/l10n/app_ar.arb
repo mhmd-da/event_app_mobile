@@ -4,7 +4,7 @@
   "language": "اللغة",
   "english": "الإنجليزية",
   "arabic": "العربية",
-  "welcomeMessage": "مرحبًا بك في تطبيق الفعاليات",
+  "welcomeMessage": "مرحبًا بك في KSU Tamkeen X 2026",
 
   "noEventSelected": "لم يتم اختيار أي حدث",
   "home": "الرئيسية",
@@ -12,7 +12,7 @@
   "profile": "الملف الشخصي",
   "sessions": "المحاضرات",
 
-  "appTitle": "تطبيق الفعاليات",
+  "appTitle": "KSU Tamkeen X 2026",
   "toggleLanguage": "تبديل اللغة",
   "mySchedule": "جدولي",
   "errorLoadingSchedule": "خطأ في تحميل البرنامج",

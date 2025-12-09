@@ -21,7 +21,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arabic => 'العربية';
 
   @override
-  String get welcomeMessage => 'مرحبًا بك في تطبيق الفعاليات';
+  String get welcomeMessage => 'مرحبًا بك في KSU Tamkeen X 2026';
 
   @override
   String get noEventSelected => 'لم يتم اختيار أي حدث';
@@ -39,7 +39,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sessions => 'المحاضرات';
 
   @override
-  String get appTitle => 'تطبيق الفعاليات';
+  String get appTitle => 'KSU Tamkeen X 2026';
 
   @override
   String get toggleLanguage => 'تبديل اللغة';

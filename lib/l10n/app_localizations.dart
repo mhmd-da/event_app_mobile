@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeMessage.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to the Event App'**
+  /// **'Welcome to KSU Tamkeen X 2026'**
   String get welcomeMessage;
 
   /// No description provided for @noEventSelected.
@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Event App'**
+  /// **'KSU Tamkeen X 2026'**
   String get appTitle;
 
   /// No description provided for @toggleLanguage.

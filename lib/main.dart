@@ -52,7 +52,7 @@ class MyApp extends ConsumerWidget {
         return const Locale('en');
       },
       navigatorKey: navigatorKey,
-      title: "Event App",
+      title: "KSU Tamkeen X 2026",
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.system,
