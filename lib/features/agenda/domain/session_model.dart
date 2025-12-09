@@ -1,4 +1,6 @@
-class SessionModel {
+import 'package:event_app/core/base/base_model.dart';
+
+class SessionModel extends BaseModel {
   final int id;
   final String? name;
   final String description;
@@ -6,6 +8,7 @@ class SessionModel {
   final DateTime endTime;
   final String location;
   final String category;
+  final String track;
   final bool isRegistered;
   final List<Person> speakers;
   final List<Person> mentors;
@@ -20,6 +23,7 @@ class SessionModel {
     required this.endTime,
     required this.location,
     required this.category,
+    required this.track,
     required this.isRegistered,
     required this.speakers,
     required this.mentors,
@@ -36,6 +40,7 @@ class SessionModel {
       endTime: DateTime.parse(json['endTime']),
       location: json['location'] ?? '',
       category: json['category'] ?? '',
+      track: json['track'] ?? '',
       isRegistered: json['isRegistered'] ?? false,
       speakers: (json['speakers'] as List?)
           ?.map((s) => Person.fromJson(s))

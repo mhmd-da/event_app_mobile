@@ -1,4 +1,6 @@
-class MyScheduleModel {
+import 'package:event_app/core/base/base_model.dart';
+
+class MyScheduleModel extends BaseModel {
   final int bookingId;
   final int? sessionId;
   final int? mentorSlotId;

@@ -3,17 +3,20 @@ class AppConfig {
 
   // 🔹 Auth Endpoints
   static const String login = "/auth/login";
+  static const String register = "/user/register";
+  static const String resendVerificationCode = "/user/send-verification-code";
+  static const String verifyCode = "/user/verify-code";
 
   // 🔹 Events Endpoints
   static const String getEvents = "/events";
   static String getEventDetails(int eventId) => "/events/$eventId";
 
   // 🔹 Speakers Endpoints
-  static String getSpeakers(int eventId, String? search) => "/speakers?EventId=$eventId&Search=$search";
+  static String getSpeakers(String? search) => "/speakers?Search=$search";
 
   // 🔹 Sessions Endpoints
-  static String getSessionsForAgenda(int eventId) => "/sessions?EventId=$eventId&Category=Panel&Category=Workshop&Category=Roundtable";
-  static String getSessions(int eventId) => "/sessions?EventId=$eventId";
+  static const String getSessionsForAgenda = "/sessions?Category=Panel&Category=Workshop&Category=Roundtable";
+  static const String getSessionsForMentorship = "/sessions?Category=Mentorship";
   static String registerSession(int sessionId) => "/sessions/$sessionId/register";
   static String cancelSessionRegistration(int sessionId) => "/sessions/$sessionId/cancel";
 
@@ -22,21 +25,22 @@ class AppConfig {
   static const String registerWorkshop = "/workshops/register";
 
   // 🔹 Mentorship Endpoints
-  static String getMentors(int eventId, String? search) => "/mentors?EventId=$eventId&Search=$search";
-  static const String getMentorSlots = "/mentorship/slots";
-  static const String bookMentor = "/mentorship/book";
+  static String getMentors(String? search) => "/mentorship/mentors?Search=$search";
+  static String getMentorshipDetails(int sessionId) => "/mentorship/$sessionId/details";
+  static const String bookTimeSlot = "/mentorship/slots/book";
+  static const String cancelTimeSlot = "/mentorship/slots/cancel";
 
   // 🔹 My Schedule
-  static String getMySchedule(int eventId) => "/my-schedule/$eventId";
-  static String cancelWorkshop(int eventId) => "/my-schedule/$eventId/cancel-workshop";
-  static String cancelMentorship(int eventId) => "/my-schedule/$eventId/cancel-mentorship";
+  static const String getMySchedule = "/my-schedule";
+  static const String cancelWorkshop = "/my-schedule/cancel-workshop";
+  static const String cancelMentorship = "/my-schedule/cancel-mentorship";
 
   // 🔹 Notifications
   static const String getNotifications = "/notifications";
   static const String markNotificationRead = "/notifications/mark-read";
 
   // 🔹 FAQs
-  static String getFaqs(int eventId) => "/faqs?EventId=$eventId";
+  static const String getFaqs = "/faqs";
 
   // 🔹 FAQs
   static const String getProfile = "/user/profile";

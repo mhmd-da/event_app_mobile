@@ -1,4 +1,6 @@
-class Faq {
+import 'package:event_app/core/base/base_model.dart';
+
+class Faq extends BaseModel{
   final String question;
   final String answer;
   final String? category;

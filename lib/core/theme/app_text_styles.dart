@@ -1,7 +1,4 @@
-import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-
-import 'app_colors.dart';
 
 class AppTextStyles {
 
@@ -21,6 +18,12 @@ class AppTextStyles {
     fontSize: 16, // small headers like card titles
     fontWeight: FontWeight.w600,
     height: 1.38,
+  );
+
+  static TextStyle headlineTine = const TextStyle(
+    fontSize: 15, // small headers like card titles
+    fontWeight: FontWeight.w500,
+    height: 1.36,
   );
 
   static TextStyle bodyMedium = const TextStyle(

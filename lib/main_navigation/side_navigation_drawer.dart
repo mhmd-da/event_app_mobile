@@ -1,7 +1,8 @@
 import 'package:event_app/core/theme/app_colors.dart';
-import 'package:event_app/features/agenda/presentation/agenda_page.dart';
-import 'package:event_app/features/directory/presentation/mentors_page.dart';
-import 'package:event_app/features/directory/presentation/speakers_page.dart';
+import 'package:event_app/features/auth/presentation/login_controller.dart';
+import 'package:event_app/features/mentors/presentation/mentors_page.dart';
+import 'package:event_app/features/mentorship/presentation/mentorship_sessions_page.dart';
+import 'package:event_app/features/speakers/presentation/speakers_page.dart';
 import 'package:event_app/features/faqs/presentation/faqs_page.dart';
 import 'package:event_app/features/my_schedule/presentation/my_schedule_page.dart';
 import 'package:event_app/features/venue/presentation/venue_page.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'main_navigation_providers.dart';
 import 'placeholder_page.dart';
+import 'package:event_app/core/storage/secure_storage_service.dart';
+import 'package:event_app/features/auth/presentation/login_page.dart';
 
 class SideNavigationDrawer extends ConsumerWidget {
   const SideNavigationDrawer({super.key});
@@ -19,34 +22,64 @@ class SideNavigationDrawer extends ConsumerWidget {
     final currentIndex = ref.watch(mainNavigationIndexProvider);
 
     Widget tile({required IconData icon, required String label, VoidCallback? onTap, bool selected = false}) {
+      final colorScheme = Theme.of(context).colorScheme;
       return ListTile(
-        leading: Icon(icon, color: selected ? Theme.of(context).colorScheme.primary : null),
-        textColor: selected ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.headlineMedium?.color,
-        title: Text(label),
+        leading: Icon(icon, color: selected ? colorScheme.primary : colorScheme.onSurfaceVariant),
+        title: Text(label, style: TextStyle(color: selected ? colorScheme.primary : colorScheme.onSurface)),
         selected: selected,
+        selectedTileColor: colorScheme.primary.withOpacity(0.08),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        trailing: const Icon(Icons.chevron_right, size: 20),
         onTap: () {
           Navigator.pop(context); // close drawer
           onTap?.call();
         },
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       );
     }
 
     return Drawer(
       child: Container(
-        decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient
-        ),
+        color: Theme.of(context).colorScheme.surface,
         child: SafeArea(
           child: Column(
             children: [
               DrawerHeader(
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(AppLocalizations.of(context)!.appTitle, style: Theme.of(context).textTheme.headlineSmall),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+                      child: Icon(Icons.event, color: Theme.of(context).colorScheme.primary),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.appTitle,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            AppLocalizations.of(context)!.mentors,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
                 child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   children: [
                     tile(
                       icon: Icons.home_rounded,
@@ -78,7 +111,7 @@ class SideNavigationDrawer extends ConsumerWidget {
                     tile(
                       icon: Icons.group_rounded,
                       label: AppLocalizations.of(context)!.mentorship,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => MentorsPage())),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => MentorshipSessionsPage())),
                     ),
                     const Divider(),
                     tile(
@@ -119,11 +152,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                       onTap: () => ref.read(mainNavigationIndexProvider.notifier).state = 3,
                     ),
                     tile(
-                      icon: Icons.info_outline,
-                      label: AppLocalizations.of(context)!.eventInfo,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Event Info'))),
-                    ),
-                    tile(
                       icon: Icons.contact_page_outlined,
                       label: AppLocalizations.of(context)!.contactUs,
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Contact Us'))),
@@ -137,6 +165,37 @@ class SideNavigationDrawer extends ConsumerWidget {
                       icon: Icons.question_answer_outlined,
                       label: AppLocalizations.of(context)!.faqs,
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FaqsPage())),
+                    ),
+                    const Divider(),
+                    // Settings above logout
+                    tile(
+                      icon: Icons.settings_rounded,
+                      label: AppLocalizations.of(context)!.settings,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PlaceholderPage(title: 'Settings'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Logout button anchored near bottom with destructive style
+                    ListTile(
+                      leading: const Icon(Icons.logout, color: Colors.red),
+                      title: Text(
+                        AppLocalizations.of(context)!.logout,
+                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      onTap: () async {
+                        final loginController = ref.read(loginControllerProvider.notifier);
+                        await loginController.logout();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => LoginPage(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

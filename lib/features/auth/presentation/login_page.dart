@@ -1,4 +1,5 @@
 import 'package:event_app/core/storage/secure_storage_service.dart';
+import 'package:event_app/features/auth/presentation/registration_page.dart';
 import 'package:event_app/features/events/presentation/events_providers.dart';
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
 import 'package:event_app/main_navigation/main_navigation_page.dart';
@@ -115,7 +116,14 @@ class LoginPage extends ConsumerWidget {
 
               const SizedBox(height: 12),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const RegistrationPage(),
+                      ),
+                    );
+
+                },
                 child: Text(AppLocalizations.of(context)!.dontHaveAccountRegister),
               ),
               const Spacer(),

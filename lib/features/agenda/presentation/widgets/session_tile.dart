@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SessionTile extends StatelessWidget {
-  const SessionTile({super.key, required this.session});
+  const SessionTile({super.key, required this.session, required this.onTapWidgetBuilder});
 
   final SessionModel session;
+  final WidgetBuilder onTapWidgetBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +21,11 @@ class SessionTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(
-        left: AppSpacing.page,
-        right: AppSpacing.page,
+        top: AppSpacing.small,
         bottom: AppSpacing.item,
       ),
       child: Container(
-        decoration: AppDecorations.agendaCard(
+        decoration: AppDecorations.agendaSessionCard(
           context,
           bgColor: SessionCategoryHelper.getCategoryColor(
             context,
@@ -36,7 +36,7 @@ class SessionTile extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => SessionDetailsPage(session: session),
+                builder: onTapWidgetBuilder,
               ),
             );
           },
@@ -45,7 +45,7 @@ class SessionTile extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.item),
             child: Row(
               crossAxisAlignment:
-              CrossAxisAlignment.start, // 👈 fixes top alignment
+                  CrossAxisAlignment.start, // 👈 fixes top alignment
               children: [
                 // The colored indicator line, controlled by theme
                 Align(
@@ -62,12 +62,18 @@ class SessionTile extends StatelessWidget {
                 // SESSION
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //Category
-                      Text(
-                        session.category ?? '',
-                        style: AppTextStyles.bodySmall,
+                      //Category + Track
+                      Row(
+                        children: [
+                          const Icon(Icons.category_outlined, size: 15),
+                          const SizedBox(width: AppSpacing.xSmall),
+                          Text(session.category,style: AppTextStyles.bodySmall),
+                          const Spacer(),
+                          const Icon(Icons.lightbulb_outline, size: 15),
+                          const SizedBox(width: AppSpacing.xSmall),
+                          Text(session.track, style: AppTextStyles.bodySmall),
+                        ],
                       ),
                       Divider(),
                       //NAME
@@ -77,23 +83,12 @@ class SessionTile extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: AppSpacing.xSmall),
-                      // DESCRIPTION
-                      Row(
-                        children: [
-                          const Icon(Icons.description_outlined, size: 15),
-                          Text(
-                            session.description ?? '',
-                            style: AppTextStyles.bodyMedium,
-                          ),
-                        ],
-                      ),
-
                       Divider(),
                       //SPEAKERS
                       Column(
                         children: [
                           ...session.speakers.map(
-                                (speaker) => ListTile(
+                            (speaker) => ListTile(
                               leading: CircleAvatar(
                                 backgroundImage: speaker.profileImageUrl != null
                                     ? NetworkImage(speaker.profileImageUrl!)
@@ -104,27 +99,26 @@ class SessionTile extends StatelessWidget {
                               ),
                               title: Text(
                                 "${speaker.title} ${speaker.firstName} ${speaker.lastName}",
-                                style: AppTextStyles.bodySmall,
+                                style: AppTextStyles.headlineTine,
                               ),
                               //subtitle: Text("${speaker.companyName} — ${speaker.position}"),
                             ),
                           ),
+                          session.speakers.isNotEmpty ? Divider() : SizedBox.shrink(),
                         ],
                       ),
-                      Divider(),
                       // TIME + LOCATION
                       Row(
                         children: [
                           const Icon(Icons.date_range_outlined, size: 15),
+                          const SizedBox(width: AppSpacing.xSmall),
                           Text('$start – $end', style: AppTextStyles.bodySmall),
                           const Spacer(),
                           const Icon(Icons.location_on_outlined, size: 15),
                           const SizedBox(width: AppSpacing.xSmall),
-                          Expanded(
-                            child: Text(
-                              session.location ?? '',
-                              style: AppTextStyles.bodySmall,
-                            ),
+                          Text(
+                            session.location ?? '',
+                            style: AppTextStyles.bodySmall,
                           ),
                         ],
                       ),

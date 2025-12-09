@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class AppDecorations {
-  static BoxDecoration agendaCard(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
+
+    static BoxDecoration agendaSessionCard(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
     borderRadius: BorderRadius.circular(14),
-    color: bgColor ?? Theme.of(ctx).cardColor.withOpacity(0.06),
+    border: Border(left: BorderSide(color: bgColor ?? Theme.of(ctx).primaryColor, width: 5)),
+    //color: bgColor ?? Theme.of(ctx).cardColor.withOpacity(0.06),
     boxShadow: [
       BoxShadow(
         blurRadius: 6,
         spreadRadius: 1,
         offset: const Offset(0, 2),
-        color: Theme.of(ctx).shadowColor.withOpacity(0.04),
+        color: bgColor ?? Theme.of(ctx).primaryColor.withOpacity(0.01),
       )
     ],
   );
@@ -78,4 +80,17 @@ class AppDecorations {
           )
         ],
       );
+
+  static BoxDecoration tabButton(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
+    borderRadius: BorderRadius.circular(14),
+    color: bgColor ?? Theme.of(ctx).cardColor.withOpacity(0.06),
+    boxShadow: [
+      BoxShadow(
+        blurRadius: 6,
+        spreadRadius: 1,
+        offset: const Offset(0, 2),
+        color: Theme.of(ctx).shadowColor.withOpacity(0.04),
+      )
+    ],
+  );
 }

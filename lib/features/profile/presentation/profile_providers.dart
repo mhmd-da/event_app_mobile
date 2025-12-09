@@ -3,6 +3,7 @@ import 'package:event_app/features/profile/domain/update_profile_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../repository/profile_repository.dart';
 import '../domain/profile_model.dart';
+import 'package:flutter/material.dart';
 
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
@@ -20,3 +21,19 @@ final updateProfileProvider = FutureProvider.family<void, UpdateProfile>((ref, p
 final changeLanguageProvider = FutureProvider.family<bool, String>((ref, language) async {
   return ref.watch(profileRepositoryProvider).changeLanguage(language);
 });
+
+final languageProvider = StateNotifierProvider<LanguageController, Locale>((ref) {
+  return LanguageController();
+});
+
+class LanguageController extends StateNotifier<Locale> {
+  LanguageController() : super(const Locale('en'));
+
+  void setLanguage(String languageCode) {
+    if (languageCode == 'ar') {
+      state = const Locale('ar');
+    } else {
+      state = const Locale('en');
+    }
+  }
+}

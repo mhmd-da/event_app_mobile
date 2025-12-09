@@ -1,0 +1,58 @@
+import 'package:event_app/core/theme/app_decorations.dart';
+import 'package:event_app/core/theme/app_spacing.dart';
+import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:flutter/material.dart';
+
+class ImageCard extends StatelessWidget {
+  final EdgeInsetsGeometry padding;
+  final VoidCallback? onTap;
+  final String? imageUrl;
+  final String? cardTitle;
+
+  const ImageCard({
+    super.key,
+    this.padding = const EdgeInsets.all(16),
+    this.onTap,
+    this.imageUrl,
+    this.cardTitle,
+  });
+
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap?.call(),
+      child: Container(
+        decoration: AppDecorations.cardContainer(context).copyWith(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // IMAGE — SAME STYLE AS MUSCLE IMAGES
+            Expanded(
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
+                child: Image.network(
+                  imageUrl ?? "",
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            // NAME UNDER IMAGE
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.item),
+              child: Text(
+                cardTitle ?? "",
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

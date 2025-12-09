@@ -1,4 +1,6 @@
-class EventModel {
+import 'package:event_app/core/base/base_model.dart';
+
+class EventModel extends BaseModel {
   final int id;
   final String name;
   final String? location;

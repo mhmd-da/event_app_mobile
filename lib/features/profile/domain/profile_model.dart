@@ -1,4 +1,6 @@
-class Profile {
+import 'package:event_app/core/base/base_model.dart';
+
+class Profile extends BaseModel{
   final int id;
   final String? gender;
   final String? title;

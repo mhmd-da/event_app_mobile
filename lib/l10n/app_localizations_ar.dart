@@ -175,4 +175,178 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get venue => 'المكان';
+
+  @override
+  String get profile_name => 'الاسم';
+
+  @override
+  String get profile_email => 'البريد الإلكتروني';
+
+  @override
+  String get profile_phone => 'رقم الهاتف';
+
+  @override
+  String get profile_university => 'الجامعة';
+
+  @override
+  String get profile_department => 'القسم';
+
+  @override
+  String get profile_major => 'التخصص';
+
+  @override
+  String get groupByTime => 'عرض حسب الوقت';
+
+  @override
+  String get groupByTrack => 'عرض حسب المسار';
+
+  @override
+  String get groupByCategory => 'عرض حسب الفئة';
+
+  @override
+  String get allTracks => 'جميع المسارات';
+
+  @override
+  String get allCategories => 'جميع الفئات';
+
+  @override
+  String get sessionSpeakers => 'متحدثو الجلسة';
+
+  @override
+  String get poweredBy => 'برعاية';
+
+  @override
+  String get addToAgenda => 'أضف إلى الأجندة';
+
+  @override
+  String get removeFromAgenda => 'إزالة من الأجندة';
+
+  @override
+  String get addedSuccess => 'تمت الإضافة بنجاح!';
+
+  @override
+  String get removedSuccess => 'تمت الإزالة بنجاح!';
+
+  @override
+  String get actionFailed => 'فشلت العملية. حاول مرة أخرى.';
+
+  @override
+  String get mentorshipSessions => 'جلسات الإرشاد';
+
+  @override
+  String get mentorshipTimeSlots => 'أوقات جلسات الإرشاد';
+
+  @override
+  String get noTimeSlotsAvailable => 'لا توجد أوقات متاحة.';
+
+  @override
+  String get errorLoadingTimeSlots => 'خطأ في تحميل الأوقات.';
+
+  @override
+  String get register => 'تسجيل';
+
+  @override
+  String get unregister => 'إلغاء التسجيل';
+
+  @override
+  String get maxCapacityReached => 'تم الوصول إلى الحد الأقصى';
+
+  @override
+  String get registered => 'مسجل';
+
+  @override
+  String get available => 'متاح';
+
+  @override
+  String get registerTitle => 'التسجيل';
+
+  @override
+  String get title => 'اللقب';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'اسم العائلة';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get phoneNumber => 'رقم الهاتف';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get bio => 'السيرة الذاتية';
+
+  @override
+  String get university => 'الجامعة';
+
+  @override
+  String get department => 'القسم';
+
+  @override
+  String get major => 'التخصص';
+
+  @override
+  String get preferredLanguage => 'اللغة المفضلة';
+
+  @override
+  String get profileImage => 'صورة الملف الشخصي';
+
+  @override
+  String get registerButton => 'تسجيل';
+
+  @override
+  String get verificationCode => 'رمز التحقق';
+
+  @override
+  String get verifyButton => 'تأكيد';
+
+  @override
+  String get gender => 'الجنس';
+
+  @override
+  String get verifyCodeTitle => 'تأكيد الرمز';
+
+  @override
+  String get otpLabel => 'أدخل الرمز';
+
+  @override
+  String get otpError => 'يرجى إدخال رمز صالح';
+
+  @override
+  String get resendOtp => 'إعادة إرسال الرمز';
+
+  @override
+  String get resendOtpIn => 'إعادة إرسال الرمز خلال';
+
+  @override
+  String get seconds => 'ثواني';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get invalidEmail => 'يرجى إدخال بريد إلكتروني صالح.';
+
+  @override
+  String get weakPassword => 'كلمة المرور ضعيفة للغاية.';
+
+  @override
+  String get registrationFailed => 'فشل التسجيل. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get firstNameHint => 'أدخل اسمك الأول';
+
+  @override
+  String get lastNameHint => 'أدخل اسمك الأخير';
+
+  @override
+  String get settings => 'الإعدادات';
 }

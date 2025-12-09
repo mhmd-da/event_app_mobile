@@ -7,8 +7,9 @@ class ApiClient {
     BaseOptions(
       baseUrl: AppConfig.baseUrl,
       headers: {"Content-Type": "application/json"},
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 15),
+      validateStatus: (status) => true
     ),
   );
 
@@ -18,10 +19,15 @@ class ApiClient {
         onRequest: (options, handler) async {
           // Load token from secure storage
           var storage = SecureStorageService();
-          final token = await storage.getToken();
 
+          final token = await storage.getToken();
           if (token != null && token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";
+          }
+
+          final eventId = await storage.getEventId();
+          if (eventId != null) {
+            options.headers["Event-Id"] = eventId;
           }
 
           return handler.next(options);
