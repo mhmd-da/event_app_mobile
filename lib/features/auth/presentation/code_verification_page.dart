@@ -1,13 +1,9 @@
 import 'dart:async';
-
-import 'package:event_app/features/auth/data/auth_repository.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
 import 'package:event_app/features/auth/presentation/login_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
-import 'package:event_app/main_navigation/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final otpResendCooldownProvider = StateProvider<int>((ref) => 0);
 

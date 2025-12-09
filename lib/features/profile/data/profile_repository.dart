@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/core/config/app_config.dart';
 import 'package:event_app/core/network/api_client.dart';
@@ -27,5 +29,11 @@ class ProfileRepository extends BaseApiRepository<Profile>{
   Future<bool> changeLanguage(String language) async => await putData<bool>(AppConfig.updateProfileLanguage, 
                                                                             {
                                                                               "preferredLanguage": language
+                                                                            });
+
+  Future<bool> registerDevice(String deviceToken) async => await putData<bool>(AppConfig.registerDevice, 
+                                                                            {
+                                                                              "token": deviceToken,
+                                                                              "platform": Platform.operatingSystem
                                                                             });
 }

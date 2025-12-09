@@ -2,6 +2,7 @@ import 'package:event_app/core/storage/secure_storage_service.dart';
 import 'package:event_app/features/auth/presentation/registration_page.dart';
 import 'package:event_app/features/events/presentation/events_providers.dart';
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
+import 'package:event_app/features/profile/presentation/profile_providers.dart';
 import 'package:event_app/main_navigation/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
@@ -26,6 +27,11 @@ class LoginPage extends ConsumerWidget {
         final event = await ref.read(eventDetailsProvider(eventId).future);
 
         ref.read(selectedEventProvider.notifier).state = event;
+
+        final fcmToken = await storage.getFcmToken();
+        if (fcmToken != null) {
+          ref.read(profileRepositoryProvider).registerDevice(fcmToken);
+        }
 
         Navigator.pushReplacement(
           context,
@@ -101,30 +107,33 @@ class LoginPage extends ConsumerWidget {
                 onPressed: loginState.isLoading
                     ? null
                     : () async {
-                  ref.read(loginControllerProvider.notifier).login(
-                    _usernameController.text,
-                    _passwordController.text,
-                  );
-                },
+                        ref
+                            .read(loginControllerProvider.notifier)
+                            .login(
+                              _usernameController.text,
+                              _passwordController.text,
+                            );
+                      },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 56),
                 ),
                 child: loginState.isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(AppLocalizations.of(context)!.continueButton),
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(AppLocalizations.of(context)!.continueButton),
               ),
 
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const RegistrationPage(),
-                      ),
-                    );
-
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const RegistrationPage(),
+                    ),
+                  );
                 },
-                child: Text(AppLocalizations.of(context)!.dontHaveAccountRegister),
+                child: Text(
+                  AppLocalizations.of(context)!.dontHaveAccountRegister,
+                ),
               ),
               const Spacer(),
             ],

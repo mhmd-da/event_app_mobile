@@ -46,5 +46,6 @@ class AppConfig {
   static const String getProfile = "/user/profile";
   static const String updateProfile = "/user/profile";
   static const String updateProfileLanguage = "/user/profile/language";
+  static const String registerDevice = "/user/register-device";
 
 }

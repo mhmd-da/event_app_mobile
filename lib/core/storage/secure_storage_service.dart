@@ -8,7 +8,9 @@ class SecureStorageService {
   Future<void> saveAuth(AuthModel auth) async {
     await storage.write(key: "token", value: auth.token);
     await storage.write(
-        key: "expiry", value: auth.expiryDate.toIso8601String());
+      key: "expiry",
+      value: auth.expiryDate.toIso8601String(),
+    );
 
     // Decode JWT
     Map<String, dynamic> decoded = JwtDecoder.decode(auth.token);
@@ -24,24 +26,30 @@ class SecureStorageService {
     await storage.write(key: "user_id", value: userId.toString());
   }
 
+  Future<void> saveFcmToken(String fcmToken) async {
+    await storage.write(key: "fcm_token", value: fcmToken);
+  }
+
   Future<String?> getToken() async {
     return await storage.read(key: "token");
   }
 
   Future<int> getEventId() async {
     var key = await storage.read(key: "event_id");
-    if(key == null)
-      return 1;
+    if (key == null) return 1;
 
     return int.parse(key);
   }
 
   Future<int> getUserId() async {
     var key = await storage.read(key: "user_id");
-    if(key == null)
-      return 0;
+    if (key == null) return 0;
 
     return int.parse(key);
+  }
+
+  Future<String?> getFcmToken() async {
+    return await storage.read(key: "fcm_token");
   }
 
   Future<String?> getExpiry() async {
@@ -50,12 +58,10 @@ class SecureStorageService {
 
   Future<bool> isValidToken() async {
     var expiry = await getExpiry();
-    if(expiry == null)
-      return false;
+    if (expiry == null) return false;
 
     var date = DateTime.parse(expiry);
-    if(DateTime.now().isAfter(date))
-      return false;
+    if (DateTime.now().isAfter(date)) return false;
 
     return true;
   }

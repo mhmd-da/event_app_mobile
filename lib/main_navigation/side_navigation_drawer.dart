@@ -1,6 +1,4 @@
-import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
-import 'package:event_app/features/mentors/presentation/mentors_page.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_sessions_page.dart';
 import 'package:event_app/features/speakers/presentation/speakers_page.dart';
 import 'package:event_app/features/faqs/presentation/faqs_page.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'main_navigation_providers.dart';
 import 'placeholder_page.dart';
-import 'package:event_app/core/storage/secure_storage_service.dart';
 import 'package:event_app/features/auth/presentation/login_page.dart';
 
 class SideNavigationDrawer extends ConsumerWidget {

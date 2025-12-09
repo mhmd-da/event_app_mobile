@@ -1,5 +1,4 @@
 import 'package:event_app/core/theme/app_text_styles.dart';
-import 'package:event_app/features/profile/domain/profile_model.dart';
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileProvider);
-    final locale = ref.watch(languageProvider);
 
     return AppScaffold(
       body: profileAsync.when(

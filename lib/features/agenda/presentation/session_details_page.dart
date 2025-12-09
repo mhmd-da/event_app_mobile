@@ -77,15 +77,18 @@ class SessionDetailsPage extends ConsumerWidget {
               : Icons.check_circle_outline,
         ),
         onPressed: () async {
+          final messenger = ScaffoldMessenger.of(context);
+          final addedText = AppLocalizations.of(context)!.addedSuccess;
+          final removedText = AppLocalizations.of(context)!.removedSuccess;
+          final failedText = AppLocalizations.of(context)!.actionFailed;
           try {
-            var response = false;
             if (isRegisteredNow) {
-              response = await ref
-                  .watch(sessionRepositoryProvider)
+              await ref
+                  .read(sessionRepositoryProvider)
                   .cancelSessionRegistration(session.id);
             } else {
-              response = await ref
-                  .watch(sessionRepositoryProvider)
+              await ref
+                  .read(sessionRepositoryProvider)
                   .registerSession(session.id);
             }
             Future.microtask(() {
@@ -95,19 +98,17 @@ class SessionDetailsPage extends ConsumerWidget {
                   !isRegisteredNow;
             });
 
-            ScaffoldMessenger.of(context).showSnackBar(
+            messenger.showSnackBar(
               SnackBar(
                 content: Text(
-                  isRegisteredNow
-                      ? AppLocalizations.of(context)!.removedSuccess
-                      : AppLocalizations.of(context)!.addedSuccess,
+                  isRegisteredNow ? removedText : addedText,
                 ),
               ),
             );
           } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            messenger.showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context)!.actionFailed),
+                content: Text(failedText),
               ),
             );
           }
@@ -214,7 +215,7 @@ class SessionDetailsPage extends ConsumerWidget {
           child: ListTile(
             leading: CircleAvatar(
               backgroundImage: person.profileImageUrl != null
-                  ? NetworkImage(person.profileImageUrl!)
+                  ? NetworkImage(person.profileImageUrl)
                   : null,
               child: person.profileImageUrl == null
                   ? const Icon(Icons.person_outline)

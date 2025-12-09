@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "312423310680",
+    "project_id": "event-management-platfor-9b1dd",
+    "storage_bucket": "event-management-platfor-9b1dd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312423310680:android:81fd12180856c88ba5712d",
+        "android_client_info": {
+          "package_name": "com.event.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJR2NTFwTSBdF5S7rxTd1Hj1R-1e9HHLs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

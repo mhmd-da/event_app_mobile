@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class EventDetailsModel {
   final int id;
   final String name;

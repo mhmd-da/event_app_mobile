@@ -1,5 +1,4 @@
 import 'package:event_app/core/widgets/app_scaffold.dart';
-import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/agenda/presentation/widgets/agenda_date_tabs.dart';
@@ -50,7 +49,7 @@ class AgendaPage extends ConsumerWidget {
                     (s) => groupingMethod == 'track'
                         ? s.track
                         : (groupingMethod == 'category'
-                              ? s.category ?? ''
+                              ? s.category
                               : ''),
                   )
                   .toSet()
