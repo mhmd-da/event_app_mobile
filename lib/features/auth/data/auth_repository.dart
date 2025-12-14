@@ -1,20 +1,40 @@
 import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/features/auth/domain/registration_response.dart';
+import 'package:event_app/features/auth/domain/unverified_account_exception.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/network/api_client.dart';
 import '../../auth/domain/auth_model.dart';
 
 class AuthRepository extends BaseApiRepository<AuthModel> {
-    AuthRepository(ApiClient client)
-      : super(client, (json) => AuthModel.fromJson(json));
+    final ApiClient _apiClient;
 
-  Future<AuthModel> login(String username, String password) async => postDataGeneric<AuthModel>(AppConfig.login, 
-                                                                            {
-                                                                                "username": username,
-                                                                                "password": password,
-                                                                            },
-                                                                            (json) => AuthModel.fromJson(json)
-                                                                            );
+    AuthRepository(this._apiClient)
+      : super(_apiClient, (json) => AuthModel.fromJson(json));
+
+  Future<AuthModel> login(String username, String password) async {
+    final response = await _apiClient.client.post(AppConfig.login, data: {
+      "username": username,
+      "password": password,
+    });
+
+    // Backend-specific: code == 100 means unverified email, regardless of HTTP status
+    final code = response.data["code"] as int?;
+    if (code == 100) {
+      final message = response.data["message"] as String?;
+      final data = response.data["data"] as Map<String, dynamic>?;
+      final userId = data != null ? data["user_id"] as int? : null;
+      throw UnverifiedAccountException(
+        message ?? 'Please verify your account before logging in',
+        userId: userId,
+      );
+    }
+
+    if (response.statusCode != 200) {
+      throw (response.data["message"] ?? 'Something went wrong');
+    }
+
+    return fromJson(response.data["data"]);
+  }
 
   Future<RegistrationResponse> register(Map<String, dynamic> formData) async => postDataGeneric<RegistrationResponse>(AppConfig.register, formData, (json) => RegistrationResponse.fromJson(json));
 

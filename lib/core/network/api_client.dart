@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 import '../storage/secure_storage_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../shared/global_loading.dart';
+import 'package:event_app/shared/providers/language_provider.dart';
 
 class ApiClient {
+  final Ref? _ref;
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: AppConfig.baseUrl,
@@ -13,10 +17,14 @@ class ApiClient {
     ),
   );
 
-  ApiClient() {
+  ApiClient(Ref? ref) : _ref = ref {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          final suppress = options.extra['suppressLoading'] == true;
+          if (_ref != null && !suppress) {
+            _ref!.read(globalLoadingProvider.notifier).begin();
+          }
           // Load token from secure storage
           var storage = SecureStorageService();
 
@@ -30,9 +38,26 @@ class ApiClient {
             options.headers["Event-Id"] = eventId;
           }
 
+          // Add language header from current app locale
+          if (_ref != null) {
+            final locale = _ref!.read(appLocaleProvider);
+            options.headers["Language-Code"] = locale.languageCode; // 'en' or 'ar'
+          }
+
           return handler.next(options);
         },
+        onResponse: (response, handler) {
+          final suppress = response.requestOptions.extra['suppressLoading'] == true;
+          if (_ref != null && !suppress) {
+            _ref!.read(globalLoadingProvider.notifier).end();
+          }
+          return handler.next(response);
+        },
         onError: (error, handler) {
+          final suppress = error.requestOptions.extra['suppressLoading'] == true;
+          if (_ref != null && !suppress) {
+            _ref!.read(globalLoadingProvider.notifier).end();
+          }
           // (Optional) Handle refresh token or auto-logout later
           return handler.next(error);
         },

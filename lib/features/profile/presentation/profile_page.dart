@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import 'package:event_app/features/profile/presentation/update_profile_page.dart';
+import 'package:event_app/features/settings/presentation/settings_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -48,41 +49,19 @@ class ProfilePage extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    Flexible(
-                      child: DropdownButton<String>(
-                        value: ref.watch(languageProvider).languageCode, // Synchronize with languageProvider
-                        onChanged: (String? newLanguage) async {
-                          if (newLanguage != null) {
-                            try {
-                              // Update the app's language
-                              ref.read(languageProvider.notifier).setLanguage(newLanguage);
-
-                              // Call the changeLanguageProvider
-                              await ref.read(changeLanguageProvider(newLanguage).future);
-
-                              // Show success feedback
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(AppLocalizations.of(context)!.languageUpdated(newLanguage))),
-                              );
-                            } catch (e) {
-                              // Show error feedback
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(AppLocalizations.of(context)!.languageUpdateFailed)),
-                              );
-                            }
-                          }
-                        },
-                        items: [
-                          DropdownMenuItem(
-                            value: 'en',
-                            child: Text(AppLocalizations.of(context)!.english),
-                          ),
-                          DropdownMenuItem(
-                            value: 'ar',
-                            child: Text(AppLocalizations.of(context)!.arabic),
-                          ),
-                        ],
+                    IconButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsPage(),
+                        ),
                       ),
+                      icon: Icon(
+                        Icons.settings_outlined,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 28,
+                      ),
+                      tooltip: AppLocalizations.of(context)?.settings ?? 'Settings',
                     ),
                   ],
                 ),

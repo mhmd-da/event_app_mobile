@@ -9,7 +9,7 @@ class SessionCategoryHelper {
       "workshop" => AppColors.workshopBg(ctx),
       "roundtable" => AppColors.roundtableBg(ctx),
       "mentorship" => AppColors.mentorshipBg(ctx),
-      _ => Theme.of(ctx).cardColor.withOpacity(0.08),
+      _ => AppColors.othersBg(ctx),
     };
   }
 }

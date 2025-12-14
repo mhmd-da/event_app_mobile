@@ -60,6 +60,14 @@
   "contactUs": "اتصل بنا",
   "faqs": "الأسئلة الشائعة",
   "languageUpdated": "تم تحديث اللغة إلى {language}",
+  "@languageUpdated": {
+    "placeholders": {
+      "language": {
+        "type": "String",
+        "example": "العربية"
+      }
+    }
+  },
   "languageUpdateFailed": "فشل في تحديث اللغة",
   "changeLanguage": "تغيير اللغة",
 
@@ -78,7 +86,12 @@
 
   "sessionSpeakers": "متحدثو الجلسة",
   "poweredBy": "برعاية",
-  "partners": "الشركاء",
+  "materials": "المواد",
+  "giveFeedback": "أرسل رأيك",
+  "sessionFeedbackTitle": "ملاحظات الجلسة",
+  "feedbackHint": "اكتب رأيك (اختياري)",
+  "submit": "إرسال",
+  "pleaseSelectRating": "يرجى اختيار تقييم",
   "addToAgenda": "أضف إلى الأجندة",
   "removeFromAgenda": "إزالة من الأجندة",
   "addedSuccess": "تمت الإضافة بنجاح!",
@@ -101,7 +114,6 @@
   "lastName": "اسم العائلة",
   "email": "البريد الإلكتروني",
   "phoneNumber": "رقم الهاتف",
-  "password": "كلمة المرور",
   "confirmPassword": "تأكيد كلمة المرور",
   "bio": "السيرة الذاتية",
   "university": "الجامعة",
@@ -117,7 +129,6 @@
   "verifyCodeTitle": "تأكيد الرمز",
   "otpLabel": "أدخل الرمز",
   "otpError": "يرجى إدخال رمز صالح",
-  "verifyButton": "تأكيد",
   "resendOtp": "إعادة إرسال الرمز",
   "resendOtpIn": "إعادة إرسال الرمز خلال",
   "seconds": "ثواني",
@@ -125,9 +136,19 @@
   "fieldRequired": "هذا الحقل مطلوب.",
   "invalidEmail": "يرجى إدخال بريد إلكتروني صالح.",
   "weakPassword": "كلمة المرور ضعيفة للغاية.",
+  "passwordsDontMatch": "كلمتا المرور غير متطابقتين.",
   "registrationFailed": "فشل التسجيل. يرجى المحاولة مرة أخرى.",
   "firstNameHint": "أدخل اسمك الأول",
   "lastNameHint": "أدخل اسمك الأخير"
   ,
   "settings": "الإعدادات"
+  ,
+  "theme": "السمة",
+  "toggleTheme": "تبديل الوضع الداكن/الفاتح"
+  ,
+  "themeSystem": "النظام",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "noNotifications": "لا توجد إشعارات",
+  "failedToLoadNotifications": "فشل تحميل الإشعارات"
 }

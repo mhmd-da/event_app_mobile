@@ -11,7 +11,6 @@ class Profile extends BaseModel{
   final String? university;
   final String? department;
   final String? major;
-  final String? preferredLanguage;
 
   Profile({
     required this.id,
@@ -24,7 +23,6 @@ class Profile extends BaseModel{
     required this.university,
     required this.department,
     required this.major,
-    required this.preferredLanguage,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -38,8 +36,7 @@ class Profile extends BaseModel{
       profileImageUrl: json['profileImageUrl'],
       university: json['university'],
       department: json['department'],
-      major: json['major'],
-      preferredLanguage: json['preferredLanguage'],
+      major: json['major']
     );
   }
 }

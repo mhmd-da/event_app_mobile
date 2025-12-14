@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class SessionDetailsPage extends ConsumerWidget {
   const SessionDetailsPage({super.key, required this.session});
@@ -52,6 +56,13 @@ class SessionDetailsPage extends ConsumerWidget {
                 title: AppLocalizations.of(context)!.partners,
                 child: _buildLogoList(context, session.partners),
               ),
+            const SizedBox(height: AppSpacing.section),
+            if (session.materials.isNotEmpty)
+              _buildSection(
+                context,
+                title: AppLocalizations.of(context)!.materials,
+                child: _buildMaterialsList(context, session.materials),
+              ),
           ],
         ),
       ),
@@ -65,55 +76,79 @@ class SessionDetailsPage extends ConsumerWidget {
   ) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
-        label: Text(
-          isRegisteredNow
-              ? AppLocalizations.of(context)!.removeFromAgenda
-              : AppLocalizations.of(context)!.addToAgenda,
-        ),
-        icon: Icon(
-          isRegisteredNow
-              ? Icons.remove_circle_outline
-              : Icons.check_circle_outline,
-        ),
-        onPressed: () async {
-          final messenger = ScaffoldMessenger.of(context);
-          final addedText = AppLocalizations.of(context)!.addedSuccess;
-          final removedText = AppLocalizations.of(context)!.removedSuccess;
-          final failedText = AppLocalizations.of(context)!.actionFailed;
-          try {
-            if (isRegisteredNow) {
-              await ref
-                  .read(sessionRepositoryProvider)
-                  .cancelSessionRegistration(session.id);
-            } else {
-              await ref
-                  .read(sessionRepositoryProvider)
-                  .registerSession(session.id);
-            }
-            Future.microtask(() {
-              ref
-                      .read(sessionRegistrationStateProvider(session).notifier)
-                      .state =
-                  !isRegisteredNow;
-            });
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              label: Text(
+                isRegisteredNow
+                  ? AppLocalizations.of(context)!.unregister
+                    : AppLocalizations.of(context)!.addToAgenda,
+              ),
+              icon: Icon(
+                isRegisteredNow
+                    ? Icons.remove_circle_outline
+                    : Icons.check_circle_outline,
+              ),
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final addedText = AppLocalizations.of(context)!.addedSuccess;
+                final removedText = AppLocalizations.of(context)!.removedSuccess;
+                final failedText = AppLocalizations.of(context)!.actionFailed;
+                try {
+                  if (isRegisteredNow) {
+                    await ref
+                        .read(sessionRepositoryProvider)
+                        .cancelSessionRegistration(session.id);
+                  } else {
+                    await ref
+                        .read(sessionRepositoryProvider)
+                        .registerSession(session.id);
+                  }
+                  Future.microtask(() {
+                    ref
+                            .read(sessionRegistrationStateProvider(session).notifier)
+                            .state =
+                        !isRegisteredNow;
+                  });
 
-            messenger.showSnackBar(
-              SnackBar(
-                content: Text(
-                  isRegisteredNow ? removedText : addedText,
-                ),
-              ),
-            );
-          } catch (e) {
-            messenger.showSnackBar(
-              SnackBar(
-                content: Text(failedText),
-              ),
-            );
-          }
-        },
-        style: AppDecorations.primaryButton(context),
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isRegisteredNow ? removedText : addedText,
+                      ),
+                    ),
+                  );
+                } catch (e) {
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(failedText),
+                    ),
+                  );
+                }
+              },
+              style: isRegisteredNow
+                  ? ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                      foregroundColor: Theme.of(context).colorScheme.onError,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    )
+                  : AppDecorations.primaryButton(context),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.item),
+          Expanded(
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.feedback_outlined),
+              label: Text(AppLocalizations.of(context)!.giveFeedback),
+              onPressed: () {
+                _showFeedbackSheet(context, ref);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -276,6 +311,193 @@ class SessionDetailsPage extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildMaterialsList(BuildContext context, List<SessionMaterial> materials) {
+    return Column(
+      children: materials.map((m) {
+        final icon = _iconForUrl(m.url);
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.item),
+          decoration: AppDecorations.cardContainer(context),
+          child: ListTile(
+            leading: Icon(icon),
+            title: Text(m.name, style: AppTextStyles.bodyMedium),
+            subtitle: Text(
+              m.url,
+              style: AppTextStyles.bodySmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: IconButton(
+              icon: const Icon(Icons.download_outlined),
+              onPressed: () async {
+                await _downloadMaterial(context, m);
+              },
+            ),
+            onTap: () async {
+              final uri = Uri.parse(m.url);
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  IconData _iconForUrl(String url) {
+    final lower = url.toLowerCase();
+    if (lower.endsWith('.pdf')) return Icons.picture_as_pdf_outlined;
+    if (lower.endsWith('.zip') || lower.endsWith('.rar')) return Icons.archive_outlined;
+    if (lower.endsWith('.ppt') || lower.endsWith('.pptx')) return Icons.slideshow_outlined;
+    if (lower.endsWith('.doc') || lower.endsWith('.docx')) return Icons.description_outlined;
+    if (lower.endsWith('.xls') || lower.endsWith('.xlsx')) return Icons.table_chart_outlined;
+    return Icons.link_outlined;
+  }
+
+  Future<void> _downloadMaterial(BuildContext context, SessionMaterial material) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final fileName = _safeFileName(material.name, material.url);
+      final savePath = '${dir.path}/$fileName';
+
+      final dio = Dio();
+      final response = await dio.get<List<int>>(
+        material.url,
+        options: Options(responseType: ResponseType.bytes, followRedirects: true),
+      );
+
+      final file = File(savePath);
+      await file.writeAsBytes(response.data ?? [], flush: true);
+
+      messenger.showSnackBar(
+        SnackBar(content: Text('Saved to $fileName')),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.actionFailed)),
+      );
+    }
+  }
+
+  String _safeFileName(String name, String url) {
+    final uri = Uri.parse(url);
+    final urlName = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : 'file';
+    final base = (name.isNotEmpty ? name : urlName).replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+    return base.isEmpty ? 'file' : base;
+  }
+
+  void _showFeedbackSheet(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return _FeedbackSheet(sessionId: session.id, ref: ref, colors: colors);
+      },
+    );
+  }
+}
+
+class _FeedbackSheet extends StatefulWidget {
+  const _FeedbackSheet({required this.sessionId, required this.ref, required this.colors});
+  final int sessionId;
+  final WidgetRef ref;
+  final ColorScheme colors;
+
+  @override
+  State<_FeedbackSheet> createState() => _FeedbackSheetState();
+}
+
+class _FeedbackSheetState extends State<_FeedbackSheet> {
+  int rating = 0;
+  final TextEditingController commentController = TextEditingController();
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        left: 16,
+        right: 16,
+        top: 16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(AppLocalizations.of(context)!.sessionFeedbackTitle, style: AppTextStyles.headlineMedium),
+          const SizedBox(height: AppSpacing.item),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(5, (i) {
+              final filled = i < rating;
+              return IconButton(
+                icon: Icon(
+                  filled ? Icons.star : Icons.star_border,
+                  color: filled ? widget.colors.primary : widget.colors.onSurfaceVariant,
+                ),
+                onPressed: () => setState(() => rating = i + 1),
+              );
+            }),
+          ),
+          TextField(
+            controller: commentController,
+            minLines: 3,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.feedbackHint,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.item),
+          SizedBox(
+            height: 48,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.colors.primary,
+                foregroundColor: widget.colors.onPrimary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () async {
+                if (rating == 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(AppLocalizations.of(context)!.pleaseSelectRating)),
+                  );
+                  return;
+                }
+                try {
+                  await widget.ref.read(sessionRepositoryProvider).submitFeedback(
+                        widget.sessionId,
+                        rating,
+                        commentController.text,
+                      );
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Feedback submitted. Thank you!')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to submit feedback')),
+                  );
+                }
+              },
+              child: Text(AppLocalizations.of(context)!.submit),
+            ),
+          ),
+        ],
       ),
     );
   }

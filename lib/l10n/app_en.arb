@@ -60,6 +60,14 @@
   "contactUs": "Contact Us",
   "faqs": "FAQs",
   "languageUpdated": "Language updated to {language}",
+  "@languageUpdated": {
+    "placeholders": {
+      "language": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
   "languageUpdateFailed": "Failed to update language",
   "changeLanguage": "Change Language",
   "venue": "Venue",
@@ -76,7 +84,12 @@
   "allCategories": "All Categories",
   "sessionSpeakers": "Session Speakers",
   "poweredBy": "Powered By",
-  "partners": "Partners",
+  "materials": "Materials",
+  "giveFeedback": "Give Feedback",
+  "sessionFeedbackTitle": "Session Feedback",
+  "feedbackHint": "Write your feedback (optional)",
+  "submit": "Submit",
+  "pleaseSelectRating": "Please select a rating",
   "addToAgenda": "Add to Agenda",
   "removeFromAgenda": "Remove from Agenda",
   "addedSuccess": "Added successfully!",
@@ -97,7 +110,6 @@
   "lastName": "Last Name",
   "email": "Email",
   "phoneNumber": "Phone Number",
-  "password": "Password",
   "confirmPassword": "Confirm Password",
   "bio": "Bio",
   "university": "University",
@@ -112,7 +124,6 @@
   "verifyCodeTitle": "Verify Code",
   "otpLabel": "Enter OTP",
   "otpError": "Please enter a valid OTP",
-  "verifyButton": "Verify",
   "resendOtp": "Resend OTP",
   "resendOtpIn": "Resend OTP in",
   "seconds": "seconds",
@@ -120,10 +131,20 @@
   "fieldRequired": "This field is required.",
   "invalidEmail": "Please enter a valid email address.",
   "weakPassword": "Password is too weak.",
+  "passwordsDontMatch": "Passwords don't match.",
   "registrationFailed": "Registration failed. Please try again.",
   "firstNameHint": "Enter your first name",
   "lastNameHint": "Enter your last name"
   ,
   "settings": "Settings"
+  ,
+  "theme": "Theme",
+  "toggleTheme": "Toggle dark/light"
+  ,
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "noNotifications": "No notifications",
+  "failedToLoadNotifications": "Failed to load notifications"
 }
 

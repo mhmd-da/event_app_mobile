@@ -49,4 +49,8 @@ class AppColors {
   static Color mentorshipBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
       ? const Color(0xFFF48FB1).withOpacity(0.22)
       : const Color(0xFFE91E63).withOpacity(0.15);
+
+  static Color othersBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
+      ? const Color(0xD3D3D3D3).withOpacity(0.22)
+      : const Color(0xA9A9A9A9).withOpacity(0.15);
 }

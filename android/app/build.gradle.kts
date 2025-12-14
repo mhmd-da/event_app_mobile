@@ -41,8 +41,8 @@ android {
         }
     }
 
-    // Exclude legacy Java source directory to avoid v1 embedding registrant
-    sourceSets.getByName("main").java.setSrcDirs(listOf("src/main/kotlin"))
+    // Use default source sets so both Java and Kotlin plugin registrants are included
+    // (needed for automatic plugin registration like Firebase Core)
 }
 
 flutter {

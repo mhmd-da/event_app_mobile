@@ -1,5 +1,4 @@
 import 'package:event_app/core/storage/secure_storage_service.dart';
-import 'package:event_app/features/profile/presentation/profile_providers.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'local_notification_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

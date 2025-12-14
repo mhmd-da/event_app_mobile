@@ -1,5 +1,6 @@
 import 'package:event_app/core/storage/secure_storage_service.dart';
 import 'package:event_app/features/auth/presentation/registration_page.dart';
+import 'package:event_app/features/auth/presentation/code_verification_page.dart';
 import 'package:event_app/features/events/presentation/events_providers.dart';
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
@@ -36,6 +37,14 @@ class LoginPage extends ConsumerWidget {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => MainNavigationPage()),
+        );
+      });
+    } else if (loginState.requiresVerification) {
+      Future.microtask(() async {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const CodeVerificationPage(),
+          ),
         );
       });
     }

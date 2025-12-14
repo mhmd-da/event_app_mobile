@@ -1,6 +1,7 @@
 import 'package:event_app/core/notifications/local_notification_service.dart';
 import 'package:event_app/core/notifications/notification_manager.dart';
-import 'package:event_app/features/profile/presentation/profile_providers.dart';
+import 'package:event_app/shared/providers/language_provider.dart';
+import 'package:event_app/shared/providers/theme_provider.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:event_app/startup/startup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +9,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/theme/app_theme.dart';
+import 'package:event_app/core/theme/app_theme.dart';
+import 'package:event_app/shared/providers/language_storage.dart';
+import 'package:event_app/shared/providers/theme_storage.dart';
 
 // Ensure the navigatorKey is globally accessible.
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -22,6 +25,21 @@ void main() async {
   await LocalNotificationService.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  // Load persisted locale and theme before starting app
+  final langCode = await LanguageStorage().loadLocale();
+  if (langCode != null && langCode.isNotEmpty) {
+    container.read(appLocaleProvider.notifier).state = Locale(langCode);
+  }
+  final themeSaved = await ThemeStorage().loadThemeMode();
+  if (themeSaved != null) {
+    final mode = themeSaved == 'dark'
+        ? ThemeMode.dark
+        : themeSaved == 'light'
+            ? ThemeMode.light
+            : ThemeMode.system;
+    container.read(appThemeModeProvider.notifier).state = mode;
+  }
+
   runApp(ProviderScope(parent: container, child: MyApp()));
 }
 
@@ -30,9 +48,8 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(
-      languageProvider,
-    ); // Updated to use languageProvider
+    final locale = ref.watch(appLocaleProvider);
+    final themeMode = ref.watch(appThemeModeProvider);
 
     return MaterialApp(
       navigatorKey: navigatorKey, // Add the navigatorKey here
@@ -46,6 +63,7 @@ class MyApp extends ConsumerWidget {
       ],
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
+      themeMode: themeMode,
       home: const StartUpPage(),
     );
   }

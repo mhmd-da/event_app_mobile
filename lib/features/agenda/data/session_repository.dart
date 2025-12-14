@@ -13,4 +13,12 @@ class SessionRepository extends BaseApiRepository<SessionModel> {
   Future<bool> registerSession(int sessionId) async  => await postData<bool>(AppConfig.registerSession(sessionId), null);
 
   Future<bool> cancelSessionRegistration(int sessionId) async  => await postData<bool>(AppConfig.cancelSessionRegistration(sessionId), null);
+
+  Future<bool> submitFeedback(int sessionId, int rating, String? comment) async {
+    final payload = {
+      'rating': rating,
+      if (comment != null && comment.trim(). isNotEmpty) 'comment': comment.trim(),
+    };
+    return await putData<bool>(AppConfig.submitSessionFeedback(sessionId), payload);
+  }
 }

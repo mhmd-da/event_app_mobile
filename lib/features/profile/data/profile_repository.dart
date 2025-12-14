@@ -26,11 +26,6 @@ class ProfileRepository extends BaseApiRepository<Profile>{
                                                                               "major": profile.major,
                                                                             });
 
-  Future<bool> changeLanguage(String language) async => await putData<bool>(AppConfig.updateProfileLanguage, 
-                                                                            {
-                                                                              "preferredLanguage": language
-                                                                            });
-
   Future<bool> registerDevice(String deviceToken) async => await putData<bool>(AppConfig.registerDevice, 
                                                                             {
                                                                               "token": deviceToken,

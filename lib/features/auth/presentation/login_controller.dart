@@ -1,5 +1,6 @@
 import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/auth/domain/auth_model.dart';
+import 'package:event_app/features/auth/domain/unverified_account_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/storage/secure_storage_service.dart';
 import '../data/auth_repository.dart';
@@ -29,11 +30,24 @@ class LoginController extends StateNotifier<LoginState> {
       final auth = await _repo.login(username, password);
       await _storage.saveAuth(auth);
 
-      state = state.copyWith(isLoading: false, isLoggedIn: true);
+      state = state.copyWith(isLoading: false, isLoggedIn: true, requiresVerification: false);
 
+    } on UnverifiedAccountException catch (e) {
+      if (e.userId != null) {
+        await _storage.saveUserId(e.userId!);
+      }
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
+        requiresVerification: true,
+        isLoggedIn: false,
+      );
     } catch (e) {
       state = state.copyWith(
-          isLoading: false, errorMessage: "Login failed. Check credentials.");
+        isLoading: false,
+        errorMessage: e.toString(),
+        requiresVerification: false,
+      );
     }
   }
 
@@ -50,7 +64,7 @@ class LoginController extends StateNotifier<LoginState> {
 
     } catch (e) {
       state = state.copyWith(
-          isLoading: false, errorMessage: "Login failed. Check credentials.");
+          isLoading: false, errorMessage: e.toString());
     }
   }
 

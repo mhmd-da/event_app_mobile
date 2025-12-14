@@ -15,10 +15,11 @@ class AppConfig {
   static String getSpeakers(String? search) => "/speakers?Search=$search";
 
   // 🔹 Sessions Endpoints
-  static const String getSessionsForAgenda = "/sessions?Category=Panel&Category=Workshop&Category=Roundtable";
+  static const String getSessionsForAgenda = "/sessions";
   static const String getSessionsForMentorship = "/sessions?Category=Mentorship";
   static String registerSession(int sessionId) => "/sessions/$sessionId/register";
   static String cancelSessionRegistration(int sessionId) => "/sessions/$sessionId/cancel";
+  static String submitSessionFeedback(int sessionId) => "/sessions/$sessionId/feedback";
 
   // 🔹 Workshops Endpoints
   static const String getWorkshops = "/workshops";
@@ -38,6 +39,8 @@ class AppConfig {
   // 🔹 Notifications
   static const String getNotifications = "/notifications";
   static const String markNotificationRead = "/notifications/mark-read";
+  static String getNotificationsPaged(int pageIndex, int pageSize) =>
+      "/notifications?pageIndex=$pageIndex&pageSize=$pageSize";
 
   // 🔹 FAQs
   static const String getFaqs = "/faqs";
@@ -45,7 +48,6 @@ class AppConfig {
   // 🔹 FAQs
   static const String getProfile = "/user/profile";
   static const String updateProfile = "/user/profile";
-  static const String updateProfileLanguage = "/user/profile/language";
   static const String registerDevice = "/user/register-device";
 
 }

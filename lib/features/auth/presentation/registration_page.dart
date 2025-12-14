@@ -30,7 +30,6 @@ class RegistrationFormState {
   final String? university;
   final String? department;
   final String? major;
-  final String? preferredLanguage;
   final String? gender;
 
   RegistrationFormState({
@@ -45,7 +44,6 @@ class RegistrationFormState {
     this.university,
     this.department,
     this.major,
-    this.preferredLanguage,
     this.gender,
   });
 
@@ -61,7 +59,6 @@ class RegistrationFormState {
     String? university,
     String? department,
     String? major,
-    String? preferredLanguage,
     String? gender,
   }) {
     return RegistrationFormState(
@@ -76,7 +73,6 @@ class RegistrationFormState {
       university: university ?? this.university,
       department: department ?? this.department,
       major: major ?? this.major,
-      preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       gender: gender ?? this.gender,
     );
   }
@@ -100,9 +96,6 @@ class RegistrationFormController extends StateNotifier<RegistrationFormState> {
       university: field == 'university' ? value : state.university,
       department: field == 'department' ? value : state.department,
       major: field == 'major' ? value : state.major,
-      preferredLanguage: field == 'preferredLanguage'
-          ? value
-          : state.preferredLanguage,
       gender: field == 'gender' ? value : state.gender,
     );
   }
@@ -159,10 +152,17 @@ class PasswordStrengthIndicator extends StatelessWidget {
   }
 }
 
-class RegistrationPage extends ConsumerWidget {
+class RegistrationPage extends ConsumerStatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);
 
-  static final _formKey = GlobalKey<FormState>(); // Moved outside build method
+  @override
+  ConsumerState<RegistrationPage> createState() => _RegistrationPageState();
+}
+
+class _RegistrationPageState extends ConsumerState<RegistrationPage> {
+  final _formKey = GlobalKey<FormState>();
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
 
   InputDecoration _buildInputDecoration(String labelText, String hintText) {
     return InputDecoration(
@@ -173,7 +173,8 @@ class RegistrationPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final formState = ref.watch(registrationFormControllerProvider);
 
     return Scaffold(
@@ -212,7 +213,13 @@ class RegistrationPage extends ConsumerWidget {
                                 child: Text('Mrs.'),
                               ),
                             ], // Ensure these strings are localized
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              ref
+                                  .read(
+                                    registrationFormControllerProvider.notifier,
+                                  )
+                                  .updateField('title', value);
+                            },
                             validator: (value) => value == null
                                 ? AppLocalizations.of(context)!.title
                                 : null,
@@ -335,8 +342,16 @@ class RegistrationPage extends ConsumerWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        suffixIcon: IconButton(
+                          icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: !_passwordVisible,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return AppLocalizations.of(context)!.fieldRequired;
@@ -365,11 +380,26 @@ class RegistrationPage extends ConsumerWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        suffixIcon: IconButton(
+                          icon: Icon(_confirmPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _confirmPasswordVisible = !_confirmPasswordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
-                      validator: (value) => value != null && value != 'password'
-                          ? AppLocalizations.of(context)!.confirmPassword
-                          : null,
+                      obscureText: !_confirmPasswordVisible,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return AppLocalizations.of(context)!.fieldRequired;
+                        }
+                        final pwd = ref.read(registrationFormControllerProvider).password ?? '';
+                        if (value != pwd) {
+                          return AppLocalizations.of(context)!.passwordsDontMatch;
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         ref
                             .read(registrationFormControllerProvider.notifier)
@@ -480,9 +510,6 @@ class RegistrationPage extends ConsumerWidget {
                         .read(registrationFormControllerProvider)
                         .department,
                     'major': ref.read(registrationFormControllerProvider).major,
-                    'preferredLanguage': ref
-                        .read(registrationFormControllerProvider)
-                        .preferredLanguage,
                     'gender': ref
                         .read(registrationFormControllerProvider)
                         .gender,
@@ -509,7 +536,7 @@ class RegistrationPage extends ConsumerWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          AppLocalizations.of(context)!.registrationFailed,
+                          AppLocalizations.of(context)!.registrationFailed + ': ${e.toString()}',
                         ),
                       ),
                     );

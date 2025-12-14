@@ -163,7 +163,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faqs => 'FAQs';
 
   @override
-  String languageUpdated(Object language) {
+  String languageUpdated(String language) {
     return 'Language updated to $language';
   }
 
@@ -214,6 +214,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get poweredBy => 'Powered By';
+
+  @override
+  String get materials => 'Materials';
+
+  @override
+  String get giveFeedback => 'Give Feedback';
+
+  @override
+  String get sessionFeedbackTitle => 'Session Feedback';
+
+  @override
+  String get feedbackHint => 'Write your feedback (optional)';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get pleaseSelectRating => 'Please select a rating';
 
   @override
   String get addToAgenda => 'Add to Agenda';
@@ -339,6 +357,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weakPassword => 'Password is too weak.';
 
   @override
+  String get passwordsDontMatch => 'Passwords don\'t match.';
+
+  @override
   String get registrationFailed => 'Registration failed. Please try again.';
 
   @override
@@ -349,4 +370,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get toggleTheme => 'Toggle dark/light';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get noNotifications => 'No notifications';
+
+  @override
+  String get failedToLoadNotifications => 'Failed to load notifications';
 }

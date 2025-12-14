@@ -1,5 +1,1 @@
-package com.event.app
-
-import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity : FlutterActivity()
+// Deprecated file path. Use com.event.app/MainActivity.kt instead.

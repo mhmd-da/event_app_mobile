@@ -163,7 +163,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get faqs => 'الأسئلة الشائعة';
 
   @override
-  String languageUpdated(Object language) {
+  String languageUpdated(String language) {
     return 'تم تحديث اللغة إلى $language';
   }
 
@@ -214,6 +214,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get poweredBy => 'برعاية';
+
+  @override
+  String get materials => 'المواد';
+
+  @override
+  String get giveFeedback => 'أرسل رأيك';
+
+  @override
+  String get sessionFeedbackTitle => 'ملاحظات الجلسة';
+
+  @override
+  String get feedbackHint => 'اكتب رأيك (اختياري)';
+
+  @override
+  String get submit => 'إرسال';
+
+  @override
+  String get pleaseSelectRating => 'يرجى اختيار تقييم';
 
   @override
   String get addToAgenda => 'أضف إلى الأجندة';
@@ -303,7 +321,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get verificationCode => 'رمز التحقق';
 
   @override
-  String get verifyButton => 'تأكيد';
+  String get verifyButton => 'تحقق';
 
   @override
   String get gender => 'الجنس';
@@ -339,6 +357,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get weakPassword => 'كلمة المرور ضعيفة للغاية.';
 
   @override
+  String get passwordsDontMatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
   String get registrationFailed => 'فشل التسجيل. يرجى المحاولة مرة أخرى.';
 
   @override
@@ -349,4 +370,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settings => 'الإعدادات';
+
+  @override
+  String get theme => 'السمة';
+
+  @override
+  String get toggleTheme => 'تبديل الوضع الداكن/الفاتح';
+
+  @override
+  String get themeSystem => 'النظام';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String get noNotifications => 'لا توجد إشعارات';
+
+  @override
+  String get failedToLoadNotifications => 'فشل تحميل الإشعارات';
 }

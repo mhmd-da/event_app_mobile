@@ -14,6 +14,7 @@ class SessionModel extends BaseModel {
   final List<Person> mentors;
   final List<Sponsor> sponsors;
   final List<Partner> partners;
+  final List<SessionMaterial> materials;
 
   SessionModel({
     required this.id,
@@ -29,6 +30,7 @@ class SessionModel extends BaseModel {
     required this.mentors,
     required this.sponsors,
     required this.partners,
+    required this.materials,
   });
 
   factory SessionModel.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,10 @@ class SessionModel extends BaseModel {
           [],
       partners: (json['partners' ] as List?)
           ?.map((p) => Partner.fromJson(p))
+          .toList() ??
+          [],
+      materials: (json['materials'] as List?)
+          ?.map((m) => SessionMaterial.fromJson(m))
           .toList() ??
           [],
     );
@@ -104,6 +110,22 @@ class Partner {
     return Partner(
       name: json['name'] ?? '',
       logoUrl: json['logoUrl'] ?? '',
+    );
+  }
+}
+
+class SessionMaterial {
+  final String name;
+  final String url;
+  final String type;
+
+  SessionMaterial({required this.name, required this.url, required this.type});
+
+  factory SessionMaterial.fromJson(Map<String, dynamic> json) {
+    return SessionMaterial(
+      name: json['name'] ?? '',
+      url: json['url'] ?? '',
+      type: json['type'] ?? '',
     );
   }
 }

@@ -17,23 +17,3 @@ final profileProvider = FutureProvider<Profile>((ref) async {
 final updateProfileProvider = FutureProvider.family<void, UpdateProfile>((ref, profile) async {
   await ref.watch(profileRepositoryProvider).updateProfile(profile);
 });
-
-final changeLanguageProvider = FutureProvider.family<bool, String>((ref, language) async {
-  return ref.watch(profileRepositoryProvider).changeLanguage(language);
-});
-
-final languageProvider = StateNotifierProvider<LanguageController, Locale>((ref) {
-  return LanguageController();
-});
-
-class LanguageController extends StateNotifier<Locale> {
-  LanguageController() : super(const Locale('en'));
-
-  void setLanguage(String languageCode) {
-    if (languageCode == 'ar') {
-      state = const Locale('ar');
-    } else {
-      state = const Locale('en');
-    }
-  }
-}

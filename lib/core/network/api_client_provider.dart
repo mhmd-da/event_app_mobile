@@ -1,6 +1,4 @@
 import 'package:event_app/core/network/api_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
-});
+final apiClientProvider = Provider<ApiClient>((ref) => ApiClient(ref));

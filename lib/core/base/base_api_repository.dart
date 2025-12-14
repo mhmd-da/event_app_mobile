@@ -56,7 +56,7 @@ class BaseApiRepository<T extends BaseModel> {
   Future<TH> postDataGeneric<TH>(
     String endpoint,
     Map<String, dynamic>? data,
-    TH Function(Map<String, dynamic>) fromJson,
+    TH Function(Map<String, dynamic>) fromJson
   ) async {
     final response = await _apiClient.client.post(endpoint, data: data);
 

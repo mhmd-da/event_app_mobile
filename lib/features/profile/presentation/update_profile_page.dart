@@ -23,11 +23,12 @@ class UpdateProfilePage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Update Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: Column(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: formKey,
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
@@ -97,6 +98,7 @@ class UpdateProfilePage extends ConsumerWidget {
                 ],
               ),
             ],
+            ),
           ),
         ),
       ),

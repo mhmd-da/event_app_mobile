@@ -408,7 +408,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Language updated to {language}'**
-  String languageUpdated(Object language);
+  String languageUpdated(String language);
 
   /// No description provided for @languageUpdateFailed.
   ///
@@ -505,6 +505,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Powered By'**
   String get poweredBy;
+
+  /// No description provided for @materials.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get materials;
+
+  /// No description provided for @giveFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Give Feedback'**
+  String get giveFeedback;
+
+  /// No description provided for @sessionFeedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Feedback'**
+  String get sessionFeedbackTitle;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your feedback (optional)'**
+  String get feedbackHint;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @pleaseSelectRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a rating'**
+  String get pleaseSelectRating;
 
   /// No description provided for @addToAgenda.
   ///
@@ -752,6 +788,12 @@ abstract class AppLocalizations {
   /// **'Password is too weak.'**
   String get weakPassword;
 
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match.'**
+  String get passwordsDontMatch;
+
   /// No description provided for @registrationFailed.
   ///
   /// In en, this message translates to:
@@ -775,6 +817,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @toggleTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle dark/light'**
+  String get toggleTheme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications'**
+  String get noNotifications;
+
+  /// No description provided for @failedToLoadNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load notifications'**
+  String get failedToLoadNotifications;
 }
 
 class _AppLocalizationsDelegate
