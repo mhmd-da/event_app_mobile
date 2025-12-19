@@ -9,7 +9,7 @@ class AuthRepository extends BaseApiRepository<AuthModel> {
     final ApiClient _apiClient;
 
     AuthRepository(this._apiClient)
-      : super(_apiClient, (json) => AuthModel.fromJson(json));
+      : super(_apiClient, fromJson: (json) => AuthModel.fromJson(json));
 
   Future<AuthModel> login(String username, String password) async {
     final response = await _apiClient.client.post(AppConfig.login, data: {
@@ -33,7 +33,7 @@ class AuthRepository extends BaseApiRepository<AuthModel> {
       throw (response.data["message"] ?? 'Something went wrong');
     }
 
-    return fromJson(response.data["data"]);
+    return fromJson!(response.data["data"]);
   }
 
   Future<RegistrationResponse> register(Map<String, dynamic> formData) async => postDataGeneric<RegistrationResponse>(AppConfig.register, formData, (json) => RegistrationResponse.fromJson(json));

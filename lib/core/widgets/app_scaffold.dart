@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared/global_loading.dart';
 import '../../features/settings/presentation/settings_page.dart';
-import '../../features/events/presentation/events_page.dart';
-import '../theme/app_spacing.dart';
 import '../theme/app_colors.dart';
 
 class AppScaffold extends ConsumerWidget {
@@ -99,25 +97,25 @@ class AppScaffold extends ConsumerWidget {
                     );
                   },
                 ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.event_available_outlined,
-                    color: Colors.white,
-                  ),
-                  tooltip: "Change Event",
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const EventsPage()),
-                    );
-                  },
-                ),
+                // IconButton(
+                //   icon: const Icon(
+                //     Icons.event_available_outlined,
+                //     color: Colors.white,
+                //   ),
+                //   tooltip: "Change Event",
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (_) => const EventsPage()),
+                //     );
+                //   },
+                // ),
               ],
             ),
 
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.page),
+        // child: Padding(
+        //   padding: const EdgeInsets.all(AppSpacing.page),
           child: Stack(
             children: [
               body,
@@ -136,7 +134,7 @@ class AppScaffold extends ConsumerWidget {
                 ),
             ],
           ),
-        ),
+        // ),
       ),
       drawer: drawer,
       bottomNavigationBar: bottomNavigationBar,

@@ -11,15 +11,35 @@ import 'package:collection/collection.dart';
 import '../../../core/theme/app_text_styles.dart';
 
 class AgendaPage extends ConsumerWidget {
-  const AgendaPage({super.key});
+  const AgendaPage({super.key, this.category});
+
+  final String? category;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionsAsync = ref.watch(sessionsForAgendaListProvider);
+    final sessionsAsync = ref.watch(sessionsForAgendaListProvider(category));
     final groupingMethod = ref.watch(groupingMethodProvider);
     final selectedDate = ref.watch(selectedAgendaDateProvider);
 
+    String? appTitle;
+    if (category != null) {
+      switch (category) { 
+        case 'WORKSHOP':
+          appTitle = AppLocalizations.of(context)!.workshops;
+          break;
+        case 'ROUNDTABLE':
+          appTitle = AppLocalizations.of(context)!.roundtables;
+          break;
+        case 'MENTORSHIP':
+          appTitle = AppLocalizations.of(context)!.mentorship;
+          break;
+        default:
+          appTitle = AppLocalizations.of(context)!.agenda;
+      }
+    }
+
     return AppScaffold(
+      title: appTitle,
       body: sessionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
@@ -43,8 +63,18 @@ class AgendaPage extends ConsumerWidget {
             (s) => DateFormat('EEE d').format(s.startTime.toLocal()),
           );
           final dateTabs = groupedSessions.keys.toList();
+
+          // Ensure a default selection: first date tab when opening the page
+          final effectiveSelectedDate = selectedDate ?? (dateTabs.isNotEmpty ? dateTabs.first : null);
+          if (selectedDate == null && effectiveSelectedDate != null) {
+            // Defer provider update to avoid modifying provider during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ref.read(selectedAgendaDateProvider.notifier).state = effectiveSelectedDate;
+            });
+          }
+
           final groupingTabs =
-              groupedSessions[selectedDate]
+              groupedSessions[effectiveSelectedDate]
                   ?.map(
                     (s) => groupingMethod == 'track'
                         ? s.track
@@ -61,8 +91,12 @@ class AgendaPage extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  DateTabs(dates: dateTabs, selectedDateProvider: selectedAgendaDateProvider),
-                  const SizedBox(height: 10),
+                  Expanded(
+                    child: DateTabs(
+                      dates: dateTabs,
+                      selectedDateProvider: selectedAgendaDateProvider,
+                    ),
+                  ),
                   IconButton(
                     icon: Icon(Icons.filter_list),
                     onPressed: () async {
@@ -125,8 +159,8 @@ class AgendaPage extends ConsumerWidget {
                         Expanded(
                           child: TabBarView(
                             children: groupingTabs.map((tab) {
-                              final sessionsForTab =
-                                  groupedSessions[selectedDate]
+                                final sessionsForTab =
+                                  groupedSessions[effectiveSelectedDate]
                                       ?.where(
                                         (s) =>
                                             (groupingMethod == 'track' &&
@@ -153,7 +187,7 @@ class AgendaPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children:
-                        groupedSessions[selectedDate]
+                        groupedSessions[effectiveSelectedDate]
                             ?.map((s) => SessionTile(session: s, onTapWidgetBuilder: (_) => SessionDetailsPage(session: s)))
                             .toList() ??
                         [],

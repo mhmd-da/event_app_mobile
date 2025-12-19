@@ -1,4 +1,5 @@
 import 'package:event_app/core/theme/app_spacing.dart';
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/core/widgets/image_card.dart';
 import 'package:event_app/core/widgets/search_bar.dart';
 import 'package:event_app/features/speakers/presentation/speaker_details_page.dart';
@@ -18,8 +19,8 @@ class SpeakersPage extends ConsumerWidget {
     final speakersAsync = ref.watch(speakersListProvider);
     final searchText = ref.watch(speakerSearchTextProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.speakers)),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.speakers,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

@@ -1,3 +1,4 @@
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/features/speakers/domain/speaker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
@@ -8,8 +9,8 @@ class SpeakerDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.speakers)),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.speakers,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

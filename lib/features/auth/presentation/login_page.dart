@@ -6,6 +6,7 @@ import 'package:event_app/features/events/presentation/state/selected_event_prov
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
 import 'package:event_app/main_navigation/main_navigation_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'login_controller.dart';
@@ -29,7 +30,14 @@ class LoginPage extends ConsumerWidget {
 
         ref.read(selectedEventProvider.notifier).state = event;
 
-        final fcmToken = await storage.getFcmToken();
+        var fcmToken = await storage.getFcmToken();
+        if (fcmToken == null) {
+          // Fetch a fresh token if not in storage (e.g., after logout)
+          fcmToken = await FirebaseMessaging.instance.getToken();
+          if (fcmToken != null) {
+            await storage.saveFcmToken(fcmToken);
+          }
+        }
         if (fcmToken != null) {
           ref.read(profileRepositoryProvider).registerDevice(fcmToken);
         }

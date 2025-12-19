@@ -67,6 +67,10 @@ class SecureStorageService {
   }
 
   Future<void> clear() async {
-    await storage.deleteAll();
+    // Clear only authentication-related keys; keep FCM token so we can re-register after login
+    await storage.delete(key: "token");
+    await storage.delete(key: "expiry");
+    await storage.delete(key: "event_id");
+    await storage.delete(key: "user_id");
   }
 }

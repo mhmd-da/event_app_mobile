@@ -25,8 +25,9 @@ class LocalNotificationService {
       ),
     );
 
+    final id = DateTime.now().millisecondsSinceEpoch & 0x7fffffff;
     _plugin.show(
-      0,
+      id,
       title,
       body,
       details,

@@ -1,13 +1,26 @@
 import 'package:event_app/features/speakers/data/speaker_repository.dart';
 import 'package:event_app/features/speakers/domain/speaker_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/api_client_provider.dart';
+part 'speaker_providers.g.dart';
 
-final speakerRepositoryProvider = Provider<SpeakerRepository>((ref) {
+// Repository as a generated provider (singleton)
+@riverpod
+SpeakerRepository speakerRepository(SpeakerRepositoryRef ref) {
   return SpeakerRepository(ref.watch(apiClientProvider));
-});
+}
 
-final speakersListProvider = FutureProvider<List<SpeakerModel>>((ref) async {
+// Existing non-parameterized list (backward-compatible)
+@riverpod
+Future<List<SpeakerModel>> speakersList(SpeakersListRef ref) async {
   return ref.watch(speakerRepositoryProvider).getSpeakers('');
-});
+}
+
+// Parameterized (family) provider for search
+@riverpod
+Future<List<SpeakerModel>> speakersListBySearch(
+  SpeakersListBySearchRef ref,
+  String? search,
+) async {
+  return ref.watch(speakerRepositoryProvider).getSpeakers(search);
+}

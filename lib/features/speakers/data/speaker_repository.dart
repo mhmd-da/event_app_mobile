@@ -6,7 +6,7 @@ import 'package:event_app/features/speakers/domain/speaker_model.dart';
 class SpeakerRepository extends BaseApiRepository<SpeakerModel>{
 
     SpeakerRepository(ApiClient client)
-      : super(client, (json) => SpeakerModel.fromJson(json));
+      : super(client, fromJson: (json) => SpeakerModel.fromJson(json));
 
   Future<List<SpeakerModel>> getSpeakers(String? search) async => await fetchList(AppConfig.getSpeakers(search)); 
 

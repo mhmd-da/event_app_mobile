@@ -146,5 +146,35 @@
   "themeDark": "Dark",
   "noNotifications": "No notifications",
   "failedToLoadNotifications": "Failed to load notifications"
-}
+  ,
+  "reminder": "Reminder",
+  "noReminderSet": "No reminder set",
+  "alertMeBefore": "Alert me before",
+  "disableReminder": "Disable reminder",
+  "minutesBefore": "{minutes} minutes before",
+  "@minutesBefore": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "description": "Number of minutes before the session to alert"
+      }
+    }
+  },
+  "contactFormTitle": "Contact Us",
+  "contactCategory": "Category",
+  "contactSubject": "Subject",
+  "contactMessage": "Message",
+  "contactSubmit": "Send",
+  "contactSuccess": "Your message has been sent",
+  "contactError": "Failed to send message",
+  "category_GENERAL": "General",
+  "category_TECHNICAL_ISSUE": "Technical Issue",
+  "category_SESSION_QUESTION": "Session Question",
+  "category_VENUE_ACCESS": "Venue Access",
+  "category_FEEDBACK": "Feedback",
+  "category_OTHER": "Other",
+  "type": "Type",
+  "openWebsite": "Open Website",
+  "category": "Category"
 
+}

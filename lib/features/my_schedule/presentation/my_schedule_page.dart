@@ -1,4 +1,5 @@
 import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:event_app/features/my_schedule/presentation/my_schedule_providers.dart';
 import 'package:event_app/features/my_schedule/presentation/widgets/my_schedule_calendar_widget.dart';
@@ -14,25 +15,7 @@ class MySchedulePage extends ConsumerWidget {
     final scheduleAsync = ref.watch(myScheduleProvider);
     final viewMode = ref.watch(scheduleViewModeProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.mySchedule),
-        actions: [
-          IconButton(
-            icon: Icon(
-              viewMode == ScheduleViewMode.calendar
-                  ? Icons.view_agenda_rounded
-                  : Icons.calendar_today_rounded,
-            ),
-            onPressed: () {
-              ref.read(scheduleViewModeProvider.notifier).state =
-              viewMode == ScheduleViewMode.calendar
-                  ? ScheduleViewMode.list
-                  : ScheduleViewMode.calendar;
-            },
-          ),
-        ],
-      ),
+    return AppScaffold(
       body: scheduleAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) =>

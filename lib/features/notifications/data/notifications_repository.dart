@@ -6,7 +6,7 @@ import '../domain/notification_model.dart';
 class NotificationsRepository extends BaseApiRepository<AppNotification>{
   
     NotificationsRepository(ApiClient client)
-      : super(client, (json) => AppNotification.fromJson(json));
+      : super(client, fromJson: (json) => AppNotification.fromJson(json));
 
   Future<List<AppNotification>> getNotifications() async => await fetchList(AppConfig.getNotifications); 
 

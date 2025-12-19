@@ -8,7 +8,7 @@ import '../domain/event_details_model.dart';
 class EventsRepository extends BaseApiRepository<EventModel>{
 
     EventsRepository(ApiClient client)
-      : super(client, (json) => EventModel.fromJson(json));
+      : super(client, fromJson: (json) => EventModel.fromJson(json));
 
   Future<List<EventModel>> getEvents() async => await fetchList(AppConfig.getEvents);
 

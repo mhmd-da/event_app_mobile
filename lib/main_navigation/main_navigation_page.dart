@@ -1,5 +1,5 @@
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
-import 'package:event_app/features/sessions/presentation/sessions_page.dart';
+import 'package:event_app/features/my_schedule/presentation/my_schedule_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +25,7 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
   final pages = [
     const HomePage(),
     const AgendaPage(),
-    const SessionsPage(),
+    const MySchedulePage(),
     const ProfilePage(),
   ];
 
@@ -79,8 +79,8 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
             label: AppLocalizations.of(context)!.agenda,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.workspaces_rounded),
-            label: AppLocalizations.of(context)!.sessions,
+            icon: const Icon(Icons.schedule_rounded),
+            label: AppLocalizations.of(context)!.mySchedule,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person_rounded),
@@ -99,13 +99,13 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
   String _titleForIndex(int index) {
     switch (index) {
       case 0:
-        return "Home";
+        return AppLocalizations.of(context)!.home;
       case 1:
-        return "Agenda";
+        return AppLocalizations.of(context)!.agenda;
       case 2:
-        return "Workshops";
+        return AppLocalizations.of(context)!.mySchedule;
       case 3:
-        return "Profile";
+        return AppLocalizations.of(context)!.profile;
       default:
         return "";
     }

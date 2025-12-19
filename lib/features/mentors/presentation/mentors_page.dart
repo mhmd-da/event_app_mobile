@@ -1,4 +1,5 @@
 import 'package:event_app/core/theme/app_spacing.dart';
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/core/widgets/image_card.dart';
 import 'package:event_app/core/widgets/search_bar.dart';
 import 'package:event_app/features/mentors/presentation/mentor_details_page.dart';
@@ -18,8 +19,8 @@ class MentorsPage extends ConsumerWidget {
     final mentorsAsync = ref.watch(mentorsListProvider);
     final searchText = ref.watch(mentorSearchTextProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.mentors)),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.mentors,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

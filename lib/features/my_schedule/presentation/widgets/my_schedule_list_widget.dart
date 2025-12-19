@@ -1,12 +1,12 @@
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
-import 'package:event_app/features/my_schedule/domain/my_schedule_model.dart';
+import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class MyScheduleListWidget extends StatelessWidget {
-  final List<MyScheduleModel> sessions;
+  final List<SessionModel> sessions;
 
   const MyScheduleListWidget(this.sessions, {super.key});
 
@@ -19,7 +19,7 @@ class MyScheduleListWidget extends StatelessWidget {
     }
 
     // --- Group by day ---
-    final Map<String, List<MyScheduleModel>> grouped = {};
+    final Map<String, List<SessionModel>> grouped = {};
 
     for (var s in sessions) {
       final dayKey = DateFormat("EEEE, MMM d").format(s.startTime);
@@ -53,7 +53,7 @@ class MyScheduleListWidget extends StatelessWidget {
 
 class _DaySection extends StatelessWidget {
   final String dayLabel;
-  final List<MyScheduleModel> sessions;
+  final List<SessionModel> sessions;
 
   const _DaySection({
     required this.dayLabel,
@@ -84,7 +84,7 @@ class _DaySection extends StatelessWidget {
 }
 
 class _ListSessionRow extends StatelessWidget {
-  final MyScheduleModel session;
+  final SessionModel session;
 
   const _ListSessionRow(this.session);
 
@@ -129,7 +129,7 @@ class _ListSessionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  session.sessionName ?? "",
+                  session.name ?? "",
                   style: AppTextStyles.bodyMedium,
                 ),
                 const SizedBox(height: 4),
@@ -150,10 +150,10 @@ class _ListSessionRow extends StatelessWidget {
                 ),
 
                 // Speakers / Mentors
-                if (session.speakersOrMentors.isNotEmpty) ...[
+                if (session.speakers.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Row(
-                    children: session.speakersOrMentors.take(3).map((p) {
+                    children: session.speakers.take(3).map((p) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: CircleAvatar(

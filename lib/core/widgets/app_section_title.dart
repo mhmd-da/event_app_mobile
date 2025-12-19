@@ -19,7 +19,7 @@ class AppSectionTitle extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: textTheme.titleMedium),
+        Expanded(child: Text(title, style: textTheme.titleLarge, textAlign: TextAlign.center)),
         if (actionText != null && onActionTap != null)
           TextButton(
             onPressed: onActionTap,

@@ -1,5 +1,6 @@
 import 'package:event_app/core/utilities/session_category_helper.dart';
-import 'package:event_app/features/my_schedule/domain/my_schedule_model.dart';
+import 'package:event_app/features/agenda/presentation/session_details_page.dart';
+import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:calendar_view/calendar_view.dart';
@@ -18,7 +19,10 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
     return sessionsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, st) => Center(
-        child: Text(AppLocalizations.of(context)!.errorLoadingSchedule, style: AppTextStyles.bodyMedium),
+        child: Text(
+          AppLocalizations.of(context)!.errorLoadingSchedule,
+          style: AppTextStyles.bodyMedium,
+        ),
       ),
       data: (sessions) {
         final events = sessions.map((s) {
@@ -26,7 +30,7 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
             date: s.startTime,
             startTime: s.startTime,
             endTime: s.endTime,
-            title: s.sessionName ?? '',
+            title: s.name ?? '',
             description: s.location,
             event: s,
           );
@@ -77,12 +81,12 @@ class _CalendarContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DayView(
-      initialDay: initialDay,     // 👈 Scroll to this date automatically
-      startHour: startHour,    // 👈 show hours starting 9 AM
-      endHour: endHour,     // 👈 end at 5 PM
+      initialDay: initialDay, // 👈 Scroll to this date automatically
+      startHour: startHour, // 👈 show hours starting 9 AM
+      endHour: endHour, // 👈 end at 5 PM
       eventTileBuilder: (date, events, boundary, start, end) {
         return _eventCardBuilder(
-          context,     // 👈 YOU PASS IT
+          context, // 👈 YOU PASS IT
           date,
           events,
           boundary,
@@ -104,146 +108,171 @@ class _CalendarContent extends StatelessWidget {
 }
 
 Widget _eventCardBuilder(
-    BuildContext context,
-    DateTime date,
-    List<CalendarEventData> events,
-    Rect boundary,
-    DateTime startDuration,
-    DateTime endDuration
-    ) {
+  BuildContext context,
+  DateTime date,
+  List<CalendarEventData> events,
+  Rect boundary,
+  DateTime startDuration,
+  DateTime endDuration,
+) {
   final event = events.first;
-  final MyScheduleModel? session = event.event as MyScheduleModel?;
+  final SessionModel? session = event.event as SessionModel?;
 
   // --- Color based on type ---
-  final baseColor = SessionCategoryHelper.getCategoryColor(context, session!.type);
+  final baseColor = SessionCategoryHelper.getCategoryColor(
+    context,
+    session!.category,
+  );
 
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(12),
-    child: Container(
-      decoration: BoxDecoration(
-        color: baseColor.withOpacity(0.10),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // --- Left colored bar ---
-          Container(
-            width: 4,
-            decoration: BoxDecoration(
-              color: baseColor,
-              borderRadius: BorderRadius.circular(8),
+  void _openDetails() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => SessionDetailsPage(session: session!)),
+    );
+  }
+
+  return GestureDetector(
+    onTap: _openDetails,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(color: baseColor.withOpacity(0.10)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // --- Left colored bar ---
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: baseColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 8),
 
-          // --- Main content (scrollable to avoid overflow) ---
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // prevent flex overflow
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title + type chip
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          event.title,
-                          style: AppTextStyles.bodyMedium,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (session?.type.isNotEmpty == true) ...[
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: baseColor.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            session!.type,
-                            style: AppTextStyles.bodySmall,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  // Time row
-                  if (event.startTime != null && event.endTime != null)
+            // --- Main content (scrollable to avoid overflow) ---
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // prevent flex overflow
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title + type chip
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.access_time, size: 14),
-                        const SizedBox(width: 4),
-                        Flexible(
+                        Expanded(
                           child: Text(
-                            "${DateFormat('HH:mm').format(event.startTime!)} - "
-                                "${DateFormat('HH:mm').format(event.endTime!)}",
-                            style: AppTextStyles.bodySmall,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                  // Location row
-                  if (event.description != null &&
-                      event.description!.trim().isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on_outlined, size: 14),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            event.description!,
-                            style: AppTextStyles.bodySmall,
+                            event.title,
+                            style: AppTextStyles.bodyMedium,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        if (session?.category.isNotEmpty == true) ...[
+                          const SizedBox(width: 6),
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: baseColor.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  session!.category,
+                                  style: AppTextStyles.bodySmall,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
-                  ],
 
-                  // Speakers row (avatars)
-                  if (session != null &&
-                      session.speakersOrMentors.isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        const Icon(Icons.person_outline, size: 14),
-                        const SizedBox(width: 4),
-                        ...session.speakersOrMentors
-                            .take(3)
-                            .map((p) => Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: CircleAvatar(
-                            radius: 10,
-                            backgroundImage:
-                            NetworkImage(p.profileImageUrl),
+                    const SizedBox(height: 4),
+
+                    // Time row
+                    if (event.startTime != null && event.endTime != null)
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time, size: 14),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              "${DateFormat('HH:mm').format(event.startTime!)} - "
+                              "${DateFormat('HH:mm').format(event.endTime!)}",
+                              style: AppTextStyles.bodySmall,
+                            ),
                           ),
-                        )),
-                        if (session.speakersOrMentors.length > 3)
-                          Text(
-                            "+${session.speakersOrMentors.length - 3}",
-                            style: AppTextStyles.bodySmall,
+                        ],
+                      ),
+
+                    // Location row
+                    if (event.description != null &&
+                        event.description!.trim().isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on_outlined, size: 14),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              event.description!,
+                              style: AppTextStyles.bodySmall,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
+
+                    // Speakers row (avatars)
+                    if (session != null && session.speakers.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(Icons.person_outline, size: 14),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Wrap(
+                              spacing: 4,
+                              runSpacing: 2,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                ...session.speakers
+                                    .take(3)
+                                    .map(
+                                      (p) => CircleAvatar(
+                                        radius: 10,
+                                        backgroundImage: NetworkImage(
+                                          p.profileImageUrl,
+                                        ),
+                                      ),
+                                    ),
+                                  if (session.speakers.length > 3)
+                                  Text(
+                                      "+${session.speakers.length - 3}",
+                                    style: AppTextStyles.bodySmall,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );

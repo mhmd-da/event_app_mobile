@@ -391,4 +391,69 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failedToLoadNotifications => 'فشل تحميل الإشعارات';
+
+  @override
+  String get reminder => 'تذكير';
+
+  @override
+  String get noReminderSet => 'لا يوجد تذكير';
+
+  @override
+  String get alertMeBefore => 'نبّهني قبل';
+
+  @override
+  String get disableReminder => 'إيقاف التذكير';
+
+  @override
+  String minutesBefore(int minutes) {
+    return 'قبل $minutes دقيقة';
+  }
+
+  @override
+  String get contactFormTitle => 'اتصل بنا';
+
+  @override
+  String get contactCategory => 'الفئة';
+
+  @override
+  String get contactSubject => 'الموضوع';
+
+  @override
+  String get contactMessage => 'الرسالة';
+
+  @override
+  String get contactSubmit => 'إرسال';
+
+  @override
+  String get contactSuccess => 'تم إرسال رسالتك';
+
+  @override
+  String get contactError => 'فشل إرسال الرسالة';
+
+  @override
+  String get category_GENERAL => 'عام';
+
+  @override
+  String get category_TECHNICAL_ISSUE => 'مشكلة تقنية';
+
+  @override
+  String get category_SESSION_QUESTION => 'سؤال عن الجلسة';
+
+  @override
+  String get category_VENUE_ACCESS => 'الوصول للموقع';
+
+  @override
+  String get category_FEEDBACK => 'ملاحظات';
+
+  @override
+  String get category_OTHER => 'أخرى';
+
+  @override
+  String get type => 'النوع';
+
+  @override
+  String get openWebsite => 'افتح الموقع';
+
+  @override
+  String get category => 'الفئة';
 }

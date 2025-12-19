@@ -9,7 +9,7 @@ import 'package:event_app/features/mentorship/domain/mentorship_details_model.da
 class MentorshipRepository extends BaseApiRepository<MentorshipDetailsModel> {
 
     MentorshipRepository(ApiClient client)
-      : super(client, (json) => MentorshipDetailsModel.fromJson(json));
+      : super(client, fromJson: (json) => MentorshipDetailsModel.fromJson(json));
 
   Future<List<SessionModel>> getSessionsForMentorship() async => await fetchListGeneric<SessionModel>(AppConfig.getSessionsForMentorship, (json) => SessionModel.fromJson(json)); 
 

@@ -151,4 +151,34 @@
   "themeDark": "داكن",
   "noNotifications": "لا توجد إشعارات",
   "failedToLoadNotifications": "فشل تحميل الإشعارات"
+  ,
+  "reminder": "تذكير",
+  "noReminderSet": "لا يوجد تذكير",
+  "alertMeBefore": "نبّهني قبل",
+  "disableReminder": "إيقاف التذكير",
+  "minutesBefore": "قبل {minutes} دقيقة",
+  "@minutesBefore": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "description": "عدد الدقائق قبل الجلسة للتنبيه"
+      }
+    }
+  },
+  "contactFormTitle": "اتصل بنا",
+  "contactCategory": "الفئة",
+  "contactSubject": "الموضوع",
+  "contactMessage": "الرسالة",
+  "contactSubmit": "إرسال",
+  "contactSuccess": "تم إرسال رسالتك",
+  "contactError": "فشل إرسال الرسالة",
+  "category_GENERAL": "عام",
+  "category_TECHNICAL_ISSUE": "مشكلة تقنية",
+  "category_SESSION_QUESTION": "سؤال عن الجلسة",
+  "category_VENUE_ACCESS": "الوصول للموقع",
+  "category_FEEDBACK": "ملاحظات",
+  "category_OTHER": "أخرى",
+  "type": "النوع",
+  "openWebsite": "افتح الموقع",
+  "category": "الفئة"
 }

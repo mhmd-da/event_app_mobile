@@ -1,3 +1,4 @@
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_providers.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,8 @@ class MentorshipTimeSlotsPage extends ConsumerWidget {
       mentorshipSessionsProvider(sessionId),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.mentorshipTimeSlots),
-      ),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.mentorshipTimeSlots,
       body: mentorshipDetailsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(

@@ -10,7 +10,7 @@ import '../domain/profile_model.dart';
 class ProfileRepository extends BaseApiRepository<Profile>{
 
     ProfileRepository(ApiClient client)
-      : super(client, (json) => Profile.fromJson(json));
+      : super(client, fromJson: (json) => Profile.fromJson(json));
 
   Future<Profile> getProfile() async => await fetchSingle(AppConfig.getProfile);
 
@@ -30,5 +30,10 @@ class ProfileRepository extends BaseApiRepository<Profile>{
                                                                             {
                                                                               "token": deviceToken,
                                                                               "platform": Platform.operatingSystem
+                                                                            });
+
+  Future<bool> unregisterDevice(String deviceToken) async => await putData<bool>(AppConfig.unregisterDevice,
+                                                                            {
+                                                                              "token": deviceToken,
                                                                             });
 }

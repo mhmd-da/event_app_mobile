@@ -1,13 +1,13 @@
 import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/core/config/app_config.dart';
 import 'package:event_app/core/network/api_client.dart';
-import 'package:event_app/features/my_schedule/domain/my_schedule_model.dart';
+import 'package:event_app/features/agenda/domain/session_model.dart';
 
-class MyScheduleRepository extends BaseApiRepository<MyScheduleModel>{
+class MyScheduleRepository extends BaseApiRepository<SessionModel>{
 
     MyScheduleRepository(ApiClient client)
-      : super(client, (json) => MyScheduleModel.fromJson(json));
+      : super(client, fromJson: (json) => SessionModel.fromJson(json));
 
-  Future<List<MyScheduleModel>> getMySchedule() async => await fetchList(AppConfig.getMySchedule); 
+  Future<List<SessionModel>> getMySchedule() async => await fetchList(AppConfig.getMySchedule); 
 
 }

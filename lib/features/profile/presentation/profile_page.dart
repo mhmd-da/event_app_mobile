@@ -72,7 +72,7 @@ class ProfilePage extends ConsumerWidget {
                 children: [
                   Container(
                     height:
-                        200, // Kept the original height of the blue container
+                        150, // Kept the original height of the blue container
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -94,10 +94,9 @@ class ProfilePage extends ConsumerWidget {
                   ),
                   Positioned(
                     top:
-                        150, // Positioned the image to overlap the blue container
+                        100, // Positioned the image to overlap the blue container
                     left:
-                        MediaQuery.of(context).size.width / 2 -
-                        95, // Centered the image
+                        25,  // Centered the image
                     child: CircleAvatar(
                       radius: 70, // Kept the image size consistent
                       backgroundImage: profile.profileImageUrl != null

@@ -1,3 +1,4 @@
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,8 +42,8 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(notificationsControllerProvider);
-    return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.notifications)),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.notifications,
       body: state.items.isEmpty && state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : state.items.isEmpty

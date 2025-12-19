@@ -1,6 +1,7 @@
 import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,8 @@ class SessionDetailsPage extends ConsumerWidget {
       sessionRegistrationStateProvider(session),
     );
 
-    return Scaffold(
-      appBar: AppBar(title: Text(session.name ?? '')),
+    return AppScaffold(
+      title: session.name ?? '',
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.page),
         child: Column(
@@ -34,7 +35,7 @@ class SessionDetailsPage extends ConsumerWidget {
             const SizedBox(height: AppSpacing.section),
             _buildRegistrationButton(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
-            if (session.startTime != null) _buildReminderChip(context),
+            if (session.startTime != null) _buildReminderChip(context, ref),
             const SizedBox(height: AppSpacing.section),
             if (session.speakers.isNotEmpty)
               _buildSection(
@@ -199,7 +200,17 @@ class SessionDetailsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildReminderChip(BuildContext context) {
+  Widget _buildReminderChip(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(sessionReminderEnabledProvider(session.id));
+    final lead = ref.watch(sessionReminderLeadMinutesProvider(session.id));
+    final saving = ref.watch(sessionReminderSavingProvider(session.id));
+
+    String label;
+    if (enabled && lead != null) {
+      label = _labelForLeadMinutes(context, lead);
+    } else {
+      label = AppLocalizations.of(context)!.noReminderSet;
+    }
     return Container(
       width: double.infinity,
       decoration: AppDecorations.chipContainer(context),
@@ -216,14 +227,122 @@ class SessionDetailsPage extends ConsumerWidget {
           ),
           const SizedBox(width: AppSpacing.item),
           Expanded(
-            child: Text(
-              'Reminder: 1 hour before the session',
-              style: AppTextStyles.bodySmall,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: saving ? null : () => _showReminderPicker(context, ref),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${AppLocalizations.of(context)!.reminder}: $label',
+                      style: AppTextStyles.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  saving
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Icon(Icons.arrow_drop_down, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _showReminderPicker(BuildContext context, WidgetRef ref) async {
+    final options = const [5, 10, 15, 30, 60, 1440];
+    final labels = {
+      5: '5 minutes',
+      10: '10 minutes',
+      15: '15 minutes',
+      30: '30 minutes',
+      60: '1 hour',
+      1440: '1 day',
+    };
+
+    final selected = await showModalBottomSheet<int>(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: AppSpacing.item),
+              Text(AppLocalizations.of(context)!.alertMeBefore, style: AppTextStyles.headlineSmall),
+              const SizedBox(height: AppSpacing.item),
+              for (final m in options)
+                ListTile(
+                  title: Text(_optionLabel(context, m)),
+                  onTap: () => Navigator.pop(ctx, m),
+                ),
+              const SizedBox(height: AppSpacing.item),
+              ListTile(
+                leading: const Icon(Icons.notifications_off_outlined),
+                title: Text(AppLocalizations.of(context)!.disableReminder),
+                onTap: () => Navigator.pop(ctx, -1),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    ref.read(sessionReminderSavingProvider(session.id).notifier).state = true;
+    try {
+      if (selected == -1) {
+        final ok = await ref.read(sessionRepositoryProvider).deleteReminder(session.id);
+        if (ok) {
+          ref.read(sessionReminderEnabledProvider(session.id).notifier).state = false;
+          ref.read(sessionReminderLeadMinutesProvider(session.id).notifier).state = null;
+          messenger.showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.disableReminder)));
+        }
+      } else {
+        final ok = await ref.read(sessionRepositoryProvider).setReminder(session.id, selected, true);
+        if (ok) {
+          ref.read(sessionReminderEnabledProvider(session.id).notifier).state = true;
+          ref.read(sessionReminderLeadMinutesProvider(session.id).notifier).state = selected;
+          messenger.showSnackBar(SnackBar(content: Text('${AppLocalizations.of(context)!.reminder}: ${_optionLabel(context, selected)}')));
+        }
+      }
+    } catch (e) {
+      messenger.showSnackBar(const SnackBar(content: Text('Failed to update reminder')));
+    } finally {
+      ref.read(sessionReminderSavingProvider(session.id).notifier).state = false;
+    }
+  }
+
+  String _labelForLeadMinutes(BuildContext context, int lead) {
+    switch (lead) {
+      case 5:
+        return AppLocalizations.of(context)!.minutesBefore(5);
+      case 10:
+        return AppLocalizations.of(context)!.minutesBefore(10);
+      case 15:
+        return AppLocalizations.of(context)!.minutesBefore(15);
+      case 30:
+        return AppLocalizations.of(context)!.minutesBefore(30);
+      case 60:
+        return AppLocalizations.of(context)!.minutesBefore(60);
+      case 1440:
+        return AppLocalizations.of(context)!.minutesBefore(1440);
+      default:
+        return AppLocalizations.of(context)!.minutesBefore(lead);
+    }
+  }
+
+  String _optionLabel(BuildContext context, int lead) {
+    return _labelForLeadMinutes(context, lead)
+        .replaceAll(AppLocalizations.of(context)!.reminder + ': ', '');
   }
 
   Widget _buildSection(

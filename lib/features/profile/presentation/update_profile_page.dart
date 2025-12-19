@@ -1,6 +1,8 @@
+import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/features/profile/domain/update_profile_model.dart';
 import 'package:event_app/features/profile/domain/profile_model.dart';
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
+import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,10 +21,8 @@ class UpdateProfilePage extends ConsumerWidget {
     final departmentController = TextEditingController(text: profile.department);
     final majorController = TextEditingController(text: profile.major);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Update Profile'),
-      ),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.profile,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

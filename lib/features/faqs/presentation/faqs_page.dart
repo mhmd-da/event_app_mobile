@@ -1,16 +1,18 @@
+import 'package:event_app/core/widgets/app_scaffold.dart';
+import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'faqs_providers.dart';
 
 class FaqsPage extends ConsumerWidget {
+  const FaqsPage({super.key});
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final faqsAsync = ref.watch(faqsListProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('FAQs'),
-      ),
+    return AppScaffold(
+      title: AppLocalizations.of(context)!.faqs,
       body: faqsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(

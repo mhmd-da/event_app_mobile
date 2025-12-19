@@ -8,6 +8,7 @@ class SessionModel extends BaseModel {
   final DateTime endTime;
   final String location;
   final String category;
+  final String categoryTag;
   final String track;
   final bool isRegistered;
   final List<Person> speakers;
@@ -24,6 +25,7 @@ class SessionModel extends BaseModel {
     required this.endTime,
     required this.location,
     required this.category,
+    required this.categoryTag,
     required this.track,
     required this.isRegistered,
     required this.speakers,
@@ -42,6 +44,7 @@ class SessionModel extends BaseModel {
       endTime: DateTime.parse(json['endTime']),
       location: json['location'] ?? '',
       category: json['category'] ?? '',
+      categoryTag: json['categoryTag'] ?? '',
       track: json['track'] ?? '',
       isRegistered: json['isRegistered'] ?? false,
       speakers: (json['speakers'] as List?)

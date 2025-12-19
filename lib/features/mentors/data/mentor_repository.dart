@@ -6,7 +6,7 @@ import 'package:event_app/features/mentors/domain/mentor_model.dart';
 class MentorRepository extends BaseApiRepository<MentorModel>{
 
     MentorRepository(ApiClient client)
-      : super(client, (json) => MentorModel.fromJson(json));
+      : super(client, fromJson: (json) => MentorModel.fromJson(json));
 
   Future<List<MentorModel>> getMentors(String? search) async => await fetchList(AppConfig.getMentors(search)); 
 

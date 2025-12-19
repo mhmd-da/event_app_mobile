@@ -8,8 +8,8 @@ final sessionRepositoryProvider = Provider<SessionRepository>((ref) {
   return SessionRepository(ref.watch(apiClientProvider));
 });
 
-final sessionsForAgendaListProvider = FutureProvider<List<SessionModel>>((ref) async {
-  return ref.watch(sessionRepositoryProvider).getSessionsForAgenda();
+final sessionsForAgendaListProvider = FutureProvider.family<List<SessionModel>, String?>((ref, category) async {
+  return ref.watch(sessionRepositoryProvider).getSessions(category: category);
 });
 
 final selectedAgendaDateProvider = StateProvider<String?>((ref) => null);
@@ -19,3 +19,13 @@ final sessionRegistrationStateProvider = StateProvider.family<bool, SessionModel
 });
 
 final groupingMethodProvider = StateProvider<String>((ref) => 'time');
+
+// Reminder state per session (server-driven notifications)
+final sessionReminderEnabledProvider =
+  StateProvider.family<bool, int>((ref, sessionId) => false);
+
+final sessionReminderLeadMinutesProvider =
+  StateProvider.family<int?, int>((ref, sessionId) => null);
+
+final sessionReminderSavingProvider =
+  StateProvider.family<bool, int>((ref, sessionId) => false);

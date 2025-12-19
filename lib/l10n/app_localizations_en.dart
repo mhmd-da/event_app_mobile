@@ -391,4 +391,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToLoadNotifications => 'Failed to load notifications';
+
+  @override
+  String get reminder => 'Reminder';
+
+  @override
+  String get noReminderSet => 'No reminder set';
+
+  @override
+  String get alertMeBefore => 'Alert me before';
+
+  @override
+  String get disableReminder => 'Disable reminder';
+
+  @override
+  String minutesBefore(int minutes) {
+    return '$minutes minutes before';
+  }
+
+  @override
+  String get contactFormTitle => 'Contact Us';
+
+  @override
+  String get contactCategory => 'Category';
+
+  @override
+  String get contactSubject => 'Subject';
+
+  @override
+  String get contactMessage => 'Message';
+
+  @override
+  String get contactSubmit => 'Send';
+
+  @override
+  String get contactSuccess => 'Your message has been sent';
+
+  @override
+  String get contactError => 'Failed to send message';
+
+  @override
+  String get category_GENERAL => 'General';
+
+  @override
+  String get category_TECHNICAL_ISSUE => 'Technical Issue';
+
+  @override
+  String get category_SESSION_QUESTION => 'Session Question';
+
+  @override
+  String get category_VENUE_ACCESS => 'Venue Access';
+
+  @override
+  String get category_FEEDBACK => 'Feedback';
+
+  @override
+  String get category_OTHER => 'Other';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get openWebsite => 'Open Website';
+
+  @override
+  String get category => 'Category';
 }

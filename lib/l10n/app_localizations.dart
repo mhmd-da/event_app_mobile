@@ -859,6 +859,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load notifications'**
   String get failedToLoadNotifications;
+
+  /// No description provided for @reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get reminder;
+
+  /// No description provided for @noReminderSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No reminder set'**
+  String get noReminderSet;
+
+  /// No description provided for @alertMeBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert me before'**
+  String get alertMeBefore;
+
+  /// No description provided for @disableReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable reminder'**
+  String get disableReminder;
+
+  /// No description provided for @minutesBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes before'**
+  String minutesBefore(int minutes);
+
+  /// No description provided for @contactFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactFormTitle;
+
+  /// No description provided for @contactCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get contactCategory;
+
+  /// No description provided for @contactSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get contactSubject;
+
+  /// No description provided for @contactMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get contactMessage;
+
+  /// No description provided for @contactSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get contactSubmit;
+
+  /// No description provided for @contactSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message has been sent'**
+  String get contactSuccess;
+
+  /// No description provided for @contactError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message'**
+  String get contactError;
+
+  /// No description provided for @category_GENERAL.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get category_GENERAL;
+
+  /// No description provided for @category_TECHNICAL_ISSUE.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical Issue'**
+  String get category_TECHNICAL_ISSUE;
+
+  /// No description provided for @category_SESSION_QUESTION.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Question'**
+  String get category_SESSION_QUESTION;
+
+  /// No description provided for @category_VENUE_ACCESS.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue Access'**
+  String get category_VENUE_ACCESS;
+
+  /// No description provided for @category_FEEDBACK.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get category_FEEDBACK;
+
+  /// No description provided for @category_OTHER.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get category_OTHER;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @openWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Website'**
+  String get openWebsite;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
 }
 
 class _AppLocalizationsDelegate
