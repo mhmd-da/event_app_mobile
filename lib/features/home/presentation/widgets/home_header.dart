@@ -126,9 +126,9 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Colors.black.withOpacity(0.15),
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.20),
+                                  Colors.black.withValues(alpha: 0.15),
+                                  Colors.black.withValues(alpha: 0.05),
+                                  Colors.black.withValues(alpha: 0.20),
                                 ],
                               ),
                             ),

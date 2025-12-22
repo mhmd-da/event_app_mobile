@@ -3,12 +3,14 @@ import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/agenda/presentation/widgets/agenda_date_tabs.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_tile.dart';
+import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import '../../../core/theme/app_text_styles.dart';
+import 'package:event_app/features/agenda/domain/session_model.dart';
 
 class AgendaPage extends ConsumerWidget {
   const AgendaPage({super.key, this.category});
@@ -69,7 +71,7 @@ class AgendaPage extends ConsumerWidget {
           if (selectedDate == null && effectiveSelectedDate != null) {
             // Defer provider update to avoid modifying provider during build
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ref.read(selectedAgendaDateProvider.notifier).state = effectiveSelectedDate;
+              ref.read(selectedAgendaDateProvider.notifier).set(effectiveSelectedDate);
             });
           }
 
@@ -94,7 +96,8 @@ class AgendaPage extends ConsumerWidget {
                   Expanded(
                     child: DateTabs(
                       dates: dateTabs,
-                      selectedDateProvider: selectedAgendaDateProvider,
+                      selectedDate: effectiveSelectedDate,
+                      onSelect: (date) => ref.read(selectedAgendaDateProvider.notifier).set(date),
                     ),
                   ),
                   IconButton(
@@ -135,8 +138,8 @@ class AgendaPage extends ConsumerWidget {
                       );
 
                       if (selectedMethod != null) {
-                        ref.read(groupingMethodProvider.notifier).state =
-                            selectedMethod;
+                        ref.read(groupingMethodProvider.notifier).set(
+                            selectedMethod);
                       }
                     },
                   ),
@@ -173,7 +176,10 @@ class AgendaPage extends ConsumerWidget {
 
                               return ListView(
                                 children: sessionsForTab
-                                    .map((s) => SessionTile(session: s, onTapWidgetBuilder: (_) => SessionDetailsPage(session: s)))
+                                    .map((s) => SessionTile(
+                                          session: s,
+                                          onTapWidgetBuilder: (_) => _destinationForSession(s),
+                                        ))
                                     .toList(),
                               );
                             }).toList(),
@@ -188,7 +194,10 @@ class AgendaPage extends ConsumerWidget {
                   child: ListView(
                     children:
                         groupedSessions[effectiveSelectedDate]
-                            ?.map((s) => SessionTile(session: s, onTapWidgetBuilder: (_) => SessionDetailsPage(session: s)))
+                            ?.map((s) => SessionTile(
+                                  session: s,
+                                  onTapWidgetBuilder: (_) => _destinationForSession(s),
+                                ))
                             .toList() ??
                         [],
                   ),
@@ -198,5 +207,13 @@ class AgendaPage extends ConsumerWidget {
         },
       ),
     );
+  }
+  Widget _destinationForSession(SessionModel s) {
+    final tag = s.categoryTag.trim().toUpperCase();
+    final isMentorship = tag == 'MENTORSHIP';
+    if (isMentorship) {
+      return MentorshipTimeSlotsPage(sessionId: s.id);
+    }
+    return SessionDetailsPage(session: s);
   }
 }

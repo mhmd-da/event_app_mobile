@@ -28,7 +28,7 @@ void main() async {
   // Load persisted locale and theme before starting app
   final langCode = await LanguageStorage().loadLocale();
   if (langCode != null && langCode.isNotEmpty) {
-    container.read(appLocaleProvider.notifier).state = Locale(langCode);
+    container.read(appLocaleProvider.notifier).set(Locale(langCode));
   }
   final themeSaved = await ThemeStorage().loadThemeMode();
   if (themeSaved != null) {
@@ -37,10 +37,11 @@ void main() async {
         : themeSaved == 'light'
             ? ThemeMode.light
             : ThemeMode.system;
-    container.read(appThemeModeProvider.notifier).state = mode;
+    container.read(appThemeModeProvider.notifier).set(mode);
   }
 
-  runApp(ProviderScope(parent: container, child: MyApp()));
+  // Riverpod 3+: use UncontrolledProviderScope to pass an external container
+  runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -72,5 +73,6 @@ class MyApp extends ConsumerWidget {
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  // ignore: avoid_print
   print("Background message received: ${message.messageId}");
 }

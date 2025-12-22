@@ -45,7 +45,11 @@ class MentorshipSessionsPage extends ConsumerWidget {
 
           return Column(
             children: [
-              DateTabs(dates: dateTabs, selectedDateProvider: selectedMentorshipDateProvider),
+              DateTabs(
+                dates: dateTabs,
+                selectedDate: selectedDate,
+                onSelect: (date) => ref.read(selectedMentorshipDateProvider.notifier).set(date),
+              ),
               SizedBox(height: 5),
               Divider(height: 1),
                 Expanded(

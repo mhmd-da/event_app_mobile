@@ -35,22 +35,22 @@ class AppColors {
 
 
   static Color panelBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
-      ? const Color(0xFF66BB6A).withOpacity(0.18)
-      : const Color(0xFF4CAF50).withOpacity(0.14);
+      ? const Color(0xFF66BB6A).withValues(alpha: 0.18)
+      : const Color(0xFF4CAF50).withValues(alpha: 0.14);
 
   static Color workshopBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
-      ? const Color(0xFFFFB74D).withOpacity(0.18)
-      : const Color(0xFFFF9800).withOpacity(0.13);
+      ? const Color(0xFFFFB74D).withValues(alpha: 0.18)
+      : const Color(0xFFFF9800).withValues(alpha: 0.13);
 
   static Color roundtableBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
-      ? const Color(0xFF9575CD).withOpacity(0.22)
-      : const Color(0xFF673AB7).withOpacity(0.15);
+      ? const Color(0xFF9575CD).withValues(alpha: 0.22)
+      : const Color(0xFF673AB7).withValues(alpha: 0.15);
 
   static Color mentorshipBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
-      ? const Color(0xFFF48FB1).withOpacity(0.22)
-      : const Color(0xFFE91E63).withOpacity(0.15);
+      ? const Color(0xFFF48FB1).withValues(alpha: 0.22)
+      : const Color(0xFFE91E63).withValues(alpha: 0.15);
 
   static Color othersBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
-      ? const Color(0xD3D3D3D3).withOpacity(0.22)
-      : const Color(0xA9A9A9A9).withOpacity(0.15);
+      ? const Color(0xD3D3D3D3).withValues(alpha: 0.22)
+      : const Color(0xA9A9A9A9).withValues(alpha: 0.15);
 }

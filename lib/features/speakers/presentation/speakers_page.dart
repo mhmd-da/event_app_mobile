@@ -7,9 +7,17 @@ import 'package:event_app/features/speakers/presentation/speaker_providers.dart'
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'speakers_page.g.dart';
 
 // Holds the current search text typed in the CustomSearchBar
-final speakerSearchTextProvider = StateProvider<String>((ref) => "");
+@riverpod
+class SpeakerSearchText extends _$SpeakerSearchText {
+  @override
+  String build() => "";
+  void set(String value) => state = value;
+}
 
 class SpeakersPage extends ConsumerWidget {
   const SpeakersPage({super.key}); // no underscore prefix
@@ -27,7 +35,7 @@ class SpeakersPage extends ConsumerWidget {
           // -------- SEARCH BAR TOP --------
           CustomSearchBar(
             onChanged: (text) =>
-                ref.read(speakerSearchTextProvider.notifier).state = text,
+              ref.read(speakerSearchTextProvider.notifier).set(text),
           ),
           Expanded(
             child: speakersAsync.when(

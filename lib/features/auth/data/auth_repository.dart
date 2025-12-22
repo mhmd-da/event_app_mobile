@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_api_repository.dart';
+import 'package:event_app/features/auth/domain/forget_password_response.dart';
 import 'package:event_app/features/auth/domain/registration_response.dart';
 import 'package:event_app/features/auth/domain/unverified_account_exception.dart';
 import '../../../core/config/app_config.dart';
@@ -42,4 +43,8 @@ class AuthRepository extends BaseApiRepository<AuthModel> {
 
   Future<AuthModel> verifyCode(int userId, String code) async => postDataGeneric<AuthModel>(AppConfig.verifyCode, {"userId": userId, "code": code}, (json) => AuthModel.fromJson(json));
 
+  Future<ForgetPasswordResponse> forgetPassword(String username) async => postDataGeneric<ForgetPasswordResponse>(AppConfig.forgetPassword, {"username": username}, (json) => ForgetPasswordResponse.fromJson(json));
+
+  Future<AuthModel> resetPassword(int userId, String password, String code) async => postDataGeneric(AppConfig.resetPassword, {"userId": userId, "password": password, "code": code}, (json) => AuthModel.fromJson(json));
+  
 }

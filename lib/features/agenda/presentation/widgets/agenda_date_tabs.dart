@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DateTabs extends ConsumerWidget {
-  const DateTabs({super.key, required this.dates, required this.selectedDateProvider});
+  const DateTabs({super.key, required this.dates, required this.selectedDate, required this.onSelect});
 
   final List<String> dates;
-  final StateProvider<String?> selectedDateProvider;
+  final String? selectedDate;
+  final void Function(String date) onSelect;
 
   @override
   Widget build(BuildContext ctx, WidgetRef ref) {
@@ -25,12 +26,10 @@ class DateTabs extends ConsumerWidget {
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (_, i) {
             final date = dates[i];
-            final isActive =
-                ref.read(selectedDateProvider.notifier).state == date;
+            final isActive = selectedDate == date;
 
             return InkWell(
-              onTap: () =>
-                  ref.read(selectedDateProvider.notifier).state = date,
+              onTap: () => onSelect(date),
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -39,9 +38,9 @@ class DateTabs extends ConsumerWidget {
                 ),
                 decoration: AppDecorations.tabButton(
                   ctx,
-                  bgColor: isActive
-                      ? Theme.of(ctx).colorScheme.primary.withOpacity(0.5)
-                      : Theme.of(ctx).colorScheme.primary.withOpacity(0.07),
+                    bgColor: isActive
+                      ? Theme.of(ctx).colorScheme.primary.withValues(alpha: 0.5)
+                      : Theme.of(ctx).colorScheme.primary.withValues(alpha: 0.07),
                 ),
                 child: Column(
                   children: [

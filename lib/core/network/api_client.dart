@@ -9,7 +9,7 @@ class ApiClient {
   final Ref? _ref;
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: AppConfig.baseUrl,
+      baseUrl: AppConfig.baseApiUrl,
       headers: {"Content-Type": "application/json"},
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
@@ -23,7 +23,7 @@ class ApiClient {
         onRequest: (options, handler) async {
           final suppress = options.extra['suppressLoading'] == true;
           if (_ref != null && !suppress) {
-            _ref!.read(globalLoadingProvider.notifier).begin();
+            _ref.read(globalLoadingProvider.notifier).begin();
           }
           // Load token from secure storage
           var storage = SecureStorageService();
@@ -34,13 +34,11 @@ class ApiClient {
           }
 
           final eventId = await storage.getEventId();
-          if (eventId != null) {
-            options.headers["Event-Id"] = eventId;
-          }
+          options.headers["Event-Id"] = eventId;
 
           // Add language header from current app locale
           if (_ref != null) {
-            final locale = _ref!.read(appLocaleProvider);
+            final locale = _ref.read(appLocaleProvider);
             options.headers["Language-Code"] = locale.languageCode; // 'en' or 'ar'
           }
 
@@ -49,14 +47,14 @@ class ApiClient {
         onResponse: (response, handler) {
           final suppress = response.requestOptions.extra['suppressLoading'] == true;
           if (_ref != null && !suppress) {
-            _ref!.read(globalLoadingProvider.notifier).end();
+            _ref.read(globalLoadingProvider.notifier).end();
           }
           return handler.next(response);
         },
         onError: (error, handler) {
           final suppress = error.requestOptions.extra['suppressLoading'] == true;
           if (_ref != null && !suppress) {
-            _ref!.read(globalLoadingProvider.notifier).end();
+            _ref.read(globalLoadingProvider.notifier).end();
           }
           // (Optional) Handle refresh token or auto-logout later
           return handler.next(error);
@@ -71,6 +69,7 @@ class ApiClient {
       responseHeader: false,
     ));
 
+    // ignore: avoid_print
     print("ApiClient Log => calling ${client.options.baseUrl}");
 
   }

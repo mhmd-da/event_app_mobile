@@ -1,27 +1,25 @@
 import 'package:event_app/core/network/api_client_provider.dart';
-import 'package:event_app/features/auth/domain/auth_model.dart';
 import 'package:event_app/features/auth/domain/unverified_account_exception.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/storage/secure_storage_service.dart';
 import '../data/auth_repository.dart';
 import 'login_state.dart';
 
-final authRepositoryProvider = Provider((ref) => AuthRepository(ref.watch(apiClientProvider)));
-final secureStorageProvider = Provider((ref) => SecureStorageService());
+part 'login_controller.g.dart';
 
-final loginControllerProvider =
-StateNotifierProvider<LoginController, LoginState>((ref) {
-  return LoginController(
-    ref.watch(authRepositoryProvider),
-    ref.watch(secureStorageProvider),
-  );
-});
+@Riverpod(keepAlive: true)
+AuthRepository authRepository(Ref ref) => AuthRepository(ref.watch(apiClientProvider));
 
-class LoginController extends StateNotifier<LoginState> {
-  final AuthRepository _repo;
-  final SecureStorageService _storage;
+@Riverpod(keepAlive: true)
+SecureStorageService secureStorage(Ref ref) => SecureStorageService();
 
-  LoginController(this._repo, this._storage) : super(LoginState());
+@Riverpod(keepAlive: true)
+class LoginController extends _$LoginController {
+  @override
+  LoginState build() => LoginState();
+
+  AuthRepository get _repo => ref.watch(authRepositoryProvider);
+  SecureStorageService get _storage => ref.watch(secureStorageProvider);
 
   Future<void> login(String username, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -29,13 +27,14 @@ class LoginController extends StateNotifier<LoginState> {
     try {
       final auth = await _repo.login(username, password);
       await _storage.saveAuth(auth);
-
+      if (!ref.mounted) return;
       state = state.copyWith(isLoading: false, isLoggedIn: true, requiresVerification: false);
 
     } on UnverifiedAccountException catch (e) {
       if (e.userId != null) {
         await _storage.saveUserId(e.userId!);
       }
+      if (!ref.mounted) return;
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString(),
@@ -43,6 +42,7 @@ class LoginController extends StateNotifier<LoginState> {
         isLoggedIn: false,
       );
     } catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString(),
@@ -59,12 +59,42 @@ class LoginController extends StateNotifier<LoginState> {
       final auth = await _repo.verifyCode(await _storage.getUserId(), otp);
 
       await _storage.saveAuth(auth);
-
+      if (!ref.mounted) return;
       state = state.copyWith(isLoading: false, isLoggedIn: true);
 
     } catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
           isLoading: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<bool> forgotPasswordRequest(String username) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final response = await _repo.forgetPassword(username);
+      await _storage.saveUserId(response.userId);
+      if (!ref.mounted) return true;
+      state = state.copyWith(isLoading: false);
+      return true;
+    } catch (e) {
+      if (!ref.mounted) return false;
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      return false;
+    }
+  }
+
+  Future<void> resetPassword(String code, String password) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final userId = await _storage.getUserId();
+      final auth = await _repo.resetPassword(userId, password, code);
+      await _storage.saveAuth(auth);
+      if (!ref.mounted) return;
+      state = state.copyWith(isLoading: false, isLoggedIn: true);
+    } catch (e) {
+      if (!ref.mounted) return;
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 
@@ -73,10 +103,11 @@ class LoginController extends StateNotifier<LoginState> {
 
     try {
       await _storage.clear();
-
+      if (!ref.mounted) return;
       state = state.copyWith(isLoading: false, isLoggedIn: false);
 
     } catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
           isLoading: false, errorMessage: "Logout failed. Please try again.");
     }

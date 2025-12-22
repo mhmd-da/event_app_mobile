@@ -7,18 +7,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+import 'package:event_app/core/widgets/notifier.dart';
+import 'package:event_app/l10n/app_localizations.dart';
 
 class VenuePage extends ConsumerWidget {
-  const VenuePage({Key? key}) : super(key: key);
+  const VenuePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedEvent = ref.watch(selectedEventProvider);
 
     if (selectedEvent == null || selectedEvent.venue == null) {
-      return const Center(
-        child: Text('No venue information available.'),
-      );
+      return Center(child: Text(AppLocalizations.of(context)!.noVenueInfo));
     }
     final venue = selectedEvent.venue!;
 
@@ -32,13 +32,12 @@ class VenuePage extends ConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               child: GestureDetector(
                 onTap: () async {
+                  final l10n = AppLocalizations.of(context)!;
                   final url = Uri.parse(venue.mapUrl ?? "");
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Could not open map.')),
-                    );
+                    AppNotifier.error(context, l10n.mapOpenFailed);
                   }
                 },
                 child: ClipRRect(
@@ -48,31 +47,39 @@ class VenuePage extends ConsumerWidget {
                     child: Builder(
                       builder: (context) {
                         final rawUrl = venue.mapUrl ?? '';
+                        final label = AppLocalizations.of(context)!.openMap;
                         final coords = _extractLatLng(rawUrl);
                         String? staticUrl;
                         if (coords != null) {
                           staticUrl = _buildStaticMapUrl(coords[0], coords[1]);
-                          return _MapThumb(staticUrl: staticUrl);
+                          return _MapThumb(staticUrl: staticUrl, label: label);
                         }
                         // Try resolving short Google Maps URLs to a full link with coords
                         if (rawUrl.contains('maps.app.goo.gl')) {
                           return FutureBuilder<List<double>?>(
                             future: _resolveLatLngFromShortUrl(rawUrl),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return _MapThumb.placeholder();
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return _MapThumb.placeholder(label);
                               }
                               final resolved = snapshot.data;
                               if (resolved != null) {
-                                staticUrl = _buildStaticMapUrl(resolved[0], resolved[1]);
-                                return _MapThumb(staticUrl: staticUrl);
+                                staticUrl = _buildStaticMapUrl(
+                                  resolved[0],
+                                  resolved[1],
+                                );
+                                return _MapThumb(
+                                  staticUrl: staticUrl,
+                                  label: label,
+                                );
                               }
-                              return _MapThumb.placeholder();
+                              return _MapThumb.placeholder(label);
                             },
                           );
                         }
                         // Fallback
-                        return _MapThumb.placeholder();
+                        return _MapThumb.placeholder(label);
                       },
                     ),
                   ),
@@ -83,7 +90,7 @@ class VenuePage extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Floor Plans',
+                AppLocalizations.of(context)!.floorPlans,
                 style: AppTextStyles.headlineLarge,
               ),
             ),
@@ -92,9 +99,13 @@ class VenuePage extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: venue.floorPlans?.length ?? 0,
               itemBuilder: (context, index) {
-                final floorPlan = venue.floorPlans![index]; // Added null check with !
+                final floorPlan =
+                    venue.floorPlans![index]; // Added null check with !
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -151,14 +162,31 @@ List<double>? _extractLatLng(String url) {
 
 String _buildStaticMapUrl(double lat, double lng) {
   if (AppConfig.googleStaticMapsKey.isNotEmpty) {
-    return AppConfig.googleStaticMapImageUrl(lat, lng, width: 800, height: 400, zoom: 15);
+    return AppConfig.googleStaticMapImageUrl(
+      lat,
+      lng,
+      width: 800,
+      height: 400,
+      zoom: 15,
+    );
   }
-  return AppConfig.openStreetMapStaticImageUrl(lat, lng, width: 800, height: 400, zoom: 15);
+  return AppConfig.openStreetMapStaticImageUrl(
+    lat,
+    lng,
+    width: 800,
+    height: 400,
+    zoom: 15,
+  );
 }
 
 Future<List<double>?> _resolveLatLngFromShortUrl(String url) async {
   try {
-    final dio = Dio(BaseOptions(followRedirects: false, validateStatus: (s) => s != null && s < 400 || s == 302 || s == 301));
+    final dio = Dio(
+      BaseOptions(
+        followRedirects: false,
+        validateStatus: (s) => s != null && s < 400 || s == 302 || s == 301,
+      ),
+    );
     final resp = await dio.head(url);
     final loc = resp.headers.value('location');
     if (loc != null && loc.isNotEmpty) {
@@ -176,9 +204,10 @@ Future<List<double>?> _resolveLatLngFromShortUrl(String url) async {
 
 class _MapThumb extends StatelessWidget {
   final String? staticUrl;
-  const _MapThumb({this.staticUrl});
+  final String label;
+  const _MapThumb({this.staticUrl, required this.label});
 
-  static Widget placeholder() {
+  static Widget placeholder(String label) {
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -186,7 +215,7 @@ class _MapThumb extends StatelessWidget {
           color: Colors.grey.shade300,
           child: const Center(child: Icon(Icons.map, size: 48)),
         ),
-        const _OpenMapLabel(),
+        _OpenMapLabel(label: label),
       ],
     );
   }
@@ -203,14 +232,15 @@ class _MapThumb extends StatelessWidget {
             color: Colors.grey.shade300,
             child: const Center(child: Icon(Icons.map, size: 48)),
           ),
-        const _OpenMapLabel(),
+        _OpenMapLabel(label: label),
       ],
     );
   }
 }
 
 class _OpenMapLabel extends StatelessWidget {
-  const _OpenMapLabel();
+  final String label;
+  const _OpenMapLabel({required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -220,13 +250,10 @@ class _OpenMapLabel extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.4),
+          color: Colors.black.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: const Text(
-          'Open Map',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text(label, style: const TextStyle(color: Colors.white)),
       ),
     );
   }

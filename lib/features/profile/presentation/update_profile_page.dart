@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class UpdateProfilePage extends ConsumerWidget {
   final Profile profile;
 
-  const UpdateProfilePage({Key? key, required this.profile}) : super(key: key);
+  const UpdateProfilePage({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

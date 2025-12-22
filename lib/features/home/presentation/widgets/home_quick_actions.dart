@@ -1,7 +1,6 @@
 import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/features/agenda/presentation/agenda_page.dart';
 import 'package:event_app/features/faqs/presentation/faqs_page.dart';
-import 'package:event_app/features/faqs/presentation/faqs_providers.dart';
 import 'package:event_app/features/mentors/presentation/mentors_page.dart';
 import 'package:event_app/features/speakers/presentation/speakers_page.dart';
 import 'package:event_app/features/my_schedule/presentation/my_schedule_page.dart';
@@ -43,7 +42,7 @@ class QuickActionsGrid extends ConsumerWidget {
           borderRadius: BorderRadius.circular(16),
           onTap: () {
             if (title == "Agenda") {
-              ref.read(mainNavigationIndexProvider.notifier).state = 1;
+              ref.read(mainNavigationIndexProvider.notifier).set(1);
             } else {
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => items[i].$3));

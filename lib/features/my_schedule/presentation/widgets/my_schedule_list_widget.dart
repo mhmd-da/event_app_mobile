@@ -1,6 +1,9 @@
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
+import 'package:event_app/features/agenda/presentation/session_details_page.dart';
+import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -18,32 +21,26 @@ class MyScheduleListWidget extends StatelessWidget {
       );
     }
 
-    // --- Group by day ---
-    final Map<String, List<SessionModel>> grouped = {};
+    // --- Group by calendar day ---
+    final Map<DateTime, List<SessionModel>> grouped = {};
 
     for (var s in sessions) {
-      final dayKey = DateFormat("EEEE, MMM d").format(s.startTime);
-      grouped.putIfAbsent(dayKey, () => []).add(s);
+      final key = DateTime(s.startTime.year, s.startTime.month, s.startTime.day);
+      grouped.putIfAbsent(key, () => []).add(s);
     }
 
-    // Sort days by real date
-    final sortedKeys = grouped.keys.toList()
-      ..sort((a, b) {
-        final da = DateFormat("EEEE, MMM d").parse(a);
-        final db = DateFormat("EEEE, MMM d").parse(b);
-        return da.compareTo(db);
-      });
+    // Sort day keys
+    final sortedKeys = grouped.keys.toList()..sort();
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.page),
       itemCount: sortedKeys.length,
       itemBuilder: (_, index) {
         final day = sortedKeys[index];
-        final daySessions = grouped[day]!
-          ..sort((a, b) => a.startTime.compareTo(b.startTime));
+        final daySessions = grouped[day]!..sort((a, b) => a.startTime.compareTo(b.startTime));
 
         return _DaySection(
-          dayLabel: day,
+          day: day,
           sessions: daySessions,
         );
       },
@@ -52,16 +49,28 @@ class MyScheduleListWidget extends StatelessWidget {
 }
 
 class _DaySection extends StatelessWidget {
-  final String dayLabel;
+  final DateTime day;
   final List<SessionModel> sessions;
 
   const _DaySection({
-    required this.dayLabel,
+    required this.day,
     required this.sessions,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final isToday = DateTime(day.year, day.month, day.day) == today;
+    final isTomorrow = DateTime(day.year, day.month, day.day) == tomorrow;
+
+    final dateLabel = DateFormat("MMM d", Localizations.localeOf(context).toLanguageTag()).format(day);
+    final suffix = isToday
+        ? ' • ${l10n.today}'
+        : (isTomorrow ? ' • ${l10n.tomorrow}' : '');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -69,13 +78,13 @@ class _DaySection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: AppSpacing.section),
           child: Text(
-            dayLabel,
+            '$dateLabel$suffix',
             style: AppTextStyles.headlineMedium,
           ),
         ),
 
         // --- Sessions of the day ---
-        ...sessions.map((s) => _ListSessionRow(s)).toList(),
+        ...sessions.map((s) => _ListSessionRow(s)),
 
         const SizedBox(height: AppSpacing.section * 1.5),
       ],
@@ -90,85 +99,125 @@ class _ListSessionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timeFormat = DateFormat("HH:mm");
+    final l10n = AppLocalizations.of(context)!;
+    final timeFormat = DateFormat('h:mm a', Localizations.localeOf(context).toLanguageTag());
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.item),
-      padding: const EdgeInsets.all(AppSpacing.section),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // --- Time Column ---
-          SizedBox(
-            width: 70,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  timeFormat.format(session.startTime),
-                  style: AppTextStyles.bodySmall,
-                ),
-                Text(
-                  timeFormat.format(session.endTime),
-                  style: AppTextStyles.bodySmall,
-                ),
-              ],
+    final baseColor = SessionCategoryHelper.getCategoryColor(
+      context,
+      session.category,
+    );
+
+    final accent = _strongerOf(baseColor, context);
+    final bg = baseColor.withValues(alpha: 0.08);
+    final duration = session.endTime.difference(session.startTime);
+
+    void openDetails() {
+      final tag = session.categoryTag.trim().toUpperCase();
+      final isMentorship = tag == 'MENTORSHIP';
+      final page = isMentorship
+          ? MentorshipTimeSlotsPage(sessionId: session.id)
+          : SessionDetailsPage(session: session);
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Time + duration column
+            SizedBox(
+              width: 76,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(timeFormat.format(session.startTime), style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: 2),
+                  Text(_formatDuration(duration, l10n), style: AppTextStyles.bodyTiny.copyWith(color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7))),
+                ],
+              ),
             ),
-          ),
 
-          const SizedBox(width: 12),
+            // Timeline divider
+            Container(width: 3, margin: const EdgeInsets.symmetric(horizontal: 6), decoration: BoxDecoration(color: Theme.of(context).dividerColor.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2))),
 
-          // --- Details ---
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  session.name ?? "",
-                  style: AppTextStyles.bodyMedium,
+            // Event tile with accent bar
+            Expanded(
+              child: GestureDetector(
+                onTap: openDetails,
+                child: Container(
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: bg.withValues(alpha: 0.8)),
                 ),
-                const SizedBox(height: 4),
-
-                // Location
-                Row(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Icon(Icons.location_on_outlined, size: 16),
-                    const SizedBox(width: 4),
+                    Container(width: 4, decoration: BoxDecoration(color: accent, borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)))),
                     Expanded(
-                      child: Text(
-                        session.location,
-                        style: AppTextStyles.bodySmall,
-                        overflow: TextOverflow.ellipsis,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              session.name ?? '',
+                              style: AppTextStyles.headlineSmall,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 1.5),
+                                  child: Icon(Icons.location_on_outlined, size: 14),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    session.location,
+                                    style: AppTextStyles.bodySmall,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
-
-                // Speakers / Mentors
-                if (session.speakers.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Row(
-                    children: session.speakers.take(3).map((p) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: CircleAvatar(
-                          radius: 14,
-                          backgroundImage: NetworkImage(p.profileImageUrl),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ],
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
+
+Color _strongerOf(Color base, BuildContext context) {
+  // Nudge towards theme primary for better contrast if too pale
+  if (base.a < 0.8) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Color.alphaBlend(base.withValues(alpha: 0.6), primary);
+  }
+  return base;
+}
+
+String _formatDuration(Duration d, AppLocalizations l10n) {
+  final mins = d.inMinutes;
+  if (mins < 60) return l10n.minutesShort(mins);
+  final hours = mins ~/ 60;
+  final rem = mins % 60;
+  if (rem == 0) return l10n.hoursShort(hours);
+  return '${l10n.hoursShort(hours)} ${l10n.minutesShort(rem)}';
 }

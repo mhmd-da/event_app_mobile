@@ -3,7 +3,6 @@ import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
-import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -90,10 +89,10 @@ class SessionTile extends StatelessWidget {
                           ...session.speakers.map(
                             (speaker) => ListTile(
                               leading: CircleAvatar(
-                                backgroundImage: speaker.profileImageUrl != null
-                                    ? NetworkImage(speaker.profileImageUrl!)
+                                backgroundImage: speaker.profileImageUrl.isNotEmpty
+                                    ? NetworkImage(speaker.profileImageUrl)
                                     : null,
-                                child: speaker.profileImageUrl == null
+                                child: speaker.profileImageUrl.isEmpty
                                     ? const Icon(Icons.person)
                                     : null,
                               ),
@@ -107,6 +106,24 @@ class SessionTile extends StatelessWidget {
                           session.speakers.isNotEmpty ? Divider() : SizedBox.shrink(),
                         ],
                       ),
+                      //MENTOR
+                      if (session.mentor != null) ...[
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: session.mentor!.profileImageUrl.isNotEmpty
+                                ? NetworkImage(session.mentor!.profileImageUrl)
+                                : null,
+                            child: session.mentor!.profileImageUrl.isEmpty
+                                ? const Icon(Icons.person_outline)
+                                : null,
+                          ),
+                          title: Text(
+                            "${session.mentor!.title} ${session.mentor!.firstName} ${session.mentor!.lastName}",
+                            style: AppTextStyles.headlineTine,
+                          ),
+                        ),
+                        Divider(),
+                      ],
                       // TIME + LOCATION
                       Row(
                         children: [
@@ -117,7 +134,7 @@ class SessionTile extends StatelessWidget {
                           const Icon(Icons.location_on_outlined, size: 15),
                           const SizedBox(width: AppSpacing.xSmall),
                           Text(
-                            session.location ?? '',
+                            session.location,
                             style: AppTextStyles.bodySmall,
                           ),
                         ],

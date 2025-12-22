@@ -171,6 +171,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageUpdateFailed => 'فشل في تحديث اللغة';
 
   @override
+  String get sessionChatTitle => 'دردشة الجلسة';
+
+  @override
+  String get typeMessageHint => 'اكتب رسالة';
+
+  @override
+  String get sendLabel => 'إرسال';
+
+  @override
   String get changeLanguage => 'تغيير اللغة';
 
   @override
@@ -345,6 +354,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get seconds => 'ثواني';
 
   @override
+  String get verificationTitle => 'التحقق';
+
+  @override
+  String get verificationSubtitle =>
+      'سنرسل لك رمز تحقق لمرة واحدة\nعبر البريد الإلكتروني لتأكيد حسابك';
+
+  @override
+  String get verificationCodeResent => 'تم إعادة إرسال رمز التحقق';
+
+  @override
+  String failedToResendCode(String error) {
+    return 'فشل إعادة إرسال الرمز: $error';
+  }
+
+  @override
   String get logout => 'تسجيل الخروج';
 
   @override
@@ -361,12 +385,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get registrationFailed => 'فشل التسجيل. يرجى المحاولة مرة أخرى.';
-
-  @override
-  String get firstNameHint => 'أدخل اسمك الأول';
-
-  @override
-  String get lastNameHint => 'أدخل اسمك الأخير';
 
   @override
   String get settings => 'الإعدادات';
@@ -456,4 +474,99 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get category => 'الفئة';
+
+  @override
+  String get openMap => 'افتح الخريطة';
+
+  @override
+  String get noVenueInfo => 'لا تتوفر معلومات عن المكان.';
+
+  @override
+  String get floorPlans => 'مخططات الطوابق';
+
+  @override
+  String get mapOpenFailed => 'تعذر فتح الخريطة.';
+
+  @override
+  String get eventPhotos => 'صور الفعالية';
+
+  @override
+  String get photosPrevious => 'السابق';
+
+  @override
+  String get photosNext => 'التالي';
+
+  @override
+  String photosPage(int pageIndex) {
+    return 'الصفحة $pageIndex';
+  }
+
+  @override
+  String get openChat => 'افتح المحادثة';
+
+  @override
+  String get joinChat => 'انضم للمحادثة';
+
+  @override
+  String get exitGroup => 'الخروج من المجموعة';
+
+  @override
+  String get chatJoined => 'تم الانضمام إلى المحادثة';
+
+  @override
+  String get forgotPasswordLink => 'هل نسيت كلمة المرور؟';
+
+  @override
+  String get forgotPasswordTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get usernameEmailIdLabel =>
+      'اسم المستخدم / البريد الإلكتروني / المعرف';
+
+  @override
+  String get sendCode => 'إرسال الرمز';
+
+  @override
+  String get forgotPasswordSuccess =>
+      'تم إرسال رمز التحقق إلى بريدك الإلكتروني';
+
+  @override
+  String get resetPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get enterVerificationCode => 'أدخل رمز التحقق';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get resetPasswordButton => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get enter6Digits => 'أدخل 6 أرقام';
+
+  @override
+  String get min6Chars => '6 أحرف على الأقل';
+
+  @override
+  String get pressBackAgainToExit => 'اضغط رجوع مرة أخرى للخروج';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get tomorrow => 'غدًا';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String hoursShort(int hours) {
+    return '$hours س';
+  }
+
+  @override
+  String get registerHeading => 'تسجيل';
 }

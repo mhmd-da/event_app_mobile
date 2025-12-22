@@ -416,6 +416,24 @@ abstract class AppLocalizations {
   /// **'Failed to update language'**
   String get languageUpdateFailed;
 
+  /// No description provided for @sessionChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Chat'**
+  String get sessionChatTitle;
+
+  /// No description provided for @typeMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message'**
+  String get typeMessageHint;
+
+  /// No description provided for @sendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get sendLabel;
+
   /// No description provided for @changeLanguage.
   ///
   /// In en, this message translates to:
@@ -764,6 +782,30 @@ abstract class AppLocalizations {
   /// **'seconds'**
   String get seconds;
 
+  /// No description provided for @verificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get verificationTitle;
+
+  /// No description provided for @verificationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We will send you a One Time Password\nvia email to verify your account'**
+  String get verificationSubtitle;
+
+  /// No description provided for @verificationCodeResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code resent'**
+  String get verificationCodeResent;
+
+  /// No description provided for @failedToResendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resend code: {error}'**
+  String failedToResendCode(String error);
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
@@ -799,18 +841,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Registration failed. Please try again.'**
   String get registrationFailed;
-
-  /// No description provided for @firstNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your first name'**
-  String get firstNameHint;
-
-  /// No description provided for @lastNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your last name'**
-  String get lastNameHint;
 
   /// No description provided for @settings.
   ///
@@ -985,6 +1015,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category'**
   String get category;
+
+  /// No description provided for @openMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Map'**
+  String get openMap;
+
+  /// No description provided for @noVenueInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No venue information available.'**
+  String get noVenueInfo;
+
+  /// No description provided for @floorPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor Plans'**
+  String get floorPlans;
+
+  /// No description provided for @mapOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open map.'**
+  String get mapOpenFailed;
+
+  /// No description provided for @eventPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Photos'**
+  String get eventPhotos;
+
+  /// No description provided for @photosPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get photosPrevious;
+
+  /// No description provided for @photosNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get photosNext;
+
+  /// No description provided for @photosPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {pageIndex}'**
+  String photosPage(int pageIndex);
+
+  /// No description provided for @openChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Chat'**
+  String get openChat;
+
+  /// No description provided for @joinChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Chat'**
+  String get joinChat;
+
+  /// No description provided for @exitGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Group'**
+  String get exitGroup;
+
+  /// No description provided for @chatJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined chat'**
+  String get chatJoined;
+
+  /// No description provided for @forgotPasswordLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPasswordLink;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @usernameEmailIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username / Email / ID'**
+  String get usernameEmailIdLabel;
+
+  /// No description provided for @sendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Code'**
+  String get sendCode;
+
+  /// No description provided for @forgotPasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent to your email'**
+  String get forgotPasswordSuccess;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @enterVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter verification code'**
+  String get enterVerificationCode;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @resetPasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPasswordButton;
+
+  /// No description provided for @enter6Digits.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 6 digits'**
+  String get enter6Digits;
+
+  /// No description provided for @min6Chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum 6 characters'**
+  String get min6Chars;
+
+  /// No description provided for @pressBackAgainToExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Press back again to exit'**
+  String get pressBackAgainToExit;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @minutesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String minutesShort(int minutes);
+
+  /// No description provided for @hoursShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hr'**
+  String hoursShort(int hours);
+
+  /// Heading text shown on the registration page
+  ///
+  /// In en, this message translates to:
+  /// **'REGISTER'**
+  String get registerHeading;
 }
 
 class _AppLocalizationsDelegate

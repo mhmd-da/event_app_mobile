@@ -1,11 +1,14 @@
 import 'package:event_app/core/network/api_client_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data/notifications_repository.dart';
 import '../domain/notification_model.dart';
 
-final notificationsRepositoryProvider = Provider<NotificationsRepository>((ref) {
+part 'notifications_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+NotificationsRepository notificationsRepository(Ref ref) {
   return NotificationsRepository(ref.watch(apiClientProvider));
-});
+}
 
 
 class NotificationsState {
@@ -40,11 +43,14 @@ class NotificationsState {
   }
 }
 
-class NotificationsController extends StateNotifier<NotificationsState> {
-  NotificationsController(this._repo)
-      : super(NotificationsState(items: [], isLoading: false, hasMore: true, pageIndex: 1, pageSize: 20));
+@riverpod
+class NotificationsController extends _$NotificationsController {
+  @override
+  NotificationsState build() {
+    return NotificationsState(items: [], isLoading: false, hasMore: true, pageIndex: 1, pageSize: 20);
+  }
 
-  final NotificationsRepository _repo;
+  NotificationsRepository get _repo => ref.watch(notificationsRepositoryProvider);
 
   Future<void> loadInitial() async {
     if (state.isLoading) return;
@@ -72,10 +78,7 @@ class NotificationsController extends StateNotifier<NotificationsState> {
   }
 }
 
-final notificationsControllerProvider = StateNotifierProvider<NotificationsController, NotificationsState>((ref) {
-  return NotificationsController(ref.read(notificationsRepositoryProvider));
-});
-
-final unreadCountProvider = FutureProvider<int>((ref) async {
+@riverpod
+Future<int> unreadCount(Ref ref) async {
   return ref.read(notificationsRepositoryProvider).getUnreadCount();
-});
+}

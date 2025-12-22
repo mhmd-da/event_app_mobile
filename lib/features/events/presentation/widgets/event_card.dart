@@ -80,9 +80,9 @@ class EventCard extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
                     colors: [
-                      Colors.black.withOpacity(0.75),
-                      Colors.black.withOpacity(0.2),
-                      Colors.black.withOpacity(0.85),
+                      Colors.black.withValues(alpha: 0.75),
+                      Colors.black.withValues(alpha: 0.2),
+                      Colors.black.withValues(alpha: 0.85),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -123,6 +123,7 @@ class EventCard extends ConsumerWidget {
                       alignment: Alignment.bottomRight,
                       child: ElevatedButton(
                         onPressed: () async {
+                          final navigator = Navigator.of(context);
                           showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -133,14 +134,13 @@ class EventCard extends ConsumerWidget {
                           final repo = ref.read(eventsRepositoryProvider);
                           final details = await repo.getEventDetails(event.id);
 
-                          Navigator.pop(context); // remove loader
+                          navigator.pop(); // remove loader
 
                           // 2. Save full event details into selected provider
-                          ref.read(selectedEventProvider.notifier).state = details;
+                          ref.read(selectedEventProvider.notifier).set(details);
 
                           // 3. Navigate to main navigation
-                          Navigator.pushReplacement(
-                            context,
+                          navigator.pushReplacement(
                             MaterialPageRoute(builder: (_) => const MainNavigationPage()),
                           );
                         },

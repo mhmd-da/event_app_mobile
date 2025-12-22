@@ -75,7 +75,7 @@ class _Chip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Text(label, style: AppTextStyles.bodySmall),

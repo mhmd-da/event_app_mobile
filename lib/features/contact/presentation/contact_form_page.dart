@@ -4,6 +4,7 @@ import 'package:event_app/features/contact/data/contact_repository.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:event_app/core/widgets/notifier.dart';
 
 class ContactFormPage extends ConsumerStatefulWidget {
   const ContactFormPage({super.key});
@@ -31,13 +32,20 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
   String _categoryLabel(BuildContext context, String key) {
     final l = AppLocalizations.of(context)!;
     switch (key) {
-      case 'General': return l.category_GENERAL;
-      case 'TechnicalIssue': return l.category_TECHNICAL_ISSUE;
-      case 'SessionQuestion': return l.category_SESSION_QUESTION;
-      case 'VenueAccess': return l.category_VENUE_ACCESS;
-      case 'Feedback': return l.category_FEEDBACK;
-      case 'Other': return l.category_OTHER;
-      default: return key;
+      case 'General':
+        return l.category_GENERAL;
+      case 'TechnicalIssue':
+        return l.category_TECHNICAL_ISSUE;
+      case 'SessionQuestion':
+        return l.category_SESSION_QUESTION;
+      case 'VenueAccess':
+        return l.category_VENUE_ACCESS;
+      case 'Feedback':
+        return l.category_FEEDBACK;
+      case 'Other':
+        return l.category_OTHER;
+      default:
+        return key;
     }
   }
 
@@ -66,19 +74,24 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
-                  ]),
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.7),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     Text(
                       'We value your feedback and inquiries. Please fill the form and we will get back to you shortly.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
                     ),
                   ],
                 ),
@@ -89,16 +102,22 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
               InputDecorator(
                 decoration: InputDecoration(
                   labelText: l.contactCategory,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     isExpanded: true,
                     value: _selectedCategory,
-                    items: _categories.map((c) => DropdownMenuItem<String>(
-                      value: c,
-                      child: Text(_categoryLabel(context, c)),
-                    )).toList(),
+                    items: _categories
+                        .map(
+                          (c) => DropdownMenuItem<String>(
+                            value: c,
+                            child: Text(_categoryLabel(context, c)),
+                          ),
+                        )
+                        .toList(),
                     onChanged: (val) => setState(() => _selectedCategory = val),
                   ),
                 ),
@@ -110,9 +129,12 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
                 controller: _subjectController,
                 decoration: InputDecoration(
                   labelText: l.contactSubject,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
               ),
               const SizedBox(height: 16),
 
@@ -123,9 +145,12 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
                 decoration: InputDecoration(
                   labelText: l.contactMessage,
                   alignLabelWithHint: true,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
               ),
 
               const SizedBox(height: 24),
@@ -134,40 +159,63 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  icon: _submitting ? const SizedBox(
-                    width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                  ) : const Icon(Icons.send_rounded),
+                  icon: _submitting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.send_rounded),
                   label: Text(l.contactSubmit),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  onPressed: _submitting ? null : () async {
-                    if (_selectedCategory == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.contactCategory)));
-                      return;
-                    }
-                    if (!_formKey.currentState!.validate()) return;
+                  onPressed: _submitting
+                      ? null
+                      : () async {
+                          if (_selectedCategory == null) {
+                            AppNotifier.info(context, l.contactCategory);
+                            return;
+                          }
+                          if (!_formKey.currentState!.validate()) return;
 
-                    setState(() => _submitting = true);
-                    try {
-                      final repo = ContactRepository(ref.read(apiClientProvider));
-                      final ok = await repo.submitContact(
-                        category: _selectedCategory!,
-                        subject: _subjectController.text.trim(),
-                        message: _messageController.text.trim(),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ok ? l.contactSuccess : l.contactError)));
-                      _formKey.currentState!.reset();
-                      setState(() { _selectedCategory = null; });
-                    } catch (_) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.contactError)));
-                    } finally {
-                      setState(() => _messageController.text = '');
-                      setState(() => _subjectController.text = '');
-                      setState(() => _submitting = false);
-                    }
-                  },
+                          setState(() => _submitting = true);
+                          try {
+                            final repo = ContactRepository(
+                              ref.read(apiClientProvider),
+                            );
+                            final ok = await repo.submitContact(
+                              category: _selectedCategory!,
+                              subject: _subjectController.text.trim(),
+                              message: _messageController.text.trim(),
+                            );
+                            if (!mounted) return;
+                            if (ok) {
+                              AppNotifier.success(context, l.contactSuccess);
+                            } else {
+                              AppNotifier.error(context, l.contactError);
+                            }
+                            _formKey.currentState!.reset();
+                            setState(() {
+                              _selectedCategory = null;
+                            });
+                          } catch (_) {
+                            if (!mounted) return;
+                            AppNotifier.error(context, l.contactError);
+                          } finally {
+                            if (mounted) {
+                              setState(() => _messageController.text = '');
+                              setState(() => _subjectController.text = '');
+                              setState(() => _submitting = false);
+                            }
+                          }
+                        },
                 ),
               ),
             ],

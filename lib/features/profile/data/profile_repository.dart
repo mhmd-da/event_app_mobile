@@ -2,15 +2,14 @@ import 'dart:io';
 
 import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/core/config/app_config.dart';
-import 'package:event_app/core/network/api_client.dart';
 import 'package:event_app/features/profile/domain/update_profile_model.dart';
 import '../domain/profile_model.dart';
 
 
 class ProfileRepository extends BaseApiRepository<Profile>{
 
-    ProfileRepository(ApiClient client)
-      : super(client, fromJson: (json) => Profile.fromJson(json));
+    ProfileRepository(super._apiClient)
+      : super(fromJson: (json) => Profile.fromJson(json));
 
   Future<Profile> getProfile() async => await fetchSingle(AppConfig.getProfile);
 

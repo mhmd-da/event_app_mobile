@@ -2,19 +2,28 @@ import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/mentorship/data/mentorship_repository.dart';
 import 'package:event_app/features/mentorship/domain/mentorship_details_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final mentorshipRepositoryProvider = Provider<MentorshipRepository>((ref) {
+part 'mentorship_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+MentorshipRepository mentorshipRepository(Ref ref) {
   return MentorshipRepository(ref.watch(apiClientProvider));
-});
+}
 
-
-final sessionsForMentorshipProvider = FutureProvider<List<SessionModel>>((ref) async {
+@riverpod
+Future<List<SessionModel>> sessionsForMentorship(Ref ref) async {
   return ref.watch(mentorshipRepositoryProvider).getSessionsForMentorship();
-});
+}
 
-final mentorshipSessionsProvider = FutureProvider.family<MentorshipDetailsModel, int>((ref, sessionId) async {
+@riverpod
+Future<MentorshipDetailsModel> mentorshipSessions(Ref ref, int sessionId) async {
   return ref.watch(mentorshipRepositoryProvider).getMentorshipDetails(sessionId);
-});
+}
 
-final selectedMentorshipDateProvider = StateProvider<String?>((ref) => null);
+@riverpod
+class SelectedMentorshipDate extends _$SelectedMentorshipDate {
+  @override
+  String? build() => null;
+  void set(String? value) => state = value;
+}

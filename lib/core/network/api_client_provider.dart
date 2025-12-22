@@ -1,4 +1,7 @@
 import 'package:event_app/core/network/api_client.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient(ref));
+part 'api_client_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+ApiClient apiClient(Ref ref) => ApiClient(ref);

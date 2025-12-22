@@ -22,16 +22,10 @@ class CustomSearchBar extends ConsumerStatefulWidget {
 
 class CustomSearchBarState extends ConsumerState<CustomSearchBar> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchText = "";
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
-      });
-    });
   }
 
   @override

@@ -2,7 +2,7 @@ import 'package:event_app/core/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 
 class AnnouncementCard extends StatelessWidget {
-  const AnnouncementCard();
+  const AnnouncementCard({super.key});
 
   @override
   Widget build(BuildContext context) {

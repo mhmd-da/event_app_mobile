@@ -1,11 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final globalLoadingProvider = StateNotifierProvider<LoadingController, int>((ref) {
-  return LoadingController();
-});
+part 'global_loading.g.dart';
 
-class LoadingController extends StateNotifier<int> {
-  LoadingController() : super(0);
+@Riverpod(keepAlive: true)
+class GlobalLoading extends _$GlobalLoading {
+  @override
+  int build() => 0;
   void begin() => state = state + 1;
   void end() => state = state > 0 ? state - 1 : 0;
   bool get isLoading => state > 0;

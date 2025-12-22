@@ -171,6 +171,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageUpdateFailed => 'Failed to update language';
 
   @override
+  String get sessionChatTitle => 'Session Chat';
+
+  @override
+  String get typeMessageHint => 'Type a message';
+
+  @override
+  String get sendLabel => 'Send';
+
+  @override
   String get changeLanguage => 'Change Language';
 
   @override
@@ -345,6 +354,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seconds => 'seconds';
 
   @override
+  String get verificationTitle => 'Verification';
+
+  @override
+  String get verificationSubtitle =>
+      'We will send you a One Time Password\nvia email to verify your account';
+
+  @override
+  String get verificationCodeResent => 'Verification code resent';
+
+  @override
+  String failedToResendCode(String error) {
+    return 'Failed to resend code: $error';
+  }
+
+  @override
   String get logout => 'Logout';
 
   @override
@@ -361,12 +385,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registrationFailed => 'Registration failed. Please try again.';
-
-  @override
-  String get firstNameHint => 'Enter your first name';
-
-  @override
-  String get lastNameHint => 'Enter your last name';
 
   @override
   String get settings => 'Settings';
@@ -456,4 +474,97 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get category => 'Category';
+
+  @override
+  String get openMap => 'Open Map';
+
+  @override
+  String get noVenueInfo => 'No venue information available.';
+
+  @override
+  String get floorPlans => 'Floor Plans';
+
+  @override
+  String get mapOpenFailed => 'Could not open map.';
+
+  @override
+  String get eventPhotos => 'Event Photos';
+
+  @override
+  String get photosPrevious => 'Previous';
+
+  @override
+  String get photosNext => 'Next';
+
+  @override
+  String photosPage(int pageIndex) {
+    return 'Page $pageIndex';
+  }
+
+  @override
+  String get openChat => 'Open Chat';
+
+  @override
+  String get joinChat => 'Join Chat';
+
+  @override
+  String get exitGroup => 'Exit Group';
+
+  @override
+  String get chatJoined => 'Joined chat';
+
+  @override
+  String get forgotPasswordLink => 'Forgot password?';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot Password';
+
+  @override
+  String get usernameEmailIdLabel => 'Username / Email / ID';
+
+  @override
+  String get sendCode => 'Send Code';
+
+  @override
+  String get forgotPasswordSuccess => 'Verification code sent to your email';
+
+  @override
+  String get resetPasswordTitle => 'Reset Password';
+
+  @override
+  String get enterVerificationCode => 'Enter verification code';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get resetPasswordButton => 'Reset Password';
+
+  @override
+  String get enter6Digits => 'Enter 6 digits';
+
+  @override
+  String get min6Chars => 'Minimum 6 characters';
+
+  @override
+  String get pressBackAgainToExit => 'Press back again to exit';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String hoursShort(int hours) {
+    return '$hours hr';
+  }
+
+  @override
+  String get registerHeading => 'REGISTER';
 }

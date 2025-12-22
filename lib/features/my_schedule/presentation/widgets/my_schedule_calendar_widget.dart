@@ -1,6 +1,7 @@
 import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
+import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:calendar_view/calendar_view.dart';
@@ -95,13 +96,18 @@ class _CalendarContent extends StatelessWidget {
         );
       },
       showVerticalLine: true,
-      heightPerMinute: 2,
+      heightPerMinute: 3.6,
       minDay: DateTime.now().subtract(const Duration(days: 365)),
       maxDay: DateTime.now().add(const Duration(days: 365)),
-      timeLineBuilder: (date) => Text(
-        DateFormat('HH:mm').format(date),
-        style: AppTextStyles.bodySmall,
-        textAlign: TextAlign.center,
+      timeLineBuilder: (date) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Text(
+          DateFormat('h a').format(date),
+          style: AppTextStyles.bodyTiny.copyWith(
+            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -116,26 +122,41 @@ Widget _eventCardBuilder(
   DateTime endDuration,
 ) {
   final event = events.first;
-  final SessionModel? session = event.event as SessionModel?;
+  final SessionModel session = event.event as SessionModel;
 
   // --- Color based on type ---
   final baseColor = SessionCategoryHelper.getCategoryColor(
     context,
-    session!.category,
+    session.category,
   );
 
-  void _openDetails() {
+  void openDetails() {
+    final tag = session.categoryTag.trim().toUpperCase();
+    final isMentorship = tag == 'MENTORSHIP';
+    final page = isMentorship
+        ? MentorshipTimeSlotsPage(sessionId: session.id)
+        : SessionDetailsPage(session: session);
+
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => SessionDetailsPage(session: session!)),
+      MaterialPageRoute(builder: (_) => page),
     );
   }
 
   return GestureDetector(
-    onTap: _openDetails,
+    onTap: openDetails,
     child: ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        decoration: BoxDecoration(color: baseColor.withOpacity(0.10)),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              baseColor.withValues(alpha: 0.14),
+              baseColor.withValues(alpha: 0.24),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -157,116 +178,33 @@ Widget _eventCardBuilder(
                   mainAxisSize: MainAxisSize.min, // prevent flex overflow
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title + type chip
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            event.title,
-                            style: AppTextStyles.bodyMedium,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (session?.category.isNotEmpty == true) ...[
-                          const SizedBox(width: 6),
-                          Flexible(
-                            fit: FlexFit.loose,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: baseColor.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  session!.category,
-                                  style: AppTextStyles.bodySmall,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
+                    // Title
+                    Text(
+                      event.title,
+                      style: AppTextStyles.headlineSmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
 
                     const SizedBox(height: 4),
 
-                    // Time row
+                    // Subtitle: location
+                    if (event.description != null && event.description!.trim().isNotEmpty)
+                      Text(
+                        event.description!,
+                        style: AppTextStyles.bodySmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                    const SizedBox(height: 6),
+
+                    // Small time label
                     if (event.startTime != null && event.endTime != null)
-                      Row(
-                        children: [
-                          const Icon(Icons.access_time, size: 14),
-                          const SizedBox(width: 4),
-                          Flexible(
-                            child: Text(
-                              "${DateFormat('HH:mm').format(event.startTime!)} - "
-                              "${DateFormat('HH:mm').format(event.endTime!)}",
-                              style: AppTextStyles.bodySmall,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        "${DateFormat('h:mm a').format(event.startTime!)} • ${DateFormat('h:mm a').format(event.endTime!)}",
+                        style: AppTextStyles.bodyTiny,
                       ),
-
-                    // Location row
-                    if (event.description != null &&
-                        event.description!.trim().isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on_outlined, size: 14),
-                          const SizedBox(width: 4),
-                          Flexible(
-                            child: Text(
-                              event.description!,
-                              style: AppTextStyles.bodySmall,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-
-                    // Speakers row (avatars)
-                    if (session != null && session.speakers.isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          const Icon(Icons.person_outline, size: 14),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Wrap(
-                              spacing: 4,
-                              runSpacing: 2,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                ...session.speakers
-                                    .take(3)
-                                    .map(
-                                      (p) => CircleAvatar(
-                                        radius: 10,
-                                        backgroundImage: NetworkImage(
-                                          p.profileImageUrl,
-                                        ),
-                                      ),
-                                    ),
-                                  if (session.speakers.length > 3)
-                                  Text(
-                                      "+${session.speakers.length - 3}",
-                                    style: AppTextStyles.bodySmall,
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ],
                 ),
               ),

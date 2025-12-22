@@ -24,7 +24,7 @@ class SettingsPage extends ConsumerWidget {
             value: locale.languageCode == 'ar',
             onChanged: (on) async {
               final newLocale = Locale(on ? 'ar' : 'en');
-              ref.read(appLocaleProvider.notifier).state = newLocale;
+              ref.read(appLocaleProvider.notifier).set(newLocale);
               // Persist selection
               await ref.read(languageStorageProvider).saveLocale(newLocale.languageCode);
               // Optionally call backend via profile changeLanguageProvider if needed
@@ -41,7 +41,7 @@ class SettingsPage extends ConsumerWidget {
             groupValue: themeMode,
             onChanged: (mode) async {
               if (mode != null) {
-                ref.read(appThemeModeProvider.notifier).state = mode;
+                ref.read(appThemeModeProvider.notifier).set(mode);
                 await ref.read(themeStorageProvider).saveThemeMode('system');
               }
             },
@@ -52,7 +52,7 @@ class SettingsPage extends ConsumerWidget {
             groupValue: themeMode,
             onChanged: (mode) async {
               if (mode != null) {
-                ref.read(appThemeModeProvider.notifier).state = mode;
+                ref.read(appThemeModeProvider.notifier).set(mode);
                 await ref.read(themeStorageProvider).saveThemeMode('light');
               }
             },
@@ -63,7 +63,7 @@ class SettingsPage extends ConsumerWidget {
             groupValue: themeMode,
             onChanged: (mode) async {
               if (mode != null) {
-                ref.read(appThemeModeProvider.notifier).state = mode;
+                ref.read(appThemeModeProvider.notifier).set(mode);
                 await ref.read(themeStorageProvider).saveThemeMode('dark');
               }
             },

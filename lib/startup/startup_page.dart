@@ -6,6 +6,7 @@ import '../core/storage/secure_storage_service.dart';
 import '../features/auth/presentation/login_page.dart';
 import '../features/events/presentation/state/selected_event_provider.dart';
 import '../main_navigation/main_navigation_page.dart';
+import '../core/utilities/scheduling.dart';
 
 class StartUpPage extends ConsumerWidget {
   const StartUpPage({super.key});
@@ -55,8 +56,10 @@ class StartUpPage extends ConsumerWidget {
     //FOR NOW, WE DON'T NEED ANYTHING RELATED TO EVENTS, JUST GO TO THE MAIN NAVIGATION PAGE
     var eventId = await auth.getEventId();
     var eventDetails = await ref.watch(eventDetailsProvider(eventId).future);
-    ref.read(selectedEventProvider.notifier).state = eventDetails;
-    _go(const MainNavigationPage());
+    deferAfterBuild(() {
+      ref.read(selectedEventProvider.notifier).set(eventDetails);
+      _go(const MainNavigationPage());
+    });
 
     //}
   }

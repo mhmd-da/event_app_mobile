@@ -122,7 +122,7 @@ class AppScaffold extends ConsumerWidget {
               if (isLoading)
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     child: const Center(
                       child: SizedBox(
                         width: 64,

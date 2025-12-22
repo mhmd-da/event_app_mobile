@@ -11,8 +11,9 @@ class SessionModel extends BaseModel {
   final String categoryTag;
   final String track;
   final bool isRegistered;
+  final bool isChatMember;
   final List<Person> speakers;
-  final List<Person> mentors;
+  final Person? mentor;
   final List<Sponsor> sponsors;
   final List<Partner> partners;
   final List<SessionMaterial> materials;
@@ -28,8 +29,9 @@ class SessionModel extends BaseModel {
     required this.categoryTag,
     required this.track,
     required this.isRegistered,
+    this.isChatMember = false,
     required this.speakers,
-    required this.mentors,
+    this.mentor,
     required this.sponsors,
     required this.partners,
     required this.materials,
@@ -47,14 +49,16 @@ class SessionModel extends BaseModel {
       categoryTag: json['categoryTag'] ?? '',
       track: json['track'] ?? '',
       isRegistered: json['isRegistered'] ?? false,
-      speakers: (json['speakers'] as List?)
-          ?.map((s) => Person.fromJson(s))
-          .toList() ??
+        isChatMember: json['isChatMember'] ?? false,
+        speakers: (json['speakers'] as List?)
+            ?.map((s) => Person.fromJson(s))
+            .toList() ??
           [],
-      mentors: (json['mentors'] as List?)
-          ?.map((m) => Person.fromJson(m))
-          .toList() ??
-          [],
+        mentor: json['mentor'] != null
+          ? Person.fromJson(json['mentor'])
+          : ((json['mentors'] is List && (json['mentors'] as List).isNotEmpty)
+            ? Person.fromJson((json['mentors'] as List).first)
+            : null),
       sponsors: (json['sponsors'] as List?)
           ?.map((s) => Sponsor.fromJson(s))
           .toList() ??

@@ -17,6 +17,7 @@ class ImageCard extends StatelessWidget {
     this.cardTitle,
   });
 
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap?.call(),

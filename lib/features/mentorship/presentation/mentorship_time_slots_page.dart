@@ -81,21 +81,25 @@ class MentorshipTimeSlotsPage extends ConsumerWidget {
                                 )!.maxCapacityReached,
                         ),
                         trailing: ElevatedButton(
-                          onPressed: () async {
-                            if (timeSlot.isAvailable) {
-                              await ref
-                                  .read(mentorshipRepositoryProvider)
-                                  .bookTimeSlot(timeSlot.slotId);
-                            } else if (timeSlot.isBooked) {
-                              await ref
-                                  .read(mentorshipRepositoryProvider)
-                                  .cancelTimeSlot(timeSlot.slotId);
-                            }
-
-                            ref.refresh(
-                              mentorshipSessionsProvider(sessionId),
-                            );
-                          },
+                          onPressed: timeSlot.isAvailable
+                              ? () async {
+                                  await ref
+                                      .read(mentorshipRepositoryProvider)
+                                      .bookTimeSlot(timeSlot.slotId);
+                                  final _ = ref.refresh(
+                                    mentorshipSessionsProvider(sessionId),
+                                  );
+                                }
+                              : timeSlot.isBooked
+                                  ? () async {
+                                      await ref
+                                          .read(mentorshipRepositoryProvider)
+                                          .cancelTimeSlot(timeSlot.slotId);
+                                      final _ = ref.refresh(
+                                        mentorshipSessionsProvider(sessionId),
+                                      );
+                                    }
+                                  : null,
                           child: Text(
                             timeSlot.isAvailable
                                 ? AppLocalizations.of(context)!.register

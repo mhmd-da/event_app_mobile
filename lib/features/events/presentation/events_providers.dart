@@ -1,19 +1,29 @@
 import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/events/domain/event_details_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data/events_repository.dart';
 import '../domain/event_model.dart';
 
-final eventsRepositoryProvider = Provider<EventsRepository>((ref) {
+part 'events_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+EventsRepository eventsRepository(Ref ref) {
   return EventsRepository(ref.watch(apiClientProvider));
-});
+}
 
-final eventsListProvider = FutureProvider<List<EventModel>>((ref) async {
+@riverpod
+Future<List<EventModel>> eventsList(Ref ref) async {
   return ref.watch(eventsRepositoryProvider).getEvents();
-});
+}
 
-final eventDetailsProvider = FutureProvider.family<EventDetailsModel, int>((ref, eventId) async {
+@riverpod
+Future<EventDetailsModel> eventDetails(Ref ref, int eventId) async {
   return ref.watch(eventsRepositoryProvider).getEventDetails(eventId);
-});
+}
 
-final eventsTabProvider = StateProvider<int>((ref) => 1);
+@riverpod
+class EventsTab extends _$EventsTab {
+  @override
+  int build() => 1;
+  void set(int index) => state = index;
+}

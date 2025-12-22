@@ -1,12 +1,12 @@
 import 'package:event_app/features/mentors/data/mentor_repository.dart';
 import 'package:event_app/features/mentors/domain/mentor_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/api_client_provider.dart';
 
-final mentorRepositoryProvider = Provider<MentorRepository>((ref) {
-  return MentorRepository(ref.watch(apiClientProvider));
-});
+part 'mentor_providers.g.dart';
 
-final mentorsListProvider = FutureProvider<List<MentorModel>>((ref) async {
-  return ref.watch(mentorRepositoryProvider).getMentors('');
-});
+@Riverpod(keepAlive: true)
+MentorRepository mentorRepository(Ref ref) => MentorRepository(ref.watch(apiClientProvider));
+
+@riverpod
+Future<List<MentorModel>> mentorsList(Ref ref) async => ref.watch(mentorRepositoryProvider).getMentors('');

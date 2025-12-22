@@ -69,6 +69,9 @@
     }
   },
   "languageUpdateFailed": "Failed to update language",
+    "sessionChatTitle": "Session Chat",
+    "typeMessageHint": "Type a message",
+    "sendLabel": "Send",
   "changeLanguage": "Change Language",
   "venue": "Venue",
   "profile_name": "Name",
@@ -127,15 +130,24 @@
   "resendOtp": "Resend OTP",
   "resendOtpIn": "Resend OTP in",
   "seconds": "seconds",
+  "verificationTitle": "Verification",
+  "verificationSubtitle": "We will send you a One Time Password\nvia email to verify your account",
+  "verificationCodeResent": "Verification code resent",
+  "failedToResendCode": "Failed to resend code: {error}",
+  "@failedToResendCode": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
   "logout": "Logout",
   "fieldRequired": "This field is required.",
   "invalidEmail": "Please enter a valid email address.",
   "weakPassword": "Password is too weak.",
   "passwordsDontMatch": "Passwords don't match.",
   "registrationFailed": "Registration failed. Please try again.",
-  "firstNameHint": "Enter your first name",
-  "lastNameHint": "Enter your last name"
-  ,
   "settings": "Settings"
   ,
   "theme": "Theme",
@@ -175,6 +187,63 @@
   "category_OTHER": "Other",
   "type": "Type",
   "openWebsite": "Open Website",
-  "category": "Category"
-
+  "category": "Category",
+  "openMap": "Open Map",
+  "noVenueInfo": "No venue information available.",
+  "floorPlans": "Floor Plans",
+  "mapOpenFailed": "Could not open map.",
+  "eventPhotos": "Event Photos",
+  "photosPrevious": "Previous",
+  "photosNext": "Next",
+  "photosPage": "Page {pageIndex}",
+  "@photosPage": {
+    "placeholders": {
+      "pageIndex": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "openChat": "Open Chat",
+  "joinChat": "Join Chat",
+  "exitGroup": "Exit Group",
+  "chatJoined": "Joined chat"
+  ,
+  "forgotPasswordLink": "Forgot password?",
+  "forgotPasswordTitle": "Forgot Password",
+  "usernameEmailIdLabel": "Username / Email / ID",
+  "sendCode": "Send Code",
+  "forgotPasswordSuccess": "Verification code sent to your email",
+  "resetPasswordTitle": "Reset Password",
+  "enterVerificationCode": "Enter verification code",
+  "newPassword": "New Password",
+  "resetPasswordButton": "Reset Password",
+  "enter6Digits": "Enter 6 digits",
+  "min6Chars": "Minimum 6 characters",
+  "pressBackAgainToExit": "Press back again to exit"
+  ,
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "minutesShort": "{minutes} min",
+  "hoursShort": "{hours} hr",
+  "@minutesShort": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "@hoursShort": {
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "registerHeading": "REGISTER",
+  "@registerHeading": {
+    "description": "Heading text shown on the registration page"
+  }
 }

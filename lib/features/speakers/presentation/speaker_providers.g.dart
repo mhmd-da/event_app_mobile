@@ -6,187 +6,171 @@ part of 'speaker_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$speakerRepositoryHash() => r'ff2d1e63c4890234bc328ff60ef7f85583ca4cfd';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [speakerRepository].
 @ProviderFor(speakerRepository)
-final speakerRepositoryProvider =
-    AutoDisposeProvider<SpeakerRepository>.internal(
-      speakerRepository,
-      name: r'speakerRepositoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$speakerRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const speakerRepositoryProvider = SpeakerRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SpeakerRepositoryRef = AutoDisposeProviderRef<SpeakerRepository>;
-String _$speakersListHash() => r'85fa618f31ebb988d53dbc7be5b4b36e010f13a4';
-
-/// See also [speakersList].
-@ProviderFor(speakersList)
-final speakersListProvider =
-    AutoDisposeFutureProvider<List<SpeakerModel>>.internal(
-      speakersList,
-      name: r'speakersListProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$speakersListHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SpeakersListRef = AutoDisposeFutureProviderRef<List<SpeakerModel>>;
-String _$speakersListBySearchHash() =>
-    r'bcac883dba8e8b3f0f5c543276c6db3cf39bfa01';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [speakersListBySearch].
-@ProviderFor(speakersListBySearch)
-const speakersListBySearchProvider = SpeakersListBySearchFamily();
-
-/// See also [speakersListBySearch].
-class SpeakersListBySearchFamily
-    extends Family<AsyncValue<List<SpeakerModel>>> {
-  /// See also [speakersListBySearch].
-  const SpeakersListBySearchFamily();
-
-  /// See also [speakersListBySearch].
-  SpeakersListBySearchProvider call(String? search) {
-    return SpeakersListBySearchProvider(search);
-  }
-
-  @override
-  SpeakersListBySearchProvider getProviderOverride(
-    covariant SpeakersListBySearchProvider provider,
-  ) {
-    return call(provider.search);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'speakersListBySearchProvider';
-}
-
-/// See also [speakersListBySearch].
-class SpeakersListBySearchProvider
-    extends AutoDisposeFutureProvider<List<SpeakerModel>> {
-  /// See also [speakersListBySearch].
-  SpeakersListBySearchProvider(String? search)
-    : this._internal(
-        (ref) => speakersListBySearch(ref as SpeakersListBySearchRef, search),
-        from: speakersListBySearchProvider,
-        name: r'speakersListBySearchProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$speakersListBySearchHash,
-        dependencies: SpeakersListBySearchFamily._dependencies,
-        allTransitiveDependencies:
-            SpeakersListBySearchFamily._allTransitiveDependencies,
-        search: search,
+final class SpeakerRepositoryProvider
+    extends
+        $FunctionalProvider<
+          SpeakerRepository,
+          SpeakerRepository,
+          SpeakerRepository
+        >
+    with $Provider<SpeakerRepository> {
+  const SpeakerRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'speakerRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  SpeakersListBySearchProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.search,
-  }) : super.internal();
+  @override
+  String debugGetCreateSourceHash() => _$speakerRepositoryHash();
 
-  final String? search;
+  @$internal
+  @override
+  $ProviderElement<SpeakerRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  Override overrideWith(
-    FutureOr<List<SpeakerModel>> Function(SpeakersListBySearchRef provider)
-    create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: SpeakersListBySearchProvider._internal(
-        (ref) => create(ref as SpeakersListBySearchRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        search: search,
-      ),
-    );
+  SpeakerRepository create(Ref ref) {
+    return speakerRepository(ref);
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SpeakerRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SpeakerRepository>(value),
+    );
+  }
+}
+
+String _$speakerRepositoryHash() => r'beba8b7f326f771d7a2633f860275bb77a3a1cc8';
+
+@ProviderFor(speakersList)
+const speakersListProvider = SpeakersListProvider._();
+
+final class SpeakersListProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<SpeakerModel>>,
+          List<SpeakerModel>,
+          FutureOr<List<SpeakerModel>>
+        >
+    with
+        $FutureModifier<List<SpeakerModel>>,
+        $FutureProvider<List<SpeakerModel>> {
+  const SpeakersListProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'speakersListProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
   @override
-  AutoDisposeFutureProviderElement<List<SpeakerModel>> createElement() {
-    return _SpeakersListBySearchProviderElement(this);
+  String debugGetCreateSourceHash() => _$speakersListHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<SpeakerModel>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<SpeakerModel>> create(Ref ref) {
+    return speakersList(ref);
+  }
+}
+
+String _$speakersListHash() => r'bd71c26f7f9bb37dcabb84919df62b640b38bf11';
+
+@ProviderFor(speakersListBySearch)
+const speakersListBySearchProvider = SpeakersListBySearchFamily._();
+
+final class SpeakersListBySearchProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<SpeakerModel>>,
+          List<SpeakerModel>,
+          FutureOr<List<SpeakerModel>>
+        >
+    with
+        $FutureModifier<List<SpeakerModel>>,
+        $FutureProvider<List<SpeakerModel>> {
+  const SpeakersListBySearchProvider._({
+    required SpeakersListBySearchFamily super.from,
+    required String? super.argument,
+  }) : super(
+         retry: null,
+         name: r'speakersListBySearchProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$speakersListBySearchHash();
+
+  @override
+  String toString() {
+    return r'speakersListBySearchProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<SpeakerModel>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<SpeakerModel>> create(Ref ref) {
+    final argument = this.argument as String?;
+    return speakersListBySearch(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is SpeakersListBySearchProvider && other.search == search;
+    return other is SpeakersListBySearchProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, search.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SpeakersListBySearchRef
-    on AutoDisposeFutureProviderRef<List<SpeakerModel>> {
-  /// The parameter `search` of this provider.
-  String? get search;
-}
+String _$speakersListBySearchHash() =>
+    r'ed4a1ded76ee4b74e1516f79c59f461531824f2c';
 
-class _SpeakersListBySearchProviderElement
-    extends AutoDisposeFutureProviderElement<List<SpeakerModel>>
-    with SpeakersListBySearchRef {
-  _SpeakersListBySearchProviderElement(super.provider);
+final class SpeakersListBySearchFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<SpeakerModel>>, String?> {
+  const SpeakersListBySearchFamily._()
+    : super(
+        retry: null,
+        name: r'speakersListBySearchProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  SpeakersListBySearchProvider call(String? search) =>
+      SpeakersListBySearchProvider._(argument: search, from: this);
 
   @override
-  String? get search => (origin as SpeakersListBySearchProvider).search;
+  String toString() => r'speakersListBySearchProvider';
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

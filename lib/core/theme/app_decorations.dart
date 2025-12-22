@@ -5,13 +5,13 @@ class AppDecorations {
     static BoxDecoration agendaSessionCard(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
     borderRadius: BorderRadius.circular(14),
     border: Border(left: BorderSide(color: bgColor ?? Theme.of(ctx).primaryColor, width: 5)),
-    //color: bgColor ?? Theme.of(ctx).cardColor.withOpacity(0.06),
+    //color: bgColor ?? Theme.of(ctx).cardColor.withValues(alpha: 0.06),
     boxShadow: [
       BoxShadow(
         blurRadius: 6,
         spreadRadius: 1,
         offset: const Offset(0, 2),
-        color: bgColor ?? Theme.of(ctx).primaryColor.withOpacity(0.01),
+        color: bgColor ?? Theme.of(ctx).primaryColor.withValues(alpha: 0.01),
       )
     ],
   );
@@ -24,7 +24,7 @@ class AppDecorations {
         blurRadius: 8,
         spreadRadius: 1,
         offset: const Offset(0, 3),
-        color: Theme.of(ctx).cardTheme.color!.withOpacity(0.08),
+        color: Theme.of(ctx).cardTheme.color!.withValues(alpha: 0.08),
       )
     ],
   );
@@ -37,7 +37,7 @@ class AppDecorations {
         blurRadius: 5,
         spreadRadius: 1,
         offset: const Offset(0, 2),
-        color: Theme.of(ctx).shadowColor.withOpacity(0.05),
+        color: Theme.of(ctx).shadowColor.withValues(alpha: 0.05),
       )
     ],
   );
@@ -62,7 +62,7 @@ class AppDecorations {
         blurRadius: 3,
         spreadRadius: 1,
         offset: const Offset(0, 1),
-        color: Theme.of(ctx).shadowColor.withOpacity(0.04),
+        color: Theme.of(ctx).shadowColor.withValues(alpha: 0.04),
       )
     ],
   );
@@ -76,20 +76,20 @@ class AppDecorations {
             blurRadius: 5,
             spreadRadius: 1,
             offset: const Offset(0, 2),
-            color: Theme.of(ctx).shadowColor.withOpacity(0.06),
+            color: Theme.of(ctx).shadowColor.withValues(alpha: 0.06),
           )
         ],
       );
 
   static BoxDecoration tabButton(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
     borderRadius: BorderRadius.circular(14),
-    color: bgColor ?? Theme.of(ctx).cardColor.withOpacity(0.06),
+    color: bgColor ?? Theme.of(ctx).cardColor.withValues(alpha: 0.06),
     boxShadow: [
       BoxShadow(
         blurRadius: 6,
         spreadRadius: 1,
         offset: const Offset(0, 2),
-        color: Theme.of(ctx).shadowColor.withOpacity(0.04),
+        color: Theme.of(ctx).shadowColor.withValues(alpha: 0.04),
       )
     ],
   );

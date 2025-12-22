@@ -69,6 +69,9 @@
     }
   },
   "languageUpdateFailed": "فشل في تحديث اللغة",
+    "sessionChatTitle": "دردشة الجلسة",
+    "typeMessageHint": "اكتب رسالة",
+    "sendLabel": "إرسال",
   "changeLanguage": "تغيير اللغة",
 
   "profile_name": "الاسم",
@@ -132,15 +135,24 @@
   "resendOtp": "إعادة إرسال الرمز",
   "resendOtpIn": "إعادة إرسال الرمز خلال",
   "seconds": "ثواني",
+  "verificationTitle": "التحقق",
+  "verificationSubtitle": "سنرسل لك رمز تحقق لمرة واحدة\nعبر البريد الإلكتروني لتأكيد حسابك",
+  "verificationCodeResent": "تم إعادة إرسال رمز التحقق",
+  "failedToResendCode": "فشل إعادة إرسال الرمز: {error}",
+  "@failedToResendCode": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "خطأ في الشبكة"
+      }
+    }
+  },
   "logout": "تسجيل الخروج",
   "fieldRequired": "هذا الحقل مطلوب.",
   "invalidEmail": "يرجى إدخال بريد إلكتروني صالح.",
   "weakPassword": "كلمة المرور ضعيفة للغاية.",
   "passwordsDontMatch": "كلمتا المرور غير متطابقتين.",
   "registrationFailed": "فشل التسجيل. يرجى المحاولة مرة أخرى.",
-  "firstNameHint": "أدخل اسمك الأول",
-  "lastNameHint": "أدخل اسمك الأخير"
-  ,
   "settings": "الإعدادات"
   ,
   "theme": "السمة",
@@ -180,5 +192,61 @@
   "category_OTHER": "أخرى",
   "type": "النوع",
   "openWebsite": "افتح الموقع",
-  "category": "الفئة"
+  "category": "الفئة",
+  "openMap": "افتح الخريطة",
+  "noVenueInfo": "لا تتوفر معلومات عن المكان.",
+  "floorPlans": "مخططات الطوابق",
+  "mapOpenFailed": "تعذر فتح الخريطة.",
+  "eventPhotos": "صور الفعالية",
+  "photosPrevious": "السابق",
+  "photosNext": "التالي",
+  "photosPage": "الصفحة {pageIndex}",
+  "@photosPage": {
+    "placeholders": {
+      "pageIndex": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "openChat": "افتح المحادثة",
+  "joinChat": "انضم للمحادثة",
+  "exitGroup": "الخروج من المجموعة",
+  "chatJoined": "تم الانضمام إلى المحادثة",
+  "forgotPasswordLink": "هل نسيت كلمة المرور؟",
+  "forgotPasswordTitle": "نسيت كلمة المرور",
+  "usernameEmailIdLabel": "اسم المستخدم / البريد الإلكتروني / المعرف",
+  "sendCode": "إرسال الرمز",
+  "forgotPasswordSuccess": "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
+  "resetPasswordTitle": "إعادة تعيين كلمة المرور",
+  "enterVerificationCode": "أدخل رمز التحقق",
+  "newPassword": "كلمة المرور الجديدة",
+  "resetPasswordButton": "إعادة تعيين كلمة المرور",
+  "enter6Digits": "أدخل 6 أرقام",
+  "min6Chars": "6 أحرف على الأقل",
+  "pressBackAgainToExit": "اضغط رجوع مرة أخرى للخروج",
+  "today": "اليوم",
+  "tomorrow": "غدًا",
+  "minutesShort": "{minutes} دقيقة",
+  "hoursShort": "{hours} س",
+  "@minutesShort": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "@hoursShort": {
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "registerHeading": "تسجيل",
+  "@registerHeading": {
+    "description": "عنوان صفحة التسجيل"
+  }
 }

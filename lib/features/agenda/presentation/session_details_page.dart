@@ -1,6 +1,7 @@
 import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/core/utilities/logger.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
@@ -12,6 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:event_app/features/chat/presentation/chat_providers.dart';
+import 'package:event_app/core/utilities/scheduling.dart';
+import 'package:event_app/features/chat/presentation/chat_page.dart';
+import 'package:event_app/core/widgets/notifier.dart';
 
 class SessionDetailsPage extends ConsumerWidget {
   const SessionDetailsPage({super.key, required this.session});
@@ -24,6 +29,12 @@ class SessionDetailsPage extends ConsumerWidget {
       sessionRegistrationStateProvider(session),
     );
 
+    deferAfterBuild(() {
+      ref
+          .read(sessionChatMembershipProvider(session.id).notifier)
+          .initialize(session.isChatMember);
+    });
+
     return AppScaffold(
       title: session.name ?? '',
       body: SingleChildScrollView(
@@ -35,7 +46,9 @@ class SessionDetailsPage extends ConsumerWidget {
             const SizedBox(height: AppSpacing.section),
             _buildRegistrationButton(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
-            if (session.startTime != null) _buildReminderChip(context, ref),
+            _buildReminderChip(context, ref),
+            const SizedBox(height: AppSpacing.section),
+            _buildChatActions(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
             if (session.speakers.isNotEmpty)
               _buildSection(
@@ -70,6 +83,65 @@ class SessionDetailsPage extends ConsumerWidget {
     );
   }
 
+  Widget _buildChatActions(
+    BuildContext context,
+    WidgetRef ref,
+    bool isRegisteredNow,
+  ) {
+    if (!isRegisteredNow) return const SizedBox.shrink();
+    final joined = ref.watch(sessionChatMembershipProvider(session.id));
+    final l10n = AppLocalizations.of(context)!;
+
+    if (joined) {
+      return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.chat_bubble_outline),
+          label: Text(l10n.openChat),
+          onPressed: () async {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => ChatPage(sessionId: session.id),
+              ),
+            );
+          },
+          style: AppDecorations.primaryButton(context),
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.group_add_outlined),
+          label: Text(l10n.joinChat),
+          onPressed: () async {
+            final navigator = Navigator.of(context);
+            try {
+              final svc = ref.read(chatRealtimeServiceProvider);
+              await svc.start();
+              await svc.joinSession(session.id);
+              ref
+                  .read(sessionChatMembershipProvider(session.id).notifier)
+                  .set(true);
+              if (!context.mounted) return;
+              AppNotifier.success(context, l10n.chatJoined);
+              // Auto-open chat after successful join to give immediate feedback
+              navigator.push(
+                MaterialPageRoute(
+                  builder: (_) => ChatPage(sessionId: session.id),
+                ),
+              );
+            } catch (e, st) {
+              logError('Join chat failed', e, st);
+              AppNotifier.error(context, l10n.actionFailed);
+            }
+          },
+          style: AppDecorations.primaryButton(context),
+        ),
+      );
+    }
+  }
+
   Widget _buildRegistrationButton(
     BuildContext context,
     WidgetRef ref,
@@ -83,7 +155,7 @@ class SessionDetailsPage extends ConsumerWidget {
             child: ElevatedButton.icon(
               label: Text(
                 isRegisteredNow
-                  ? AppLocalizations.of(context)!.unregister
+                    ? AppLocalizations.of(context)!.unregister
                     : AppLocalizations.of(context)!.addToAgenda,
               ),
               icon: Icon(
@@ -92,15 +164,22 @@ class SessionDetailsPage extends ConsumerWidget {
                     : Icons.check_circle_outline,
               ),
               onPressed: () async {
-                final messenger = ScaffoldMessenger.of(context);
                 final addedText = AppLocalizations.of(context)!.addedSuccess;
-                final removedText = AppLocalizations.of(context)!.removedSuccess;
+                final removedText = AppLocalizations.of(
+                  context,
+                )!.removedSuccess;
                 final failedText = AppLocalizations.of(context)!.actionFailed;
                 try {
                   if (isRegisteredNow) {
                     await ref
                         .read(sessionRepositoryProvider)
                         .cancelSessionRegistration(session.id);
+                    // Ensure chat membership resets when unregistering
+                    ref
+                        .read(
+                          sessionChatMembershipProvider(session.id).notifier,
+                        )
+                        .set(false);
                   } else {
                     await ref
                         .read(sessionRepositoryProvider)
@@ -108,24 +187,18 @@ class SessionDetailsPage extends ConsumerWidget {
                   }
                   Future.microtask(() {
                     ref
-                            .read(sessionRegistrationStateProvider(session).notifier)
-                            .state =
-                        !isRegisteredNow;
+                        .read(
+                          sessionRegistrationStateProvider(session).notifier,
+                        )
+                        .set(!isRegisteredNow);
                   });
-
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        isRegisteredNow ? removedText : addedText,
-                      ),
-                    ),
+                  if (!context.mounted) return;
+                  AppNotifier.success(
+                    context,
+                    isRegisteredNow ? removedText : addedText,
                   );
                 } catch (e) {
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: Text(failedText),
-                    ),
-                  );
+                  AppNotifier.error(context, failedText);
                 }
               },
               style: isRegisteredNow
@@ -246,7 +319,10 @@ class SessionDetailsPage extends ConsumerWidget {
                           height: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Icon(Icons.arrow_drop_down, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      : Icon(
+                          Icons.arrow_drop_down,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                 ],
               ),
             ),
@@ -258,14 +334,8 @@ class SessionDetailsPage extends ConsumerWidget {
 
   void _showReminderPicker(BuildContext context, WidgetRef ref) async {
     final options = const [5, 10, 15, 30, 60, 1440];
-    final labels = {
-      5: '5 minutes',
-      10: '10 minutes',
-      15: '15 minutes',
-      30: '30 minutes',
-      60: '1 hour',
-      1440: '1 day',
-    };
+
+    final l10n = AppLocalizations.of(context)!;
 
     final selected = await showModalBottomSheet<int>(
       context: context,
@@ -275,7 +345,10 @@ class SessionDetailsPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: AppSpacing.item),
-              Text(AppLocalizations.of(context)!.alertMeBefore, style: AppTextStyles.headlineSmall),
+              Text(
+                AppLocalizations.of(context)!.alertMeBefore,
+                style: AppTextStyles.headlineSmall,
+              ),
               const SizedBox(height: AppSpacing.item),
               for (final m in options)
                 ListTile(
@@ -296,28 +369,42 @@ class SessionDetailsPage extends ConsumerWidget {
 
     if (selected == null) return;
 
-    final messenger = ScaffoldMessenger.of(context);
-    ref.read(sessionReminderSavingProvider(session.id).notifier).state = true;
+    ref.read(sessionReminderSavingProvider(session.id).notifier).set(true);
     try {
       if (selected == -1) {
-        final ok = await ref.read(sessionRepositoryProvider).deleteReminder(session.id);
+        final ok = await ref
+            .read(sessionRepositoryProvider)
+            .deleteReminder(session.id);
         if (ok) {
-          ref.read(sessionReminderEnabledProvider(session.id).notifier).state = false;
-          ref.read(sessionReminderLeadMinutesProvider(session.id).notifier).state = null;
-          messenger.showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.disableReminder)));
+          ref
+              .read(sessionReminderEnabledProvider(session.id).notifier)
+              .set(false);
+          ref
+              .read(sessionReminderLeadMinutesProvider(session.id).notifier)
+              .set(null);
+          if (!context.mounted) return;
+          AppNotifier.info(context, l10n.disableReminder);
         }
       } else {
-        final ok = await ref.read(sessionRepositoryProvider).setReminder(session.id, selected, true);
+        final ok = await ref
+            .read(sessionRepositoryProvider)
+            .setReminder(session.id, selected, true);
         if (ok) {
-          ref.read(sessionReminderEnabledProvider(session.id).notifier).state = true;
-          ref.read(sessionReminderLeadMinutesProvider(session.id).notifier).state = selected;
-          messenger.showSnackBar(SnackBar(content: Text('${AppLocalizations.of(context)!.reminder}: ${_optionLabel(context, selected)}')));
+          ref
+              .read(sessionReminderEnabledProvider(session.id).notifier)
+              .set(true);
+          ref
+              .read(sessionReminderLeadMinutesProvider(session.id).notifier)
+              .set(selected);
+          final selectedLabel = _labelForLeadMinutesL10n(l10n, selected);
+          if (!context.mounted) return;
+          AppNotifier.info(context, '${l10n.reminder}: $selectedLabel');
         }
       }
-    } catch (e) {
-      messenger.showSnackBar(const SnackBar(content: Text('Failed to update reminder')));
+    } catch (_) {
+      AppNotifier.error(context, 'Failed to update reminder');
     } finally {
-      ref.read(sessionReminderSavingProvider(session.id).notifier).state = false;
+      ref.read(sessionReminderSavingProvider(session.id).notifier).set(false);
     }
   }
 
@@ -340,9 +427,28 @@ class SessionDetailsPage extends ConsumerWidget {
     }
   }
 
+  String _labelForLeadMinutesL10n(AppLocalizations l10n, int lead) {
+    switch (lead) {
+      case 5:
+        return l10n.minutesBefore(5);
+      case 10:
+        return l10n.minutesBefore(10);
+      case 15:
+        return l10n.minutesBefore(15);
+      case 30:
+        return l10n.minutesBefore(30);
+      case 60:
+        return l10n.minutesBefore(60);
+      case 1440:
+        return l10n.minutesBefore(1440);
+      default:
+        return l10n.minutesBefore(lead);
+    }
+  }
+
   String _optionLabel(BuildContext context, int lead) {
-    return _labelForLeadMinutes(context, lead)
-        .replaceAll(AppLocalizations.of(context)!.reminder + ': ', '');
+    final reminderPrefix = '${AppLocalizations.of(context)!.reminder}: ';
+    return _labelForLeadMinutes(context, lead).replaceAll(reminderPrefix, '');
   }
 
   Widget _buildSection(
@@ -368,10 +474,10 @@ class SessionDetailsPage extends ConsumerWidget {
           decoration: AppDecorations.cardContainer(context),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundImage: person.profileImageUrl != null
+              backgroundImage: person.profileImageUrl.isNotEmpty
                   ? NetworkImage(person.profileImageUrl)
                   : null,
-              child: person.profileImageUrl == null
+              child: person.profileImageUrl.isEmpty
                   ? const Icon(Icons.person_outline)
                   : null,
             ),
@@ -434,7 +540,10 @@ class SessionDetailsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMaterialsList(BuildContext context, List<SessionMaterial> materials) {
+  Widget _buildMaterialsList(
+    BuildContext context,
+    List<SessionMaterial> materials,
+  ) {
     return Column(
       children: materials.map((m) {
         final icon = _iconForUrl(m.url);
@@ -469,15 +578,22 @@ class SessionDetailsPage extends ConsumerWidget {
   IconData _iconForUrl(String url) {
     final lower = url.toLowerCase();
     if (lower.endsWith('.pdf')) return Icons.picture_as_pdf_outlined;
-    if (lower.endsWith('.zip') || lower.endsWith('.rar')) return Icons.archive_outlined;
-    if (lower.endsWith('.ppt') || lower.endsWith('.pptx')) return Icons.slideshow_outlined;
-    if (lower.endsWith('.doc') || lower.endsWith('.docx')) return Icons.description_outlined;
-    if (lower.endsWith('.xls') || lower.endsWith('.xlsx')) return Icons.table_chart_outlined;
+    if (lower.endsWith('.zip') || lower.endsWith('.rar'))
+      return Icons.archive_outlined;
+    if (lower.endsWith('.ppt') || lower.endsWith('.pptx'))
+      return Icons.slideshow_outlined;
+    if (lower.endsWith('.doc') || lower.endsWith('.docx'))
+      return Icons.description_outlined;
+    if (lower.endsWith('.xls') || lower.endsWith('.xlsx'))
+      return Icons.table_chart_outlined;
     return Icons.link_outlined;
   }
 
-  Future<void> _downloadMaterial(BuildContext context, SessionMaterial material) async {
-    final messenger = ScaffoldMessenger.of(context);
+  Future<void> _downloadMaterial(
+    BuildContext context,
+    SessionMaterial material,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final dir = await getApplicationDocumentsDirectory();
       final fileName = _safeFileName(material.name, material.url);
@@ -486,26 +602,30 @@ class SessionDetailsPage extends ConsumerWidget {
       final dio = Dio();
       final response = await dio.get<List<int>>(
         material.url,
-        options: Options(responseType: ResponseType.bytes, followRedirects: true),
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+        ),
       );
 
       final file = File(savePath);
       await file.writeAsBytes(response.data ?? [], flush: true);
-
-      messenger.showSnackBar(
-        SnackBar(content: Text('Saved to $fileName')),
-      );
+      if (!context.mounted) return;
+      AppNotifier.success(context, 'Saved to $fileName');
     } catch (e) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.actionFailed)),
-      );
+      AppNotifier.error(context, l10n.actionFailed);
     }
   }
 
   String _safeFileName(String name, String url) {
     final uri = Uri.parse(url);
-    final urlName = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : 'file';
-    final base = (name.isNotEmpty ? name : urlName).replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+    final urlName = uri.pathSegments.isNotEmpty
+        ? uri.pathSegments.last
+        : 'file';
+    final base = (name.isNotEmpty ? name : urlName).replaceAll(
+      RegExp(r'[^A-Za-z0-9._-]'),
+      '_',
+    );
     return base.isEmpty ? 'file' : base;
   }
 
@@ -525,7 +645,11 @@ class SessionDetailsPage extends ConsumerWidget {
 }
 
 class _FeedbackSheet extends StatefulWidget {
-  const _FeedbackSheet({required this.sessionId, required this.ref, required this.colors});
+  const _FeedbackSheet({
+    required this.sessionId,
+    required this.ref,
+    required this.colors,
+  });
   final int sessionId;
   final WidgetRef ref;
   final ColorScheme colors;
@@ -557,7 +681,10 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(AppLocalizations.of(context)!.sessionFeedbackTitle, style: AppTextStyles.headlineMedium),
+          Text(
+            AppLocalizations.of(context)!.sessionFeedbackTitle,
+            style: AppTextStyles.headlineMedium,
+          ),
           const SizedBox(height: AppSpacing.item),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -566,7 +693,9 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
               return IconButton(
                 icon: Icon(
                   filled ? Icons.star : Icons.star_border,
-                  color: filled ? widget.colors.primary : widget.colors.onSurfaceVariant,
+                  color: filled
+                      ? widget.colors.primary
+                      : widget.colors.onSurfaceVariant,
                 ),
                 onPressed: () => setState(() => rating = i + 1),
               );
@@ -588,29 +717,33 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.colors.primary,
                 foregroundColor: widget.colors.onPrimary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () async {
+                final navigator = Navigator.of(context);
+                final l10n = AppLocalizations.of(context)!;
                 if (rating == 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.pleaseSelectRating)),
-                  );
+                  AppNotifier.info(context, l10n.pleaseSelectRating);
                   return;
                 }
                 try {
-                  await widget.ref.read(sessionRepositoryProvider).submitFeedback(
+                  await widget.ref
+                      .read(sessionRepositoryProvider)
+                      .submitFeedback(
                         widget.sessionId,
                         rating,
                         commentController.text,
                       );
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Feedback submitted. Thank you!')),
+                  if (!mounted) return;
+                  navigator.pop();
+                  AppNotifier.success(
+                    context,
+                    'Feedback submitted. Thank you!',
                   );
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to submit feedback')),
-                  );
+                  AppNotifier.error(context, l10n.actionFailed);
                 }
               },
               child: Text(AppLocalizations.of(context)!.submit),

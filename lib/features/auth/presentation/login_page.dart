@@ -1,162 +1,195 @@
-import 'package:event_app/core/storage/secure_storage_service.dart';
-import 'package:event_app/features/auth/presentation/registration_page.dart';
-import 'package:event_app/features/auth/presentation/code_verification_page.dart';
-import 'package:event_app/features/events/presentation/events_providers.dart';
-import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
-import 'package:event_app/features/profile/presentation/profile_providers.dart';
-import 'package:event_app/main_navigation/main_navigation_page.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:event_app/l10n/app_localizations.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'login_controller.dart';
 
-class LoginPage extends ConsumerWidget {
-  LoginPage({super.key});
+import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/core/theme/app_colors.dart';
+import 'package:event_app/core/theme/app_spacing.dart';
+import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/core/widgets/app_text_input.dart';
+import 'package:event_app/core/widgets/app_primary_button.dart';
 
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final ValueNotifier<bool> _showPassword = ValueNotifier(false);
+import 'package:event_app/features/auth/presentation/login_controller.dart';
+import 'package:event_app/features/auth/presentation/login_state.dart';
+import 'package:event_app/features/auth/presentation/forgot_password_page.dart';
+import 'package:event_app/features/auth/presentation/registration_page.dart';
+import 'package:event_app/core/widgets/app_brand_waves.dart';
+import 'package:event_app/features/auth/presentation/code_verification_page.dart';
+import 'package:event_app/startup/startup_page.dart';
+
+class LoginPage extends ConsumerStatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final loginState = ref.watch(loginControllerProvider);
+  ConsumerState<LoginPage> createState() => _LoginPageState();
+}
 
-    if (loginState.isLoggedIn) {
-      Future.microtask(() async {
-        final storage = SecureStorageService();
-        final eventId = await storage.getEventId();
-        final event = await ref.read(eventDetailsProvider(eventId).future);
+class _LoginPageState extends ConsumerState<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _usernameFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
-        ref.read(selectedEventProvider.notifier).state = event;
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _usernameFocus.dispose();
+    _passwordFocus.dispose();
+    super.dispose();
+  }
 
-        var fcmToken = await storage.getFcmToken();
-        if (fcmToken == null) {
-          // Fetch a fresh token if not in storage (e.g., after logout)
-          fcmToken = await FirebaseMessaging.instance.getToken();
-          if (fcmToken != null) {
-            await storage.saveFcmToken(fcmToken);
-          }
-        }
-        if (fcmToken != null) {
-          ref.read(profileRepositoryProvider).registerDevice(fcmToken);
-        }
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => MainNavigationPage()),
+  void _submitLogin() {
+    ref.read(loginControllerProvider.notifier).login(
+          _usernameController.text.trim(),
+          _passwordController.text,
         );
-      });
-    } else if (loginState.requiresVerification) {
-      Future.microtask(() async {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const CodeVerificationPage(),
-          ),
-        );
-      });
-    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final LoginState loginState = ref.watch(loginControllerProvider);
+    final l10n = AppLocalizations.of(context)!;
+    // React to login state changes for navigation side-effects
+    ref.listen<LoginState>(loginControllerProvider, (prev, next) {
+      if (!mounted) return;
+      // Navigate to verification if required
+      if (next.requiresVerification == true && (prev?.requiresVerification != true)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const CodeVerificationPage()),
+          );
+        });
+        return;
+      }
+      // Navigate to startup (which routes to main) on successful login
+      if (next.isLoggedIn == true && (prev?.isLoggedIn != true)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const StartUpPage()),
+            (route) => false,
+          );
+        });
+      }
+    });
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Spacer(),
-              Text(
-                AppLocalizations.of(context)!.welcomeBack,
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                AppLocalizations.of(context)!.loginToContinue,
-                style: const TextStyle(fontSize: 16, color: Colors.black54),
-              ),
-              const SizedBox(height: 40),
+      resizeToAvoidBottomInset: false,
+      bottomNavigationBar: const AppFooterWave(height: 120),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppHeaderWave(
+            height: 200,
+            overlay: Builder(
+              builder: (context) {
+                final topInset = MediaQuery.of(context).padding.top;
+                return Positioned(
+                  right: 18,
+                  top: topInset + 8,
+                  child: CircleAvatar(
+                    radius: 44,
+                    backgroundColor: Colors.white.withValues(alpha: 0.9),
+                    child: const CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage('assets/icons/app_icon.png'),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
 
-              // Email field
-              TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.emailLabel,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.section),
 
-              // Password field
-              ValueListenableBuilder<bool>(
-                valueListenable: _showPassword,
-                builder: (context, value, child) {
-                  return TextField(
-                    controller: _passwordController,
-                    obscureText: !value,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.password,
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          value ? Icons.visibility_off : Icons.visibility,
-                        ),
-                        onPressed: () => _showPassword.value = !value,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              'LOGIN',
+              style: AppTextStyles.headlineLarge.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.item),
+
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppTextInput(
+                      controller: _usernameController,
+                      focusNode: _usernameFocus,
+                      label: l10n.emailLabel,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => _passwordFocus.requestFocus(),
+                      prefixIcon: const Icon(Icons.person_outline),
+                    ),
+                    const SizedBox(height: AppSpacing.item),
+                    AppTextInput(
+                      controller: _passwordController,
+                      focusNode: _passwordFocus,
+                      label: l10n.password,
+                      isPassword: true,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _submitLogin(),
+                      prefixIcon: const Icon(Icons.lock_outline),
+                    ),
+                    const SizedBox(height: AppSpacing.small),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordPage(),
+                            ),
+                          );
+                        },
+                        child: Text(l10n.forgotPasswordLink),
                       ),
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Error message
-              if (loginState.errorMessage != null)
-                Text(
-                  loginState.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              const SizedBox(height: 16),
-
-              // Login button
-              ElevatedButton(
-                onPressed: loginState.isLoading
-                    ? null
-                    : () async {
-                        ref
-                            .read(loginControllerProvider.notifier)
-                            .login(
-                              _usernameController.text,
-                              _passwordController.text,
-                            );
+                    if (loginState.errorMessage != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        loginState.errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.item),
+                    loginState.isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : AppPrimaryButton(
+                            label: l10n.continueButton,
+                            onPressed: _submitLogin,
+                          ),
+                    const SizedBox(height: AppSpacing.small),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const RegistrationPage(),
+                          ),
+                        );
                       },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                ),
-                child: loginState.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : Text(AppLocalizations.of(context)!.continueButton),
-              ),
-
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const RegistrationPage(),
+                      child: Text(l10n.dontHaveAccountRegister),
                     ),
-                  );
-                },
-                child: Text(
-                  AppLocalizations.of(context)!.dontHaveAccountRegister,
+                    const SizedBox(height: 140),
+                  ],
                 ),
               ),
-              const Spacer(),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
+
+// --- Decorative clippers for header/footer waves ---
+// Using shared app_brand_waves clippers

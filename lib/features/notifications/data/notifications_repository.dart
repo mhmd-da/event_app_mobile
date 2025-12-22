@@ -1,12 +1,11 @@
 import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/core/config/app_config.dart';
-import 'package:event_app/core/network/api_client.dart';
 import '../domain/notification_model.dart';
 
 class NotificationsRepository extends BaseApiRepository<AppNotification>{
   
-    NotificationsRepository(ApiClient client)
-      : super(client, fromJson: (json) => AppNotification.fromJson(json));
+    NotificationsRepository(super._apiClient)
+      : super(fromJson: (json) => AppNotification.fromJson(json));
 
   Future<List<AppNotification>> getNotifications() async => await fetchList(AppConfig.getNotifications); 
 

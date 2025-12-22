@@ -24,7 +24,7 @@ class LanguageSwitcherWidget extends ConsumerWidget {
               final newLocale = isArabic ? const Locale('ar') : const Locale('en');
 
               // Update UI immediately
-              ref.read(appLocaleProvider.notifier).state = newLocale;
+              ref.read(appLocaleProvider.notifier).set(newLocale);
 
               // Save preference
               ref.read(languageStorageProvider).saveLocale(newLocale.languageCode);

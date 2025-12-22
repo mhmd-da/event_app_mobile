@@ -1,12 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../repository/faqs_repository.dart';
 import '../domain/faqs_model.dart';
 import '../../../core/network/api_client_provider.dart';
 
-final faqsRepositoryProvider = Provider<FaqsRepository>((ref) {
-  return FaqsRepository(ref.watch(apiClientProvider));
-});
+part 'faqs_providers.g.dart';
 
-final faqsListProvider = FutureProvider<List<Faq>>((ref) async {
-  return ref.watch(faqsRepositoryProvider).getFaqs();
-});
+@Riverpod(keepAlive: true)
+FaqsRepository faqsRepository(Ref ref) => FaqsRepository(ref.watch(apiClientProvider));
+
+@riverpod
+Future<List<Faq>> faqsList(Ref ref) async => ref.watch(faqsRepositoryProvider).getFaqs();

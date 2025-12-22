@@ -1,11 +1,14 @@
 class AppConfig {
-  static const String baseUrl = "https://api.event-management-digital-ocean.online/api";
+  static const String baseApiUrl = "https://api.event-management-digital-ocean.online/api";
+  static const String baseHubUrl = "https://api.event-management-digital-ocean.online/chatHub";
 
   // 🔹 Auth Endpoints
   static const String login = "/auth/login";
-  static const String register = "/user/register";
-  static const String resendVerificationCode = "/user/send-verification-code";
-  static const String verifyCode = "/user/verify-code";
+  static const String register = "/auth/register";
+  static const String resendVerificationCode = "/auth/send-verification-code";
+  static const String verifyCode = "/auth/verify-code";
+  static const String forgetPassword = "/auth/forget-password";
+  static const String resetPassword = "/auth/reset-password";
 
   // 🔹 Events Endpoints
   static const String getEvents = "/events";
@@ -54,7 +57,7 @@ class AppConfig {
   // 🔹 FAQs
   static const String getFaqs = "/faqs";
 
-  // 🔹 FAQs
+  // 🔹 Users
   static const String getProfile = "/user/profile";
   static const String updateProfile = "/user/profile";
   static const String registerDevice = "/user/register-device";
@@ -62,6 +65,11 @@ class AppConfig {
 
   // 🔹 Contact Requests
   static const String submitContactRequest = "/contact-request";
+
+  // 🔹 Event Photos
+  static String getEventPhotos(int eventId, {int pageIndex = 1, int pageSize = 24}) {
+    return "/events/$eventId/photos?pageIndex=$pageIndex&pageSize=$pageSize";
+  }
 
   // 🔹 Static Maps (thumbnail previews)
   // Provide this via: --dart-define=GOOGLE_STATIC_MAPS_KEY=YOUR_KEY

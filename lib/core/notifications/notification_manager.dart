@@ -1,12 +1,13 @@
 import 'package:event_app/core/storage/secure_storage_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'local_notification_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'notification_manager.g.dart';
 
 /// Riverpod provider for NotificationManager
-final notificationManagerProvider = Provider<NotificationManager>((ref) {
-  return NotificationManager(ref);
-});
+@Riverpod(keepAlive: true)
+NotificationManager notificationManager(Ref ref) => NotificationManager(ref);
 
 class NotificationManager {
   final Ref ref;
@@ -21,6 +22,7 @@ class NotificationManager {
 
     // Get FCM token
     final token = await _fcm.getToken();
+    // ignore: avoid_print
     print("FCM TOKEN = $token");
 
     if (token != null) {

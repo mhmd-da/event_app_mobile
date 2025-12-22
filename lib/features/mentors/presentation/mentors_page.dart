@@ -6,10 +6,18 @@ import 'package:event_app/features/mentors/presentation/mentor_details_page.dart
 import 'package:event_app/features/mentors/presentation/mentor_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 
+part 'mentors_page.g.dart';
+
 // Holds the current search text typed in the CustomSearchBar
-final mentorSearchTextProvider = StateProvider<String>((ref) => "");
+@riverpod
+class MentorSearchText extends _$MentorSearchText {
+  @override
+  String build() => "";
+  void set(String value) => state = value;
+}
 
 class MentorsPage extends ConsumerWidget {
   const MentorsPage({super.key}); // no underscore prefix
@@ -27,7 +35,7 @@ class MentorsPage extends ConsumerWidget {
           // -------- SEARCH BAR TOP --------
           CustomSearchBar(
             onChanged: (text) =>
-                ref.read(mentorSearchTextProvider.notifier).state = text,
+              ref.read(mentorSearchTextProvider.notifier).set(text),
           ),
           Expanded(
             child: mentorsAsync.when(

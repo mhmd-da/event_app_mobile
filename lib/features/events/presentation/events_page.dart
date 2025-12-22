@@ -73,7 +73,7 @@ class _EventsPageState extends ConsumerState<EventsPage> {
             EventSegmentedControl(
               currentTab: currentTab,
               onTabSelected: (index) {
-                ref.read(eventsTabProvider.notifier).state = index;
+                ref.read(eventsTabProvider.notifier).set(index);
                 _pageController.animateToPage(
                   index,
                   duration: const Duration(milliseconds: 250),
@@ -88,14 +88,14 @@ class _EventsPageState extends ConsumerState<EventsPage> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
-                  ref.refresh(eventsListProvider);
+                  final _ = ref.refresh(eventsListProvider);
                 },
                 child: eventsAsync.when(
                   data: (events) {
                     return PageView(
                       controller: _pageController,
                       onPageChanged: (index) {
-                        ref.read(eventsTabProvider.notifier).state = index;
+                        ref.read(eventsTabProvider.notifier).set(index);
                       },
                       children: [
                         // Past

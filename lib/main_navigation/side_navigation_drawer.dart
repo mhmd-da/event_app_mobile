@@ -9,11 +9,11 @@ import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'main_navigation_providers.dart';
-import 'placeholder_page.dart';
 import 'package:event_app/features/sponsors/presentation/sponsors_page.dart';
 import 'package:event_app/features/partners/presentation/partners_page.dart';
 import 'package:event_app/features/auth/presentation/login_page.dart';
 import 'package:event_app/features/contact/presentation/contact_form_page.dart';
+import 'package:event_app/features/event_photos/presentation/event_photos_page.dart';
 
 class SideNavigationDrawer extends ConsumerWidget {
   const SideNavigationDrawer({super.key});
@@ -28,7 +28,7 @@ class SideNavigationDrawer extends ConsumerWidget {
         leading: Icon(icon, color: selected ? colorScheme.primary : colorScheme.onSurfaceVariant),
         title: Text(label, style: TextStyle(color: selected ? colorScheme.primary : colorScheme.onSurface)),
         selected: selected,
-        selectedTileColor: colorScheme.primary.withOpacity(0.08),
+        selectedTileColor: colorScheme.primary.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         trailing: const Icon(Icons.chevron_right, size: 20),
         onTap: () {
@@ -54,7 +54,7 @@ class SideNavigationDrawer extends ConsumerWidget {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+                      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                       child: Icon(Icons.event, color: Theme.of(context).colorScheme.primary),
                     ),
                     const SizedBox(width: 12),
@@ -86,13 +86,13 @@ class SideNavigationDrawer extends ConsumerWidget {
                       icon: Icons.home_rounded,
                       label: AppLocalizations.of(context)!.home,
                       selected: currentIndex == 0,
-                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).state = 0,
+                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).set(0),
                     ),
                     tile(
                       icon: Icons.event_rounded,
                       label: AppLocalizations.of(context)!.agenda,
                       selected: currentIndex == 1,
-                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).state = 1,
+                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).set(1),
                     ),
                     tile(
                       icon: Icons.workspaces_filled,
@@ -112,7 +112,7 @@ class SideNavigationDrawer extends ConsumerWidget {
                     tile(
                       icon: Icons.schedule_rounded,
                       label: AppLocalizations.of(context)!.mySchedule,
-                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).state = 1,
+                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).set(2),
                       // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MySchedulePage())),
                     ),
                     const Divider(),
@@ -131,16 +131,16 @@ class SideNavigationDrawer extends ConsumerWidget {
                       label: AppLocalizations.of(context)!.partners,
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PartnersPage())),
                     ),
-                    tile(
-                      icon: Icons.storefront_rounded,
-                      label: AppLocalizations.of(context)!.exhibitions,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Exhibitions'))),
-                    ),
+                    // tile(
+                    //   icon: Icons.storefront_rounded,
+                    //   label: AppLocalizations.of(context)!.exhibitions,
+                    //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Exhibitions'))),
+                    // ),
                     const Divider(),
                     tile(
-                      icon: Icons.menu_book_rounded,
-                      label: AppLocalizations.of(context)!.resources,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Resources'))),
+                      icon: Icons.photo_library_outlined,
+                      label: AppLocalizations.of(context)!.eventPhotos,
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EventPhotosPage())),
                     ),
                     tile(
                       icon: Icons.apartment_outlined,
@@ -158,7 +158,7 @@ class SideNavigationDrawer extends ConsumerWidget {
                       icon: Icons.person_rounded,
                       label: AppLocalizations.of(context)!.profile,
                       selected: currentIndex == 3,
-                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).state = 3,
+                      onTap: () => ref.read(mainNavigationIndexProvider.notifier).set(3),
                     ),
                     tile(
                       icon: Icons.settings_rounded,
@@ -180,6 +180,7 @@ class SideNavigationDrawer extends ConsumerWidget {
                       ),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       onTap: () async {
+                        final navigator = Navigator.of(context);
                         try {
                           final storage = ref.read(secureStorageProvider);
                           final token = await storage.getFcmToken();
@@ -192,7 +193,7 @@ class SideNavigationDrawer extends ConsumerWidget {
 
                         final loginController = ref.read(loginControllerProvider.notifier);
                         await loginController.logout();
-                        Navigator.of(context).pushReplacement(
+                        navigator.pushReplacement(
                           MaterialPageRoute(
                             builder: (context) => LoginPage(),
                           ),
