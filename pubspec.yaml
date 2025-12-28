@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  connectivity_plus: ^6.0.3
+  sqlite3: ^2.9.4
   flutter_riverpod: ^3.0.3
   riverpod: ^3.0.3
   riverpod_annotation: ^3.0.3
@@ -47,9 +49,9 @@ dependencies:
   path_provider: ^2.1.4
   signalr_netcore: ^1.1.6
   sqlite3_flutter_libs: ^0.5.23
-  sqlite3: ^2.9.4
   uuid: ^4.4.0
-  top_snackbar_flutter: ^3.1.0
+  animated_snack_bar: ^0.4.0
+  qr_flutter: ^4.1.0
 
   flutter:
     sdk: flutter

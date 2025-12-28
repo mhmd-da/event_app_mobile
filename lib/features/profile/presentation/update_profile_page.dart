@@ -1,9 +1,12 @@
 import 'package:event_app/core/widgets/app_scaffold.dart';
+import 'package:event_app/core/widgets/app_text_input.dart';
+import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/features/profile/domain/update_profile_model.dart';
 import 'package:event_app/features/profile/domain/profile_model.dart';
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UpdateProfilePage extends ConsumerWidget {
@@ -31,40 +34,47 @@ class UpdateProfilePage extends ConsumerWidget {
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
+              AppTextInput(
                 controller: firstNameController,
-                decoration: const InputDecoration(labelText: 'First Name'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Required' : null,
+                label: AppLocalizations.of(context)!.firstName,
+                validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.requiredField : null,
+                textInputAction: TextInputAction.next,
               ),
-              TextFormField(
+              SizedBox(height: AppSpacing.item),
+              AppTextInput(
                 controller: lastNameController,
-                decoration: const InputDecoration(labelText: 'Last Name'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Required' : null,
+                label: AppLocalizations.of(context)!.lastName,
+                validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.requiredField : null,
+                textInputAction: TextInputAction.next,
               ),
-              TextFormField(
+              SizedBox(height: AppSpacing.item),
+              AppTextInput(
                 controller: bioController,
-                decoration: const InputDecoration(labelText: 'Bio'),
+                label: AppLocalizations.of(context)!.bio,
+                keyboardType: TextInputType.multiline,
                 maxLines: 3,
+                textInputAction: TextInputAction.newline,
               ),
-              TextFormField(
+              SizedBox(height: AppSpacing.item),
+              AppTextInput(
                 controller: universityController,
-                decoration: const InputDecoration(labelText: 'University'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Required' : null,
+                label: AppLocalizations.of(context)!.university,
+                validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.requiredField : null,
+                textInputAction: TextInputAction.next,
               ),
-              TextFormField(
+              SizedBox(height: AppSpacing.item),
+              AppTextInput(
                 controller: departmentController,
-                decoration: const InputDecoration(labelText: 'Department'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Required' : null,
+                label: AppLocalizations.of(context)!.department,
+                validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.requiredField : null,
+                textInputAction: TextInputAction.next,
               ),
-              TextFormField(
+              SizedBox(height: AppSpacing.item),
+              AppTextInput(
                 controller: majorController,
-                decoration: const InputDecoration(labelText: 'Major'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Required' : null,
+                label: AppLocalizations.of(context)!.major,
+                validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.requiredField : null,
+                textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 16),
               Row(
@@ -72,10 +82,10 @@ class UpdateProfilePage extends ConsumerWidget {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
+                    child: Text(AppLocalizations.of(context)!.cancel),
                   ),
                   const SizedBox(width: 8),
-                  ElevatedButton(
+                  AppElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
                         final updatedProfile = UpdateProfile(
@@ -88,12 +98,12 @@ class UpdateProfilePage extends ConsumerWidget {
                           department: departmentController.text,
                           major: majorController.text,
                         );
-
+                        // ...existing code...
                         ref.read(updateProfileProvider(updatedProfile));
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Save'),
+                    child: Text(AppLocalizations.of(context)!.save),
                   ),
                 ],
               ),

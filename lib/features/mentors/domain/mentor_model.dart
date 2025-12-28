@@ -2,51 +2,44 @@ import 'package:event_app/core/base/base_model.dart';
 
 class MentorModel extends BaseModel {
   final int id;
-  final String title;
   final String gender;
+  final String title;
   final String firstName;
   final String lastName;
-  final String? bio;
+  final String? email;
+  final String? phoneNumber;
   final String? position;
   final String? companyName;
+  final String? bio;
   final String? profileImageUrl;
-  final List<String> sessions;
-  final String? linkedinUrl;
-  final String? twitterUrl;
 
   MentorModel({
     required this.id,
-    required this.title,
     required this.gender,
+    required this.title,
     required this.firstName,
     required this.lastName,
-    this.bio,
+    this.email,
+    this.phoneNumber,
     this.position,
     this.companyName,
+    this.bio,
     this.profileImageUrl,
-    required this.sessions,
-    this.linkedinUrl,
-    this.twitterUrl,
   });
 
   factory MentorModel.fromJson(Map<String, dynamic> json) {
     return MentorModel(
       id: json['id'] as int,
-      title: json['title'] ?? '',
       gender: json['gender'] ?? '',
+      title: json['title'] ?? '',
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
-      bio: json['bio'],
+      email: json['email'],
+      phoneNumber: json['phoneNumber'],
       position: json['position'],
       companyName: json['companyName'],
+      bio: json['bio'],
       profileImageUrl: json['profileImageUrl'],
-      sessions: (json['sessions'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ??
-          <String>[],
-      linkedinUrl: json['linkedinUrl'],
-      twitterUrl: json['twitterUrl'],
     );
   }
 }
-

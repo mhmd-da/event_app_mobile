@@ -1,3 +1,4 @@
+import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/l10n/app_localizations.dart';
@@ -87,7 +88,7 @@ class EventPhotosPage extends ConsumerWidget {
                         Text('${AppLocalizations.of(context)!.photosPage(pageIndex)} / $totalPages', style: AppTextStyles.bodySmall),
                         Row(
                           children: [
-                            OutlinedButton.icon(
+                            AppOutlinedButton(
                               onPressed: pageIndex > 1
                                   ? () => ref.read(eventPhotosPageIndexProvider(eventId).notifier).set(pageIndex - 1)
                                   : null,
@@ -95,7 +96,7 @@ class EventPhotosPage extends ConsumerWidget {
                               label: Text(AppLocalizations.of(context)!.photosPrevious),
                             ),
                             const SizedBox(width: AppSpacing.item),
-                            OutlinedButton.icon(
+                            AppOutlinedButton(
                               onPressed: pageIndex < totalPages
                                   ? () => ref.read(eventPhotosPageIndexProvider(eventId).notifier).set(pageIndex + 1)
                                   : null,

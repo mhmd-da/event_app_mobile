@@ -1,9 +1,9 @@
 import 'package:event_app/core/widgets/app_scaffold.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'notifications_providers.dart';
-import 'package:intl/intl.dart';
 
 class NotificationsPage extends ConsumerStatefulWidget {
   const NotificationsPage({super.key});
@@ -19,7 +19,9 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   void initState() {
     super.initState();
     // Initial load
-    Future.microtask(() => ref.read(notificationsControllerProvider.notifier).loadInitial());
+    Future.microtask(
+      () => ref.read(notificationsControllerProvider.notifier).loadInitial(),
+    );
     _scrollController.addListener(_onScroll);
   }
 
@@ -47,48 +49,71 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
       body: state.items.isEmpty && state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : state.items.isEmpty
-              ? Center(child: Text(AppLocalizations.of(context)!.noNotifications))
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    await ref.read(notificationsControllerProvider.notifier).loadInitial();
-                  },
-                  child: ListView.separated(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(16),
-                    itemCount: state.items.length + (state.hasMore ? 1 : 0),
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      if (index >= state.items.length) {
-                        // Footer loader
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-                      final n = state.items[index];
-                      return ListTile(
-                        leading: Icon(
-                          n.read ? Icons.notifications_none : Icons.notifications_active,
-                          color: n.read ? Colors.grey : Theme.of(context).colorScheme.primary,
+          ? Center(child: Text(AppLocalizations.of(context)!.noNotifications))
+          : RefreshIndicator(
+              onRefresh: () async {
+                await ref
+                    .read(notificationsControllerProvider.notifier)
+                    .loadInitial();
+              },
+              child: ListView.separated(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16),
+                itemCount: state.items.length + (state.hasMore ? 1 : 0),
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  if (index >= state.items.length) {
+                    // Footer loader
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  final n = state.items[index];
+                  return ListTile(
+                    leading: Icon(
+                      n.read
+                          ? Icons.notifications_none
+                          : Icons.notifications_active,
+                      color: n.read
+                          ? Colors.grey
+                          : Theme.of(context).colorScheme.primary,
+                    ),
+                    title: Text(
+                      n.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          n.body,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        title: Text(n.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis),
-                            const SizedBox(height: 4),
-                            Text(
-                              DateFormat.yMMMd().add_jm().format(n.sentAt),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  ),
+                        const SizedBox(height: 4),
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Text(
+                            AppTimeFormatting.formatDateTimeYMMMdJm(
+                              context,
+                              n.sentAt,
                             ),
-                          ],
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

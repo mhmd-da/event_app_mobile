@@ -20,6 +20,12 @@ class SecureStorageService {
     if (eventId != null) {
       await storage.write(key: "event_id", value: eventId.toString());
     }
+    // Extract qr_code_id claim
+    var qrCodeId = decoded["qr_code_guid"];
+    // Save it if exists
+    if (qrCodeId != null) {
+      await storage.write(key: "qr_code_guid", value: qrCodeId.toString());
+    }
   }
 
   Future<void> saveUserId(int userId) async {
@@ -56,6 +62,10 @@ class SecureStorageService {
     return await storage.read(key: "expiry");
   }
 
+  Future<String?> getQrCodeGuid() async {
+    return await storage.read(key: "qr_code_guid");
+  }
+
   Future<bool> isValidToken() async {
     var expiry = await getExpiry();
     if (expiry == null) return false;
@@ -72,5 +82,6 @@ class SecureStorageService {
     await storage.delete(key: "expiry");
     await storage.delete(key: "event_id");
     await storage.delete(key: "user_id");
+    await storage.delete(key: "qr_code_guid");
   }
 }

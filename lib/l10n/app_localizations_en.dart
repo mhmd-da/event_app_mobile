@@ -145,6 +145,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginToContinue => 'Login to continue your event journey.';
 
   @override
+  String get loginHeading => 'LOGIN';
+
+  @override
   String get emailLabel => 'Email,ID, Phone Number';
 
   @override
@@ -180,10 +183,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendLabel => 'Send';
 
   @override
+  String get youLabel => 'You';
+
+  @override
+  String get myQrTitle => 'My QR';
+
+  @override
+  String get myQrSubtitle => 'Show this code to staff for check-in.';
+
+  @override
+  String get qrNotAvailable => 'QR code not available.';
+
+  @override
+  String get qrNotAvailableHint => 'Please sign in again while online.';
+
+  @override
+  String get qrTitle => 'QR';
+
+  @override
+  String get scanQrTitle => 'Scan QR';
+
+  @override
+  String get processing => 'Processing…';
+
+  @override
+  String get checkInSuccess => 'Checked in';
+
+  @override
+  String get checkInFailed => 'Check-in failed';
+
+  @override
   String get changeLanguage => 'Change Language';
 
   @override
   String get venue => 'Venue';
+
+  @override
+  String get venueMap => 'Venue Map';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get aboutEvent => 'About Event';
+
+  @override
+  String get venueAndInfo => 'Venue & Info';
+
+  @override
+  String get venueMapSubtitle => 'View all halls and rooms';
+
+  @override
+  String get faqsSubtitle => 'Common questions';
+
+  @override
+  String get contactUsSubtitle => 'Reach the organizers';
+
+  @override
+  String get readMore => 'Read More';
+
+  @override
+  String get noDescriptionAvailable => 'No description available.';
 
   @override
   String get profile_name => 'Name';
@@ -297,9 +357,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lastName => 'Last Name';
 
   @override
-  String get email => 'Email';
-
-  @override
   String get phoneNumber => 'Phone Number';
 
   @override
@@ -334,6 +391,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gender => 'Gender';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get passwordStrengthWeak => 'Weak';
+
+  @override
+  String get passwordStrengthModerate => 'Moderate';
+
+  @override
+  String get passwordStrengthStrong => 'Strong';
 
   @override
   String get verifyCodeTitle => 'Verify Code';
@@ -396,6 +468,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toggleTheme => 'Toggle dark/light';
 
   @override
+  String get darkMode => 'Dark mode';
+
+  @override
+  String get profileDetails => 'Profile details';
+
+  @override
   String get themeSystem => 'System';
 
   @override
@@ -429,6 +507,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactFormTitle => 'Contact Us';
+
+  @override
+  String get contactFormHeader =>
+      'We value your feedback and inquiries. Please fill the form and we will get back to you shortly.';
 
   @override
   String get contactCategory => 'Category';
@@ -471,9 +553,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openWebsite => 'Open Website';
-
-  @override
-  String get category => 'Category';
 
   @override
   String get openMap => 'Open Map';
@@ -550,6 +629,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pressBackAgainToExit => 'Press back again to exit';
 
   @override
+  String get userIdentifier => 'Identifier';
+
+  @override
+  String get notEditable => 'Not editable';
+
+  @override
   String get today => 'Today';
 
   @override
@@ -567,4 +652,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registerHeading => 'REGISTER';
+
+  @override
+  String get quickPolls => 'Quick Polls';
+
+  @override
+  String get noQuickPolls => 'No quick polls for this session';
+
+  @override
+  String get vote => 'Vote';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get results => 'Results';
+
+  @override
+  String pollIndexOfTotal(int index, int total) {
+    return 'Poll $index of $total';
+  }
+
+  @override
+  String totalVotes(int count) {
+    return 'Total votes: $count';
+  }
+
+  @override
+  String get pollNotOpenYet => 'Poll not open yet';
+
+  @override
+  String get pollClosed => 'Poll closed';
+
+  @override
+  String openUntilTime(String time) {
+    return 'Open until $time';
+  }
+
+  @override
+  String get youVoted => 'You voted';
+
+  @override
+  String get website => 'Website';
+
+  @override
+  String get contactInfo => 'Contact Info';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get mobile => 'Mobile';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get position => 'Position';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get offlineActionUnavailable => 'You are offline. Action unavailable.';
+
+  @override
+  String get requiredField => 'This field is required.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get unlimitedCapacity => 'Unlimited capacity';
 }

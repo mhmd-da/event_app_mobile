@@ -1,11 +1,16 @@
 import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/features/auth/presentation/login_controller.dart';
 import 'package:event_app/features/profile/presentation/profile_providers.dart';
+import 'package:event_app/features/qr/presentation/my_qr_page.dart';
+import 'package:event_app/features/settings/presentation/settings_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/core/theme/app_colors.dart';
+import 'package:event_app/shared/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_scaffold.dart';
-import 'package:event_app/features/profile/presentation/update_profile_page.dart';
-import 'package:event_app/features/settings/presentation/settings_page.dart';
+import 'profile_details_page.dart';
+import '../../auth/presentation/login_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -14,204 +19,190 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileProvider);
 
+    final l10n = AppLocalizations.of(context)!;
     return AppScaffold(
       body: profileAsync.when(
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
-          child: Text('Error: $error', style: AppTextStyles.bodyMedium),
+          child: Text(l10n.somethingWentWrong, style: AppTextStyles.bodyMedium),
         ),
-        data: (profile) => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Align(
-                        alignment:
-                            Alignment.topLeft, // Positioned in the corner
-                        child: IconButton(
-                          onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UpdateProfilePage(profile: profile),
-                            ),
-                          ),
-                          icon: Icon(
-                            Icons.edit,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 30, // Increased size for better visibility
-                          ),
-                          //tooltip: AppLocalizations.of(context)!.updateProfile,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsPage(),
-                        ),
-                      ),
-                      icon: Icon(
-                        Icons.settings_outlined,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 28,
-                      ),
-                      tooltip: AppLocalizations.of(context)?.settings ?? 'Settings',
-                    ),
-                  ],
+        data: (profile) {
+          final themeMode = ref.watch(appThemeModeProvider);
+          final isDark =
+              Theme.of(context).brightness == Brightness.dark ||
+              themeMode == ThemeMode.dark;
+          final name = [
+            profile.title,
+            profile.firstName,
+            profile.lastName,
+          ].where((e) => (e ?? '').trim().isNotEmpty).join(' ');
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header with background color and centered avatar
+                CircleAvatar(
+                  radius: 48,
+                  backgroundColor: Colors.white,
+                  child: CircleAvatar(
+                    radius: 44,
+                    backgroundImage: profile.profileImageUrl != null
+                        ? NetworkImage(profile.profileImageUrl!)
+                        : const AssetImage('assets/images/default_avatar.png')
+                              as ImageProvider,
+                  ),
                 ),
-              ),
-              Stack(
-                clipBehavior:
-                    Clip.none, // Allow the image to overflow the container
-                children: [
-                  Container(
-                    height:
-                        150, // Kept the original height of the blue container
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).colorScheme.secondary,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${profile.title} ${profile.firstName} ${profile.lastName}',
-                        style: AppTextStyles.headlineLarge.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top:
-                        100, // Positioned the image to overlap the blue container
-                    left:
-                        25,  // Centered the image
-                    child: CircleAvatar(
-                      radius: 70, // Kept the image size consistent
-                      backgroundImage: profile.profileImageUrl != null
-                          ? NetworkImage(profile.profileImageUrl!)
-                          : AssetImage('assets/images/default_avatar.png')
-                                as ImageProvider,
-                      backgroundColor: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 100),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Card(
-                  elevation: 4,
+                const SizedBox(height: 72),
+                // Name + contact card
+                Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.school,
-                              color: Theme.of(context).colorScheme.primary,
+                        Center(
+                          child: Text(
+                            name.isNotEmpty ? name : l10n.profile,
+                            style: AppTextStyles.headlineLarge.copyWith(
+                              fontWeight: FontWeight.w700,
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'University: ',
-                              style: AppTextStyles.headlineSmall,
-                            ),
-                            Text(
-                              '${profile.university}',
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _kvRow(
+                          context,
+                          label: l10n.profile_phone,
+                          value: profile.phone ?? '—',
                         ),
                         const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.apartment,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Department: ',
-                              style: AppTextStyles.headlineSmall,
-                            ),
-                            Text(
-                              '${profile.department}',
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ],
+                        _kvRow(
+                          context,
+                          label: l10n.profile_email,
+                          value: profile.email ?? '—',
                         ),
                         const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.book,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text('Major: ', style: AppTextStyles.headlineSmall),
-                            Text(
-                              '${profile.major}',
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ],
+                        _kvRow(
+                          context,
+                          label: l10n.userIdentifier,
+                          value: profile.userIdentifier ?? '—',
                         ),
+                        // const SizedBox(height: 4),
+                        // Text(
+                        //   l10n.notEditable,
+                        //   style: AppTextStyles.bodyMedium.copyWith(
+                        //     color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 15),
-              if (profile.bio != null && profile.bio!.isNotEmpty)
+                const SizedBox(height: 16),
+                // List options
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Card(
-                    elevation: 6,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 8),
-                          Text('Bio: ', style: AppTextStyles.headlineSmall),
-                          Expanded(
-                            child: Text(
-                              profile.bio!,
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ),
-                        ],
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        secondary: const Icon(Icons.nightlight_round),
+                        title: Text(l10n.darkMode),
+                        value: isDark,
+                        onChanged: (val) {
+                          final notifier = ref.read(
+                            appThemeModeProvider.notifier,
+                          );
+                          notifier.set(val ? ThemeMode.dark : ThemeMode.light);
+                        },
                       ),
-                    ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(Icons.person_outline),
+                        title: Text(l10n.profileDetails),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProfileDetailsPage(),
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(Icons.qr_code_2_rounded),
+                        title: Text(l10n.myQrTitle),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const MyQrPage()),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(Icons.tune_outlined),
+                        title: Text(l10n.settings),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SettingsPage(),
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(Icons.logout, color: Colors.red),
+                        title: Text(
+                          l10n.logout,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onTap: () async {
+                          final loginController = ref.read(
+                            loginControllerProvider.notifier,
+                          );
+                          await loginController.logout();
+                          if (context.mounted) {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => const LoginPage(),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
-            ],
+                const SizedBox(height: 16),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _kvRow(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: onSurface.withValues(alpha: 0.7),
+            ),
           ),
         ),
-      ),
+        Text(value, style: AppTextStyles.bodyMedium),
+      ],
     );
   }
 }

@@ -8,6 +8,11 @@ class PartnerModel extends BaseModel {
   final String logoUrl;
   final String? websiteUrl;
   final int displayOrder;
+  final String? contactEmail;
+  final String? contactMobile;
+  final String? contactPhone;
+  final String? contactName;
+  final String? contactPosition;
 
   PartnerModel({
     required this.id,
@@ -17,6 +22,11 @@ class PartnerModel extends BaseModel {
     required this.logoUrl,
     required this.websiteUrl,
     required this.displayOrder,
+    this.contactEmail,
+    this.contactMobile,
+    this.contactPhone,
+    this.contactName,
+    this.contactPosition,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +38,11 @@ class PartnerModel extends BaseModel {
       logoUrl: json['logoUrl'] ?? '',
       websiteUrl: json['websiteUrl'],
       displayOrder: json['displayOrder'] ?? 0,
+      contactEmail: json['contactEmail'],
+      contactMobile: json['contactMobile'],
+      contactPhone: json['contactPhone'],
+      contactName: json['contactName'],
+      contactPosition: json['contactPosition'],
     );
   }
 }

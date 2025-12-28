@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'registration_page.dart';
+part of 'registration_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -44,7 +44,7 @@ final class RegistrationFormControllerProvider
 }
 
 String _$registrationFormControllerHash() =>
-    r'9864b2598fadff0eb3a122b719cd8b4012f07439';
+    r'fdc84da4202a8f0a77492ff3737343fb128f1332';
 
 abstract class _$RegistrationFormController
     extends $Notifier<RegistrationFormState> {

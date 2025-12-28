@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 
 class AppDecorations {
-
-    static BoxDecoration agendaSessionCard(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
+  static BoxDecoration agendaSessionCard(
+    BuildContext ctx, {
+    Color? bgColor,
+  }) => BoxDecoration(
     borderRadius: BorderRadius.circular(14),
-    border: Border(left: BorderSide(color: bgColor ?? Theme.of(ctx).primaryColor, width: 5)),
-    //color: bgColor ?? Theme.of(ctx).cardColor.withValues(alpha: 0.06),
+    border: Border(
+      left: BorderSide(color: bgColor ?? Theme.of(ctx).primaryColor, width: 5),
+    ),
+    color: (bgColor ?? Theme.of(ctx).primaryColor).withValues(alpha: 0.08),
     boxShadow: [
       BoxShadow(
         blurRadius: 6,
         spreadRadius: 1,
         offset: const Offset(0, 2),
         color: bgColor ?? Theme.of(ctx).primaryColor.withValues(alpha: 0.01),
-      )
+      ),
     ],
   );
 
-  static BoxDecoration cardContainer(BuildContext ctx) => BoxDecoration(
-    borderRadius: BorderRadius.circular(16),
-    color: Theme.of(ctx).cardTheme.color!,
-    boxShadow: [
-      BoxShadow(
-        blurRadius: 8,
-        spreadRadius: 1,
-        offset: const Offset(0, 3),
-        color: Theme.of(ctx).cardTheme.color!.withValues(alpha: 0.08),
-      )
-    ],
-  );
+  static BoxDecoration cardContainer(BuildContext ctx) {
+    final theme = Theme.of(ctx);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = isDark
+        ? theme.colorScheme.surfaceVariant
+        : theme.cardTheme.color!;
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(16),
+      color: cardColor,
+      boxShadow: [
+        BoxShadow(
+          blurRadius: 8,
+          spreadRadius: 1,
+          offset: const Offset(0, 3),
+          color: cardColor.withOpacity(0.08),
+        ),
+      ],
+    );
+  }
 
   static BoxDecoration listTileContainer(BuildContext ctx) => BoxDecoration(
     borderRadius: BorderRadius.circular(12),
@@ -38,7 +49,7 @@ class AppDecorations {
         spreadRadius: 1,
         offset: const Offset(0, 2),
         color: Theme.of(ctx).shadowColor.withValues(alpha: 0.05),
-      )
+      ),
     ],
   );
 
@@ -46,11 +57,8 @@ class AppDecorations {
       ElevatedButton.styleFrom(
         backgroundColor: Theme.of(ctx).colorScheme.primary,
         foregroundColor: Theme.of(ctx).colorScheme.onPrimary,
-        padding:
-        const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       );
 
@@ -63,34 +71,47 @@ class AppDecorations {
         spreadRadius: 1,
         offset: const Offset(0, 1),
         color: Theme.of(ctx).shadowColor.withValues(alpha: 0.04),
-      )
+      ),
     ],
   );
 
-  static BoxDecoration logoCardContainer(BuildContext ctx) =>
+  static BoxDecoration logoCardContainer(BuildContext ctx) => BoxDecoration(
+    borderRadius: BorderRadius.circular(14),
+    color: Theme.of(ctx).cardColor,
+    boxShadow: [
+      BoxShadow(
+        blurRadius: 5,
+        spreadRadius: 1,
+        offset: const Offset(0, 2),
+        color: Theme.of(ctx).shadowColor.withValues(alpha: 0.06),
+      ),
+    ],
+  );
+
+  static BoxDecoration tabButton(BuildContext ctx, {Color? bgColor}) =>
       BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: Theme.of(ctx).cardColor,
+        color: bgColor ?? Theme.of(ctx).cardColor.withValues(alpha: 0.06),
         boxShadow: [
           BoxShadow(
-            blurRadius: 5,
+            blurRadius: 6,
             spreadRadius: 1,
             offset: const Offset(0, 2),
-            color: Theme.of(ctx).shadowColor.withValues(alpha: 0.06),
-          )
+            color: Theme.of(ctx).shadowColor.withValues(alpha: 0.04),
+          ),
         ],
       );
 
-  static BoxDecoration tabButton(BuildContext ctx, {Color? bgColor}) => BoxDecoration(
-    borderRadius: BorderRadius.circular(14),
-    color: bgColor ?? Theme.of(ctx).cardColor.withValues(alpha: 0.06),
-    boxShadow: [
-      BoxShadow(
-        blurRadius: 6,
-        spreadRadius: 1,
-        offset: const Offset(0, 2),
-        color: Theme.of(ctx).shadowColor.withValues(alpha: 0.04),
-      )
-    ],
+  // Dark-mode image overlay to reduce glare on bright images.
+  // Centralizing this allows easy tuning of opacity and coverage.
+  static LinearGradient darkImageOverlayGradient({
+    double opacityBottom = 0.26,
+    double topStop = 0.0,
+    double bottomStop = 1.0,
+  }) => LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Colors.transparent, Colors.black.withOpacity(opacityBottom)],
+    stops: [topStop, bottomStop],
   );
 }

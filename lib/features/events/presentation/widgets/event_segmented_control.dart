@@ -67,9 +67,10 @@ class EventSegmentedControl extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight:
-                        isActive ? FontWeight.w600 : FontWeight.w400,
-                        color:
-                        isActive ? Colors.black : Colors.grey.shade700,
+                            isActive ? FontWeight.w600 : FontWeight.w400,
+                        color: isActive
+                            ? Theme.of(context).textTheme.titleMedium!.color
+                            : Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                       child: Text(labels[index]),
                     ),

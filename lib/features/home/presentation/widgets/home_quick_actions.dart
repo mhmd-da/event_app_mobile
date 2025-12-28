@@ -8,22 +8,26 @@ import 'package:event_app/features/venue/presentation/venue_page.dart';
 import 'package:event_app/main_navigation/main_navigation_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:event_app/l10n/app_localizations.dart';
 
 class QuickActionsGrid extends ConsumerWidget {
   const QuickActionsGrid({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     final items = [
-      ("Agenda", Icons.event_note, AgendaPage()),
+      // (id, title, icon, page)
+      ('agenda', l10n.agenda, Icons.event_note, AgendaPage()),
       // ("Workshops", Icons.school, AgendaPage()),
       // ("Panels", Icons.tab_rounded, AgendaPage()),
       // ("Round-Tables", Icons.table_restaurant, AgendaPage()),
-      ("Speakers", Icons.mic, SpeakersPage()),
-      ("Mentors", Icons.people, MentorsPage()),
-      ("My Schedule", Icons.schedule, MySchedulePage()),
-      ("Venue Map", Icons.map, VenuePage()),
-      ("FAQs", Icons.help_outline, FaqsPage()),
+      ('speakers', l10n.speakers, Icons.mic, SpeakersPage()),
+      ('mentors', l10n.mentors, Icons.people, MentorsPage()),
+      ('mySchedule', l10n.mySchedule, Icons.schedule, MySchedulePage()),
+      ('venueMap', l10n.venueMap, Icons.map, VenuePage()),
+      ('faqs', l10n.faqs, Icons.help_outline, FaqsPage()),
     ];
 
     return GridView.builder(
@@ -35,17 +39,20 @@ class QuickActionsGrid extends ConsumerWidget {
         childAspectRatio: 0.9,
       ),
       itemBuilder: (_, i) {
-        final title = items[i].$1;
-        final icon = items[i].$2;
+        final id = items[i].$1;
+        final title = items[i].$2;
+        final icon = items[i].$3;
 
         return InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            if (title == "Agenda") {
+            if (id == 'agenda') {
               ref.read(mainNavigationIndexProvider.notifier).set(1);
             } else {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => items[i].$3));
+                context,
+                MaterialPageRoute(builder: (_) => items[i].$4),
+              );
             }
           },
           child: Column(
@@ -58,7 +65,10 @@ class QuickActionsGrid extends ConsumerWidget {
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(icon, color: Colors.white),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
               const SizedBox(height: 6),
               Text(

@@ -1,3 +1,4 @@
+import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
@@ -162,7 +163,7 @@ class _PasswordToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return AppIconButton(
       onPressed: onToggle,
       icon: Icon(obscured ? Icons.visibility_off_outlined : Icons.visibility_outlined),
       tooltip: obscured ? 'Show' : 'Hide',

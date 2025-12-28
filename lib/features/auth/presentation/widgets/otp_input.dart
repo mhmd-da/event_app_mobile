@@ -53,72 +53,76 @@ class _OtpInputState extends State<OtpInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(widget.length, (i) {
-            return SizedBox(
-              width: 48,
-              child: Focus(
-                canRequestFocus: false,
-                skipTraversal: true,
-                onKeyEvent: (node, event) {
-                  if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace) {
-                    // If current is empty, go back and clear previous
-                    if (_controllers[i].text.isEmpty && i > 0) {
-                      _controllers[i - 1].text = '';
-                      FocusScope.of(context).previousFocus();
-                      _updateValue();
-                      return KeyEventResult.handled;
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(widget.length, (i) {
+              return SizedBox(
+                width: 48,
+                child: Focus(
+                  canRequestFocus: false,
+                  skipTraversal: true,
+                  onKeyEvent: (node, event) {
+                    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace) {
+                      // If current is empty, go back and clear previous
+                      if (_controllers[i].text.isEmpty && i > 0) {
+                        _controllers[i - 1].text = '';
+                        FocusScope.of(context).previousFocus();
+                        _updateValue();
+                        return KeyEventResult.handled;
+                      }
                     }
-                  }
-                  return KeyEventResult.ignored;
-                },
-                child: TextFormField(
-                  controller: _controllers[i],
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  maxLength: 1,
-                  decoration: InputDecoration(
-                    counterText: '',
-                    filled: true,
-                    fillColor: theme.colorScheme.surface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    return KeyEventResult.ignored;
+                  },
+                  child: TextFormField(
+                    controller: _controllers[i],
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.ltr,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    maxLength: 1,
+                    decoration: InputDecoration(
+                      counterText: '',
+                      filled: true,
+                      fillColor: theme.colorScheme.surface,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
-                  onChanged: (val) {
-                    if (i == 0 && val.length > 1) {
-                      final chars = val.replaceAll(RegExp(r"\\s"), '').split('');
-                      int idx = 0;
-                      for (final ch in chars) {
-                        if (idx >= widget.length) break;
-                        _controllers[idx].text = ch;
-                        idx++;
-                      }
-                      if (idx < widget.length) {
-                        // Move focus forward idx times
-                        for (int k = 0; k < idx; k++) {
-                          FocusScope.of(context).nextFocus();
+                    onChanged: (val) {
+                      if (i == 0 && val.length > 1) {
+                        final chars = val.replaceAll(RegExp(r"\\s"), '').split('');
+                        int idx = 0;
+                        for (final ch in chars) {
+                          if (idx >= widget.length) break;
+                          _controllers[idx].text = ch;
+                          idx++;
                         }
-                      } else {
-                        FocusScope.of(context).unfocus();
-                      }
-                    } else {
-                      if (val.isNotEmpty) {
-                        if (i < widget.length - 1) {
-                          FocusScope.of(context).nextFocus();
+                        if (idx < widget.length) {
+                          // Move focus forward idx times
+                          for (int k = 0; k < idx; k++) {
+                            FocusScope.of(context).nextFocus();
+                          }
                         } else {
                           FocusScope.of(context).unfocus();
                         }
+                      } else {
+                        if (val.isNotEmpty) {
+                          if (i < widget.length - 1) {
+                            FocusScope.of(context).nextFocus();
+                          } else {
+                            FocusScope.of(context).unfocus();
+                          }
+                        }
                       }
-                    }
-                    _updateValue();
-                  },
+                      _updateValue();
+                    },
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
         const SizedBox(height: 8),
         FormField<String>(

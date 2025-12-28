@@ -1,6 +1,10 @@
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/core/widgets/image_card.dart';
+import 'package:event_app/core/widgets/info_row_card.dart';
+import 'package:event_app/core/widgets/group_ribbon.dart';
+import 'package:event_app/core/widgets/search_bar.dart';
+import 'package:event_app/core/widgets/listing_view_toggle.dart';
 import 'package:event_app/features/sponsors/presentation/sponsor_providers.dart';
 import 'package:event_app/features/sponsors/presentation/sponsor_details_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
@@ -14,6 +18,8 @@ class SponsorsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sponsorsAsync = ref.watch(sponsorsListProvider);
+    final viewType = ref.watch(sponsorsViewTypeProvider);
+    final searchText = ref.watch(sponsorSearchTextProvider);
 
     return AppScaffold(
       title: AppLocalizations.of(context)!.sponsors,
@@ -25,54 +31,107 @@ class SponsorsPage extends ConsumerWidget {
             return Center(child: Text(AppLocalizations.of(context)!.noSessionsAvailable));
           }
 
-          // Group by category
-          final grouped = groupBy(items, (e) => e.category);
+            // Local filter by name
+            final base = searchText.trim().isEmpty
+              ? items
+              : items.where((s) => (s.name).toLowerCase().contains(searchText.toLowerCase())).toList();
+
+            // Group by category
+            final grouped = groupBy(base, (e) => e.category);
           final groups = grouped.entries.toList();
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.page),
-            itemCount: groups.length,
-            itemBuilder: (context, index) {
-              final group = groups[index];
-              final list = [...group.value]..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.item),
-                    child: Text(group.key, style: Theme.of(context).textTheme.titleLarge),
-                  ),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: AppSpacing.section,
-                      crossAxisSpacing: AppSpacing.section,
-                      childAspectRatio: 0.80,
+          return Column(
+            children: [
+              // Toggle row (right-aligned)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page, vertical: AppSpacing.small),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomSearchBar(
+                        padding: EdgeInsets.zero,
+                        onChanged: (text) => ref.read(sponsorSearchTextProvider.notifier).set(text),
+                      ),
                     ),
-                    itemCount: list.length,
-                    itemBuilder: (context, i) {
-                      final s = list[i];
-                      return ImageCard(
-                        imageUrl: s.logoUrl,
-                        cardTitle: s.name,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SponsorDetailsPage(sponsor: s),
+                    const SizedBox(width: AppSpacing.small),
+                    ListingViewToggle(
+                      value: viewType,
+                      onChanged: (v) => ref.read(sponsorsViewTypeProvider.notifier).set(v),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(AppSpacing.page),
+                  itemCount: groups.length,
+                  itemBuilder: (context, index) {
+                    final group = groups[index];
+                    final list = [...group.value]..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.item),
+                          child: GroupRibbon(label: group.key),
+                        ),
+                        if (viewType == ListingViewType.imageCard)
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: AppSpacing.section,
+                              crossAxisSpacing: AppSpacing.section,
+                              childAspectRatio: 0.80,
                             ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.section * 1.5),
-                ],
-              );
-            },
+                            itemCount: list.length,
+                            itemBuilder: (context, i) {
+                              final s = list[i];
+                              return ImageCard(
+                                imageUrl: s.logoUrl,
+                                cardTitle: s.name,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SponsorDetailsPage(sponsor: s),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          )
+                        else
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: list.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.item),
+                            itemBuilder: (context, i) {
+                              final s = list[i];
+                              return InfoRowCard(
+                                imageUrl: s.logoUrl,
+                                title: s.name,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SponsorDetailsPage(sponsor: s),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        const SizedBox(height: AppSpacing.section * 1.5),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),

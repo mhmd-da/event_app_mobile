@@ -18,7 +18,7 @@ Future<List<SessionModel>> mySchedule(Ref ref) async {
 @riverpod
 class ScheduleViewMode extends _$ScheduleViewMode {
   @override
-  MyScheduleViewMode build() => MyScheduleViewMode.calendar;
+  MyScheduleViewMode build() => MyScheduleViewMode.list;
   void set(MyScheduleViewMode mode) => state = mode;
 }
 

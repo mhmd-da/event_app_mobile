@@ -48,16 +48,36 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
               builder: (context) {
                 final topInset = MediaQuery.of(context).padding.top;
                 return Positioned(
+                  left: 24,
                   right: 18,
                   top: topInset + 8,
-                  child: CircleAvatar(
-                    radius: 44,
-                    backgroundColor: Colors.white.withValues(alpha: 0.9),
-                    child: const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                      backgroundImage: AssetImage('assets/icons/app_icon.png'),
-                    ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'KSU Tamkeen X 2026',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      CircleAvatar(
+                        radius: 44,
+                        backgroundColor: Colors.white.withValues(alpha: 0.9),
+                        child: const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage(
+                            'assets/icons/app_icon.png',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -89,7 +109,8 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         length: 6,
                         onChanged: (v) => _otp = v,
                         validator: (code) {
-                          if (code.length != 6 || code.contains(RegExp(r'\\D'))) return l10n.enter6Digits;
+                          if (code.length != 6 || code.contains(RegExp(r'\\D')))
+                            return l10n.enter6Digits;
                           return null;
                         },
                       ),
@@ -99,7 +120,9 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         label: l10n.newPassword,
                         isPassword: true,
                         prefixIcon: const Icon(Icons.lock_outline),
-                        validator: (v) => (v == null || v.trim().length < 6) ? l10n.min6Chars : null,
+                        validator: (v) => (v == null || v.trim().length < 6)
+                            ? l10n.min6Chars
+                            : null,
                       ),
                       const SizedBox(height: AppSpacing.item),
                       loginState.isLoading
@@ -108,19 +131,28 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                               label: l10n.resetPasswordButton,
                               onPressed: () async {
                                 if (!_formKey.currentState!.validate()) return;
-                                try {
-                                  await ref
-                                      .read(loginControllerProvider.notifier)
-                                      .resetPassword((_otp ?? '').trim(), _passwordCtr.text.trim());
-                                  if (!mounted) return;
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(builder: (_) => LoginPage()),
-                                    (route) => false,
-                                  );
-                                } catch (e) {
-                                  if (!mounted) return;
-                                  AppNotifier.error(context, e.toString());
+                                await ref
+                                    .read(loginControllerProvider.notifier)
+                                    .resetPassword(
+                                      (_otp ?? '').trim(),
+                                      _passwordCtr.text.trim(),
+                                    );
+                                if (!mounted) return;
+
+                                final error = ref
+                                    .read(loginControllerProvider)
+                                    .errorMessage;
+                                if (error != null && error.trim().isNotEmpty) {
+                                  AppNotifier.error(context, error);
+                                  return;
                                 }
+
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (_) => LoginPage(),
+                                  ),
+                                  (route) => false,
+                                );
                               },
                             ),
                       const SizedBox(height: 140),

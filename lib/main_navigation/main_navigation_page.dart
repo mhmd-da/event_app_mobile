@@ -8,7 +8,6 @@ import '../core/widgets/app_scaffold.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/agenda/presentation/agenda_page.dart';
 import '../features/profile/presentation/profile_page.dart';
-import '../core/theme/app_colors.dart';
 import 'main_navigation_providers.dart';
 import 'side_navigation_drawer.dart';
 import 'package:event_app/core/widgets/notifier.dart';
@@ -22,25 +21,30 @@ class MainNavigationPage extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
-  late final PageController pageController;
   DateTime? _lastBackTime;
-
-  final pages = [
-    const HomePage(),
-    const AgendaPage(),
-    const MySchedulePage(),
-    const ProfilePage(),
-  ];
+  
+  Widget _pageForIndex(int index) {
+    switch (index) {
+      case 0:
+        return const HomePage();
+      case 1:
+        return const AgendaPage();
+      case 2:
+        return const MySchedulePage();
+      case 3:
+        return const ProfilePage();
+      default:
+        return const HomePage();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: ref.read(mainNavigationIndexProvider));
   }
 
   @override
   void dispose() {
-    pageController.dispose();
     super.dispose();
   }
 
@@ -49,15 +53,7 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
     final event = ref.watch(selectedEventProvider);
     final currentIndex = ref.watch(mainNavigationIndexProvider);
 
-    ref.listen(mainNavigationIndexProvider, (_, next) {
-      if (pageController.page?.round() != next) {
-        pageController.animateToPage(
-          next,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOutCubic,
-        );
-      }
-    });
+    // No PageView, so no listener needed for controller.
 
     if (event == null) {
       return Center(child: Text(AppLocalizations.of(context)!.noEventSelected));
@@ -70,7 +66,6 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
         // If not on home, go to home instead of exiting
         if (currentIndex != 0) {
           ref.read(mainNavigationIndexProvider.notifier).set(0);
-          pageController.jumpToPage(0);
           return;
         }
         // Double back to exit on home
@@ -89,8 +84,6 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
         drawer: const SideNavigationDrawer(),
         bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         onTap: (index) => ref.read(mainNavigationIndexProvider.notifier).set(index),
         items: [
@@ -112,11 +105,7 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
           ),
         ],
         ),
-        body: PageView(
-          controller: pageController,
-          onPageChanged: (index) => ref.read(mainNavigationIndexProvider.notifier).set(index),
-          children: pages,
-        ),
+        body: _pageForIndex(currentIndex),
       ),
     );
   }

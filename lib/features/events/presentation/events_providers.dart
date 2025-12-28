@@ -1,5 +1,6 @@
 import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/events/domain/event_details_model.dart';
+import 'package:event_app/shared/providers/language_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data/events_repository.dart';
 import '../domain/event_model.dart';
@@ -13,11 +14,15 @@ EventsRepository eventsRepository(Ref ref) {
 
 @riverpod
 Future<List<EventModel>> eventsList(Ref ref) async {
+  // Depend on locale so we refetch events when language changes.
+  ref.watch(appLocaleProvider);
   return ref.watch(eventsRepositoryProvider).getEvents();
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<EventDetailsModel> eventDetails(Ref ref, int eventId) async {
+  // Depend on locale so we refetch event details when language changes.
+  ref.watch(appLocaleProvider);
   return ref.watch(eventsRepositoryProvider).getEventDetails(eventId);
 }
 

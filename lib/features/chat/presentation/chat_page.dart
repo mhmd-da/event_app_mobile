@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/features/chat/presentation/chat_providers.dart';
 import 'package:event_app/features/chat/data/chat_sqlite_repository.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
@@ -52,14 +53,20 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         final gid = (map['groupId'] as int?) ?? widget.sessionId;
         final serverMessageId = (map['id'] as int?) ?? 0;
         final senderId = (map['senderUserId'] as int?) ?? 0;
-        final senderName = (map['senderDisplayName'] as String?) ?? (map['senderName'] as String?) ?? '';
+        final senderName =
+            (map['senderDisplayName'] as String?) ??
+            (map['senderName'] as String?) ??
+            '';
         final text = (map['text'] as String?) ?? '';
         final createdAtStr = (map['createdAt'] as String?) ?? '';
         final createdAt = _parseServerUtc(createdAtStr);
         final cId = (map['clientMessageId'] as String?) ?? '';
 
         if (cId.isNotEmpty && repo.hasMessageByClientId(cId)) {
-          await repo.markMessageSent(clientMessageId: cId, serverMessageId: serverMessageId);
+          await repo.markMessageSent(
+            clientMessageId: cId,
+            serverMessageId: serverMessageId,
+          );
         } else {
           await repo.insertIncomingMessage(
             groupId: gid,
@@ -100,7 +107,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(title: Text(l10n.sessionChatTitle)),
       body: Column(
         children: [
@@ -111,10 +122,17 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               itemCount: _messages.length,
               itemBuilder: (_, i) {
                 final m = _messages[i];
-                final isMe = _currentUserId != null && m.senderUserId == _currentUserId;
-                final bubbleColor = isMe ? Theme.of(context).colorScheme.primary : Colors.grey.shade200;
-                final textColor = isMe ? Colors.white : Colors.black87;
-                final align = isMe ? Alignment.centerRight : Alignment.centerLeft;
+                final isMe =
+                    _currentUserId != null && m.senderUserId == _currentUserId;
+                final bubbleColor = isMe
+                    ? colorScheme.primary
+                    : colorScheme.surfaceContainerHighest;
+                final textColor = isMe
+                    ? colorScheme.onPrimary
+                    : colorScheme.onSurface;
+                final align = isMe
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft;
                 final radius = BorderRadius.only(
                   topLeft: const Radius.circular(12),
                   topRight: const Radius.circular(12),
@@ -124,35 +142,65 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 return Align(
                   alignment: align,
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.75,
+                    ),
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(color: bubbleColor, borderRadius: radius),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: bubbleColor,
+                        borderRadius: radius,
+                      ),
                       child: Column(
-                        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                        crossAxisAlignment: isMe
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
                         children: [
                           if (!isMe && (m.senderName.isNotEmpty))
                             Padding(
                               padding: const EdgeInsets.only(bottom: 2),
                               child: Text(
                                 m.senderName,
-                                style: TextStyle(color: textColor.withValues(alpha: 0.9), fontSize: 12, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  color: textColor.withValues(alpha: 0.9),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           if (isMe)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 2),
                               child: Text(
-                                'You',
-                                style: TextStyle(color: textColor.withValues(alpha: 0.9), fontSize: 12, fontWeight: FontWeight.w600),
+                                l10n.youLabel,
+                                style: TextStyle(
+                                  color: textColor.withValues(alpha: 0.9),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          Text(m.text, style: TextStyle(color: textColor, fontSize: 15)),
-                          const SizedBox(height: 4),
                           Text(
-                            _fmtTime(m.createdAt.toLocal()),
-                            style: TextStyle(color: textColor.withValues(alpha: 0.8), fontSize: 11),
+                            m.text,
+                            style: TextStyle(color: textColor, fontSize: 15),
+                          ),
+                          const SizedBox(height: 4),
+                          Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Text(
+                              AppTimeFormatting.formatTimeHm(
+                                context,
+                                m.createdAt,
+                              ),
+                              style: TextStyle(
+                                color: textColor.withValues(alpha: 0.8),
+                                fontSize: 11,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -178,9 +226,15 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       decoration: InputDecoration(
                         hintText: l10n.typeMessageHint,
                         filled: true,
-                        fillColor: Colors.grey.shade100,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
+                        fillColor: colorScheme.surfaceContainerHighest,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
@@ -190,8 +244,14 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     child: Container(
                       width: 44,
                       height: 44,
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle),
-                      child: const Icon(Icons.send_rounded, color: Colors.white),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.send_rounded,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                   ),
                 ],
@@ -267,7 +327,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       );
     });
   }
-  
+
   // Parse server timestamps that may be emitted as UTC without timezone info.
   // Ensures we treat naive strings as UTC, then convert to local only at render.
   DateTime _parseServerUtc(String s) {
@@ -283,12 +343,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         return DateTime.now().toUtc();
       }
     }
-  }
-  
-  String _fmtTime(DateTime dt) {
-    final h = dt.hour.toString().padLeft(2, '0');
-    final m = dt.minute.toString().padLeft(2, '0');
-    return '$h:$m';
   }
 
   List<ChatMessage> _composeMessages(ChatSqliteRepository repo) {

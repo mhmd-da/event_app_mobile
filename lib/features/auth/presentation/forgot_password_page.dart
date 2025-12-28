@@ -44,16 +44,36 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
               builder: (context) {
                 final topInset = MediaQuery.of(context).padding.top;
                 return Positioned(
+                  left: 24,
                   right: 18,
                   top: topInset + 8,
-                  child: CircleAvatar(
-                    radius: 44,
-                    backgroundColor: Colors.white.withValues(alpha: 0.9),
-                    child: const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                      backgroundImage: AssetImage('assets/icons/app_icon.png'),
-                    ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'KSU Tamkeen X 2026',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      CircleAvatar(
+                        radius: 44,
+                        backgroundColor: Colors.white.withValues(alpha: 0.9),
+                        child: const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage(
+                            'assets/icons/app_icon.png',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -103,17 +123,26 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                                 if (!_formKey.currentState!.validate()) return;
                                 final ok = await ref
                                     .read(loginControllerProvider.notifier)
-                                    .forgotPasswordRequest(_usernameCtrl.text.trim());
+                                    .forgotPasswordRequest(
+                                      _usernameCtrl.text.trim(),
+                                    );
                                 if (!mounted) return;
                                 if (ok) {
-                                  AppNotifier.success(context, l10n.forgotPasswordSuccess);
+                                  AppNotifier.success(
+                                    context,
+                                    l10n.forgotPasswordSuccess,
+                                  );
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (_) => const ResetPasswordPage(),
                                     ),
                                   );
                                 } else {
-                                  final err = ref.read(loginControllerProvider).errorMessage ?? l10n.actionFailed;
+                                  final err =
+                                      ref
+                                          .read(loginControllerProvider)
+                                          .errorMessage ??
+                                      l10n.actionFailed;
                                   AppNotifier.error(context, err);
                                 }
                               },

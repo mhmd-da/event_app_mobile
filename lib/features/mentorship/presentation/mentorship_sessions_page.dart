@@ -4,9 +4,9 @@ import 'package:event_app/features/agenda/presentation/widgets/agenda_date_tabs.
 import 'package:event_app/features/agenda/presentation/widgets/session_tile.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_providers.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 
@@ -39,7 +39,7 @@ class MentorshipSessionsPage extends ConsumerWidget {
 
           final groupedSessions = groupBy(
             sessions,
-            (s) => DateFormat('EEE d').format(s.startTime.toLocal()),
+            (s) => AppTimeFormatting.formatDayLabelEeeD(context, s.startTime),
           );
           final dateTabs = groupedSessions.keys.toList();
 
@@ -48,19 +48,26 @@ class MentorshipSessionsPage extends ConsumerWidget {
               DateTabs(
                 dates: dateTabs,
                 selectedDate: selectedDate,
-                onSelect: (date) => ref.read(selectedMentorshipDateProvider.notifier).set(date),
+                onSelect: (date) =>
+                    ref.read(selectedMentorshipDateProvider.notifier).set(date),
               ),
               SizedBox(height: 5),
               Divider(height: 1),
-                Expanded(
-                  child: ListView(
-                    children:
-                        groupedSessions[selectedDate]
-                            ?.map((s) => SessionTile(session: s, onTapWidgetBuilder: (_) => MentorshipTimeSlotsPage(sessionId: s.id)))
-                            .toList() ??
-                        [],
-                  ),
+              Expanded(
+                child: ListView(
+                  children:
+                      groupedSessions[selectedDate]
+                          ?.map(
+                            (s) => SessionTile(
+                              session: s,
+                              onTapWidgetBuilder: (_) =>
+                                  MentorshipTimeSlotsPage(sessionId: s.id),
+                            ),
+                          )
+                          .toList() ??
+                      [],
                 ),
+              ),
             ],
           );
         },

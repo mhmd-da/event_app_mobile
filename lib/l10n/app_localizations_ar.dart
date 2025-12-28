@@ -145,6 +145,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginToContinue => 'قم بتسجيل الدخول لمتابعة رحلتك في الفعالية.';
 
   @override
+  String get loginHeading => 'تسجيل الدخول';
+
+  @override
   String get emailLabel => 'البريد الإلكتروني، المعرف، رقم الهاتف';
 
   @override
@@ -180,10 +183,68 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sendLabel => 'إرسال';
 
   @override
+  String get youLabel => 'أنت';
+
+  @override
+  String get myQrTitle => 'رمز الاستجابة السريعة الخاص بي';
+
+  @override
+  String get myQrSubtitle => 'اعرض هذا الرمز للموظفين لإتمام تسجيل الدخول.';
+
+  @override
+  String get qrNotAvailable => 'رمز الاستجابة السريعة غير متوفر.';
+
+  @override
+  String get qrNotAvailableHint =>
+      'يرجى تسجيل الدخول مرة أخرى أثناء الاتصال بالإنترنت.';
+
+  @override
+  String get qrTitle => 'رمز QR';
+
+  @override
+  String get scanQrTitle => 'مسح رمز QR';
+
+  @override
+  String get processing => 'جارٍ المعالجة…';
+
+  @override
+  String get checkInSuccess => 'تم تسجيل الدخول';
+
+  @override
+  String get checkInFailed => 'فشل تسجيل الدخول';
+
+  @override
   String get changeLanguage => 'تغيير اللغة';
 
   @override
   String get venue => 'المكان';
+
+  @override
+  String get venueMap => 'خريطة المكان';
+
+  @override
+  String get quickActions => 'إجراءات سريعة';
+
+  @override
+  String get aboutEvent => 'عن الفعالية';
+
+  @override
+  String get venueAndInfo => 'المكان والمعلومات';
+
+  @override
+  String get venueMapSubtitle => 'عرض جميع القاعات والغرف';
+
+  @override
+  String get faqsSubtitle => 'أسئلة شائعة';
+
+  @override
+  String get contactUsSubtitle => 'تواصل مع المنظمين';
+
+  @override
+  String get readMore => 'اقرأ المزيد';
+
+  @override
+  String get noDescriptionAvailable => 'لا يوجد وصف متاح.';
 
   @override
   String get profile_name => 'الاسم';
@@ -297,9 +358,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get lastName => 'اسم العائلة';
 
   @override
-  String get email => 'البريد الإلكتروني';
-
-  @override
   String get phoneNumber => 'رقم الهاتف';
 
   @override
@@ -334,6 +392,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get gender => 'الجنس';
+
+  @override
+  String get genderMale => 'ذكر';
+
+  @override
+  String get genderFemale => 'أنثى';
+
+  @override
+  String get passwordStrengthWeak => 'ضعيف';
+
+  @override
+  String get passwordStrengthModerate => 'متوسط';
+
+  @override
+  String get passwordStrengthStrong => 'قوي';
 
   @override
   String get verifyCodeTitle => 'تأكيد الرمز';
@@ -396,6 +469,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toggleTheme => 'تبديل الوضع الداكن/الفاتح';
 
   @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get profileDetails => 'تفاصيل الملف الشخصي';
+
+  @override
   String get themeSystem => 'النظام';
 
   @override
@@ -429,6 +508,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contactFormTitle => 'اتصل بنا';
+
+  @override
+  String get contactFormHeader =>
+      'نقدّر ملاحظاتك واستفساراتك. يرجى تعبئة النموذج وسنعاود التواصل معك قريبًا.';
 
   @override
   String get contactCategory => 'الفئة';
@@ -471,9 +554,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get openWebsite => 'افتح الموقع';
-
-  @override
-  String get category => 'الفئة';
 
   @override
   String get openMap => 'افتح الخريطة';
@@ -552,6 +632,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pressBackAgainToExit => 'اضغط رجوع مرة أخرى للخروج';
 
   @override
+  String get userIdentifier => 'المعرف';
+
+  @override
+  String get notEditable => 'غير قابل للتعديل';
+
+  @override
   String get today => 'اليوم';
 
   @override
@@ -569,4 +655,89 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get registerHeading => 'تسجيل';
+
+  @override
+  String get quickPolls => 'استبيانات سريعة';
+
+  @override
+  String get noQuickPolls => 'لا توجد استبيانات لهذه الجلسة';
+
+  @override
+  String get vote => 'تصويت';
+
+  @override
+  String get previous => 'السابق';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get results => 'النتائج';
+
+  @override
+  String pollIndexOfTotal(int index, int total) {
+    return 'استبيان $index من $total';
+  }
+
+  @override
+  String totalVotes(int count) {
+    return 'إجمالي الأصوات: $count';
+  }
+
+  @override
+  String get pollNotOpenYet => 'الاستبيان غير مفتوح بعد';
+
+  @override
+  String get pollClosed => 'تم إغلاق الاستبيان';
+
+  @override
+  String openUntilTime(String time) {
+    return 'مفتوح حتى $time';
+  }
+
+  @override
+  String get youVoted => 'لقد قمت بالتصويت';
+
+  @override
+  String get website => 'الموقع الإلكتروني';
+
+  @override
+  String get contactInfo => 'معلومات التواصل';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get mobile => 'الجوال';
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get position => 'المنصب';
+
+  @override
+  String get category => 'الفئة';
+
+  @override
+  String get offlineActionUnavailable =>
+      'أنت غير متصل بالإنترنت. لا يمكن تنفيذ الإجراء.';
+
+  @override
+  String get requiredField => 'هذا الحقل مطلوب.';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get unlimitedCapacity => 'سعة غير محدودة';
 }

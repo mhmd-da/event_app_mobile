@@ -1,7 +1,7 @@
+import 'package:event_app/shared/widgets/language_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
-import 'package:event_app/shared/providers/language_provider.dart';
 import 'package:event_app/shared/providers/theme_provider.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 
@@ -10,7 +10,6 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(appLocaleProvider);
     final themeMode = ref.watch(appThemeModeProvider);
 
     return AppScaffold(
@@ -18,18 +17,19 @@ class SettingsPage extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context)?.language ?? 'Language'),
-            subtitle: Text(AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle language'),
-            value: locale.languageCode == 'ar',
-            onChanged: (on) async {
-              final newLocale = Locale(on ? 'ar' : 'en');
-              ref.read(appLocaleProvider.notifier).set(newLocale);
-              // Persist selection
-              await ref.read(languageStorageProvider).saveLocale(newLocale.languageCode);
-              // Optionally call backend via profile changeLanguageProvider if needed
-            },
-          ),
+          const LanguageSwitcherWidget(),
+          // SwitchListTile(
+          //   title: Text(AppLocalizations.of(context)?.language ?? 'Language'),
+          //   subtitle: Text(AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle language'),
+          //   value: locale.languageCode == 'ar',
+          //   onChanged: (on) async {
+          //     final newLocale = Locale(on ? 'ar' : 'en');
+          //     ref.read(appLocaleProvider.notifier).set(newLocale);
+          //     // Persist selection
+          //     await ref.read(languageStorageProvider).saveLocale(newLocale.languageCode);
+          //     // Optionally call backend via profile changeLanguageProvider if needed
+          //   },
+          // ),
           const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

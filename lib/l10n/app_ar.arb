@@ -41,6 +41,7 @@
 
   "welcomeBack": "مرحبًا بعودتك!",
   "loginToContinue": "قم بتسجيل الدخول لمتابعة رحلتك في الفعالية.",
+  "loginHeading": "تسجيل الدخول",
 
   "workshops": "ورش عمل",
   "roundtables": "موائد مستديرة",
@@ -52,6 +53,15 @@
   "exhibitions": "المعارض",
   "eventInfo": "معلومات الفعالية",
   "venue": "المكان",
+  "venueMap": "خريطة المكان",
+  "quickActions": "إجراءات سريعة",
+  "aboutEvent": "عن الفعالية",
+  "venueAndInfo": "المكان والمعلومات",
+  "venueMapSubtitle": "عرض جميع القاعات والغرف",
+  "faqsSubtitle": "أسئلة شائعة",
+  "contactUsSubtitle": "تواصل مع المنظمين",
+  "readMore": "اقرأ المزيد",
+  "noDescriptionAvailable": "لا يوجد وصف متاح.",
 
   "emailLabel": "البريد الإلكتروني، المعرف، رقم الهاتف",
   "password": "كلمة المرور",
@@ -69,9 +79,19 @@
     }
   },
   "languageUpdateFailed": "فشل في تحديث اللغة",
-    "sessionChatTitle": "دردشة الجلسة",
-    "typeMessageHint": "اكتب رسالة",
-    "sendLabel": "إرسال",
+  "sessionChatTitle": "دردشة الجلسة",
+  "typeMessageHint": "اكتب رسالة",
+  "sendLabel": "إرسال",
+  "youLabel": "أنت",
+  "myQrTitle": "رمز الاستجابة السريعة الخاص بي",
+  "myQrSubtitle": "اعرض هذا الرمز للموظفين لإتمام تسجيل الدخول.",
+  "qrNotAvailable": "رمز الاستجابة السريعة غير متوفر.",
+  "qrNotAvailableHint": "يرجى تسجيل الدخول مرة أخرى أثناء الاتصال بالإنترنت.",
+  "qrTitle": "رمز QR",
+  "scanQrTitle": "مسح رمز QR",
+  "processing": "جارٍ المعالجة…",
+  "checkInSuccess": "تم تسجيل الدخول",
+  "checkInFailed": "فشل تسجيل الدخول",
   "changeLanguage": "تغيير اللغة",
 
   "profile_name": "الاسم",
@@ -115,7 +135,6 @@
   "title": "اللقب",
   "firstName": "الاسم الأول",
   "lastName": "اسم العائلة",
-  "email": "البريد الإلكتروني",
   "phoneNumber": "رقم الهاتف",
   "confirmPassword": "تأكيد كلمة المرور",
   "bio": "السيرة الذاتية",
@@ -128,6 +147,11 @@
   "verificationCode": "رمز التحقق",
   "verifyButton": "تحقق",
   "gender": "الجنس",
+  "genderMale": "ذكر",
+  "genderFemale": "أنثى",
+  "passwordStrengthWeak": "ضعيف",
+  "passwordStrengthModerate": "متوسط",
+  "passwordStrengthStrong": "قوي",
 
   "verifyCodeTitle": "تأكيد الرمز",
   "otpLabel": "أدخل الرمز",
@@ -158,6 +182,8 @@
   "theme": "السمة",
   "toggleTheme": "تبديل الوضع الداكن/الفاتح"
   ,
+  "darkMode": "الوضع الداكن",
+  "profileDetails": "تفاصيل الملف الشخصي",
   "themeSystem": "النظام",
   "themeLight": "فاتح",
   "themeDark": "داكن",
@@ -178,6 +204,7 @@
     }
   },
   "contactFormTitle": "اتصل بنا",
+  "contactFormHeader": "نقدّر ملاحظاتك واستفساراتك. يرجى تعبئة النموذج وسنعاود التواصل معك قريبًا.",
   "contactCategory": "الفئة",
   "contactSubject": "الموضوع",
   "contactMessage": "الرسالة",
@@ -192,7 +219,6 @@
   "category_OTHER": "أخرى",
   "type": "النوع",
   "openWebsite": "افتح الموقع",
-  "category": "الفئة",
   "openMap": "افتح الخريطة",
   "noVenueInfo": "لا تتوفر معلومات عن المكان.",
   "floorPlans": "مخططات الطوابق",
@@ -225,6 +251,8 @@
   "enter6Digits": "أدخل 6 أرقام",
   "min6Chars": "6 أحرف على الأقل",
   "pressBackAgainToExit": "اضغط رجوع مرة أخرى للخروج",
+  "userIdentifier": "المعرف",
+  "notEditable": "غير قابل للتعديل",
   "today": "اليوم",
   "tomorrow": "غدًا",
   "minutesShort": "{minutes} دقيقة",
@@ -249,4 +277,43 @@
   "@registerHeading": {
     "description": "عنوان صفحة التسجيل"
   }
+  ,
+  "quickPolls": "استبيانات سريعة",
+  "noQuickPolls": "لا توجد استبيانات لهذه الجلسة",
+  "vote": "تصويت",
+  "previous": "السابق",
+  "next": "التالي",
+  "results": "النتائج",
+  "pollIndexOfTotal": "استبيان {index} من {total}",
+  "@pollIndexOfTotal": {
+    "placeholders": {
+      "index": {"type": "int", "example": "1"},
+      "total": {"type": "int", "example": "3"}
+    }
+  },
+  "totalVotes": "إجمالي الأصوات: {count}",
+  "@totalVotes": {
+    "placeholders": {"count": {"type": "int", "example": "42"}}
+  }
+  ,
+  "pollNotOpenYet": "الاستبيان غير مفتوح بعد",
+  "pollClosed": "تم إغلاق الاستبيان"
+  ,
+  "openUntilTime": "مفتوح حتى {time}",
+  "@openUntilTime": {"placeholders": {"time": {"type": "String", "example": "14:23"}}},
+  "youVoted": "لقد قمت بالتصويت",
+  "website": "الموقع الإلكتروني",
+  "contactInfo": "معلومات التواصل",
+  "email": "البريد الإلكتروني",
+  "mobile": "الجوال",
+  "phone": "الهاتف",
+  "name": "الاسم",
+  "position": "المنصب",
+  "category": "الفئة",
+  "offlineActionUnavailable": "أنت غير متصل بالإنترنت. لا يمكن تنفيذ الإجراء.",
+  "requiredField": "هذا الحقل مطلوب.",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "edit": "تعديل",
+  "unlimitedCapacity": "سعة غير محدودة"
 }

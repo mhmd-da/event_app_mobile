@@ -74,5 +74,5 @@ class MyApp extends ConsumerWidget {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   // ignore: avoid_print
-  print("Background message received: ${message.messageId}");
+  //print("Background message received: ${message.messageId}");
 }

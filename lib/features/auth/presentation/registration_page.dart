@@ -1,85 +1,19 @@
+import 'package:event_app/core/widgets/app_primary_button.dart';
 import 'package:event_app/features/auth/presentation/code_verification_page.dart';
 import 'package:event_app/core/widgets/notifier.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:event_app/core/widgets/app_text_input.dart';
 import 'package:event_app/core/widgets/app_dropdown.dart';
 import 'package:event_app/core/widgets/app_brand_waves.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
-part 'registration_page.g.dart';
+import 'registration_providers.dart';
 
-class RegistrationFormState {
-  final String? title;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? phoneNumber;
-  final String? password;
-  final String? confirmPassword;
-  final String? gender;
-
-  const RegistrationFormState({
-    this.title,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.phoneNumber,
-    this.password,
-    this.confirmPassword,
-    this.gender,
-  });
-
-  RegistrationFormState copyWith({
-    String? title,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? phoneNumber,
-    String? password,
-    String? confirmPassword,
-    String? gender,
-  }) {
-    return RegistrationFormState(
-      title: title ?? this.title,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      email: email ?? this.email,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      password: password ?? this.password,
-      confirmPassword: confirmPassword ?? this.confirmPassword,
-      gender: gender ?? this.gender,
-    );
-  }
-}
-
-@Riverpod(keepAlive: true)
-class RegistrationFormController extends _$RegistrationFormController {
-  @override
-  RegistrationFormState build() => const RegistrationFormState();
-
-  void updateField(String field, String? value) {
-    state = state.copyWith(
-      title: field == 'title' ? value : state.title,
-      firstName: field == 'firstName' ? value : state.firstName,
-      lastName: field == 'lastName' ? value : state.lastName,
-      email: field == 'email' ? value : state.email,
-      phoneNumber: field == 'phoneNumber' ? value : state.phoneNumber,
-      password: field == 'password' ? value : state.password,
-      confirmPassword:
-          field == 'confirmPassword' ? value : state.confirmPassword,
-      gender: field == 'gender' ? value : state.gender,
-    );
-  }
-
-  void reset() {
-    state = const RegistrationFormState();
-  }
-}
+// Providers moved to registration_providers.dart
 
 class PasswordStrengthIndicator extends StatelessWidget {
   final String password;
@@ -101,7 +35,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          _getStrengthLabel(strength),
+          _getStrengthLabel(context, strength),
           style: TextStyle(color: strengthColor),
         ),
       ],
@@ -124,10 +58,11 @@ class PasswordStrengthIndicator extends StatelessWidget {
     return Colors.green;
   }
 
-  String _getStrengthLabel(double strength) {
-    if (strength < 0.3) return 'Weak';
-    if (strength < 0.7) return 'Moderate';
-    return 'Strong';
+  String _getStrengthLabel(BuildContext context, double strength) {
+    final l10n = AppLocalizations.of(context)!;
+    if (strength < 0.3) return l10n.passwordStrengthWeak;
+    if (strength < 0.7) return l10n.passwordStrengthModerate;
+    return l10n.passwordStrengthStrong;
   }
 }
 
@@ -145,6 +80,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
   final FocusNode _firstNameFocus = FocusNode();
   final FocusNode _lastNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
+  final FocusNode _identifierFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmFocus = FocusNode();
@@ -154,14 +90,17 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
     _firstNameFocus.dispose();
     _lastNameFocus.dispose();
     _emailFocus.dispose();
+    _identifierFocus.dispose();
     _phoneFocus.dispose();
     _passwordFocus.dispose();
     _confirmFocus.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(registrationFormControllerProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       bottomNavigationBar: const AppFooterWave(height: 120),
@@ -175,16 +114,36 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
               builder: (context) {
                 final topInset = MediaQuery.of(context).padding.top;
                 return Positioned(
+                  left: 24,
                   right: 18,
                   top: topInset + 8,
-                  child: CircleAvatar(
-                    radius: 44,
-                    backgroundColor: Colors.white.withValues(alpha: 0.9),
-                    child: const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                      backgroundImage: AssetImage('assets/icons/app_icon.png'),
-                    ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'KSU Tamkeen X 2026',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      CircleAvatar(
+                        radius: 44,
+                        backgroundColor: Colors.white.withValues(alpha: 0.9),
+                        child: const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage(
+                            'assets/icons/app_icon.png',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -219,15 +178,19 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                             label: AppLocalizations.of(context)!.firstName,
                             prefixIcon: const Icon(Icons.person_outline),
                             dense: false,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.small, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.small,
+                              vertical: 16,
+                            ),
                             validator: (value) =>
                                 (value == null || value.isEmpty)
-                                    ? AppLocalizations.of(context)!.fieldRequired
-                                    : null,
+                                ? AppLocalizations.of(context)!.fieldRequired
+                                : null,
                             onChanged: (value) {
                               ref
                                   .read(
-                                      registrationFormControllerProvider.notifier)
+                                    registrationFormControllerProvider.notifier,
+                                  )
                                   .updateField('firstName', value);
                             },
                             focusNode: _firstNameFocus,
@@ -241,15 +204,19 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                             label: AppLocalizations.of(context)!.lastName,
                             prefixIcon: const Icon(Icons.person_outline),
                             dense: false,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.small, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.small,
+                              vertical: 16,
+                            ),
                             validator: (value) =>
                                 (value == null || value.isEmpty)
-                                    ? AppLocalizations.of(context)!.fieldRequired
-                                    : null,
+                                ? AppLocalizations.of(context)!.fieldRequired
+                                : null,
                             onChanged: (value) {
                               ref
                                   .read(
-                                      registrationFormControllerProvider.notifier)
+                                    registrationFormControllerProvider.notifier,
+                                  )
                                   .updateField('lastName', value);
                             },
                             focusNode: _lastNameFocus,
@@ -263,17 +230,40 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                     AppDropdown<String>(
                       value: formState.gender,
                       items: const ['Male', 'Female'],
-                      itemLabel: (v) => v,
-                      label: AppLocalizations.of(context)!.gender,
+                      itemLabel: (v) =>
+                          v == 'Male' ? l10n.genderMale : l10n.genderFemale,
+                      label: l10n.gender,
                       prefixIcon: const Icon(Icons.wc),
                       onChanged: (value) {
                         ref
                             .read(registrationFormControllerProvider.notifier)
                             .updateField('gender', value);
                       },
-                      validator: (value) => value == null
-                          ? AppLocalizations.of(context)!.fieldRequired
-                          : null,
+                      validator: (value) =>
+                          value == null ? l10n.fieldRequired : null,
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextInput(
+                      label: AppLocalizations.of(context)!.userIdentifier,
+                      prefixIcon: const Icon(Icons.badge_outlined),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        // Optional; only validate length if provided
+                        if (value != null &&
+                            value.isNotEmpty &&
+                            value.length < 3) {
+                          return AppLocalizations.of(context)!.fieldRequired;
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        ref
+                            .read(registrationFormControllerProvider.notifier)
+                            .updateField('userIdentifier', value);
+                      },
+                      focusNode: _identifierFocus,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => _emailFocus.requestFocus(),
                     ),
                     const SizedBox(height: 16),
                     AppTextInput(
@@ -303,10 +293,9 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                       label: AppLocalizations.of(context)!.phoneNumber,
                       prefixIcon: const Icon(Icons.phone_outlined),
                       keyboardType: TextInputType.phone,
-                      validator: (value) =>
-                          (value == null || value.isEmpty)
-                              ? AppLocalizations.of(context)!.fieldRequired
-                              : null,
+                      validator: (value) => (value == null || value.isEmpty)
+                          ? AppLocalizations.of(context)!.fieldRequired
+                          : null,
                       onChanged: (value) {
                         ref
                             .read(registrationFormControllerProvider.notifier)
@@ -353,9 +342,14 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                           return AppLocalizations.of(context)!.fieldRequired;
                         }
                         final pwd =
-                            ref.read(registrationFormControllerProvider).password ?? '';
+                            ref
+                                .read(registrationFormControllerProvider)
+                                .password ??
+                            '';
                         if (value != pwd) {
-                          return AppLocalizations.of(context)!.passwordsDontMatch;
+                          return AppLocalizations.of(
+                            context,
+                          )!.passwordsDontMatch;
                         }
                         return null;
                       },
@@ -388,65 +382,61 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                   top: BorderSide(color: Theme.of(context).dividerColor),
                 ),
               ),
-              child: ElevatedButton(
-                onPressed: _submitting
-                    ? null
-                    : () async {
-                        if (!_formKey.currentState!.validate()) return;
+              child: IgnorePointer(
+                ignoring: _submitting,
+                child: AppPrimaryButton(
+                  label: AppLocalizations.of(context)!.registerButton,
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) return;
 
-                        final l10n = AppLocalizations.of(context)!;
-                        final navigator = Navigator.of(context);
+                    final l10n = AppLocalizations.of(context)!;
+                    final navigator = Navigator.of(context);
 
-                        final form = ref.read(registrationFormControllerProvider);
-                        final formData = {
-                          'title': form.title,
-                          'firstName': form.firstName,
-                          'lastName': form.lastName,
-                          'email': form.email,
-                          'phoneNumber': form.phoneNumber,
-                          'password': form.password,
-                          'confirmPassword': form.confirmPassword,
-                          'gender': form.gender,
-                        };
+                    final form = ref.read(registrationFormControllerProvider);
+                    final formData = {
+                      'title': form.title,
+                      'firstName': form.firstName,
+                      'lastName': form.lastName,
+                      'UserIdentifier': form.userIdentifier,
+                      'email': form.email,
+                      'phoneNumber': form.phoneNumber,
+                      'password': form.password,
+                      'confirmPassword': form.confirmPassword,
+                      'gender': form.gender,
+                    };
 
-                        setState(() => _submitting = true);
-                        try {
-                          final authRepository = ref.read(authRepositoryProvider);
-                          final response = await authRepository.register(formData);
+                    setState(() => _submitting = true);
+                    try {
+                      final authRepository = ref.read(authRepositoryProvider);
+                      final response = await authRepository.register(formData);
 
-                          if (!mounted) return;
+                      if (!mounted) return;
 
-                          _formKey.currentState!.reset();
-                          ref
-                              .read(registrationFormControllerProvider.notifier)
-                              .reset();
+                      _formKey.currentState!.reset();
+                      ref
+                          .read(registrationFormControllerProvider.notifier)
+                          .reset();
 
-                          final storage = ref.read(secureStorageProvider);
-                          await storage.saveUserId(response.userId);
+                      final storage = ref.read(secureStorageProvider);
+                      await storage.saveUserId(response.userId);
 
-                          if (!mounted) return;
-                          await navigator.pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const CodeVerificationPage(),
-                            ),
-                          );
-                        } catch (e) {
-                          if (!mounted) return;
-                          AppNotifier.error(
-                            context,
-                            '${l10n.registrationFailed}: $e',
-                          );
-                        } finally {
-                          if (mounted) setState(() => _submitting = false);
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      if (!mounted) return;
+                      await navigator.pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const CodeVerificationPage(),
+                        ),
+                      );
+                    } catch (e) {
+                      if (!mounted) return;
+                      AppNotifier.error(
+                        context,
+                        '${l10n.registrationFailed}: $e',
+                      );
+                    } finally {
+                      if (mounted) setState(() => _submitting = false);
+                    }
+                  },
                 ),
-                child: Text(AppLocalizations.of(context)!.registerButton),
               ),
             ),
           ),

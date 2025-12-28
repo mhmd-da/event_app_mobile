@@ -8,11 +8,34 @@ class AppColors {
   static const Color primary = Color(0xFF2596be); // light blue
   static const Color primaryAlt = Color(0xff0f326d); // dark blue
 
-  static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primary, primaryAlt],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  // static const LinearGradient primaryGradient = LinearGradient(
+  //   colors: [primary, primaryAlt],
+  //   begin: Alignment.topLeft,
+  //   end: Alignment.bottomRight,
+  // );
+
+//   static const LinearGradient primaryGradient = LinearGradient(
+//   colors: [
+//     Color(0xFF0D75B0), // Logo Blue
+//     Color(0xFF5E3670), // Logo Purple
+//   ],
+//   begin: Alignment.topLeft,
+//   end: Alignment.bottomRight,
+// );
+
+
+static const LinearGradient primaryGradient = LinearGradient(
+  colors: [
+    Color(0xFF0AA6D8), // Cyan-blue (left/top highlights)
+    Color(0xFF0D75B0), // Main logo blue
+    Color(0xFF3F5AA9), // Indigo transition
+    Color(0xFF5E3670), // Logo purple
+  ],
+  stops: [0.0, 0.35, 0.65, 1.0],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 
   // Light theme neutrals
   static const Color lightBackground = Color(0xFFF7F7F7);
@@ -32,6 +55,9 @@ class AppColors {
   static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFFC107);
   static const Color error = Color(0xFFE53935);
+
+    // Profile header brand shade (soft purple)
+    static const Color profileHeader = Color(0xFFD6C7FF);
 
 
   static Color panelBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark

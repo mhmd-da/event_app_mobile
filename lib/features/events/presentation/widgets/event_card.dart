@@ -1,8 +1,10 @@
 import 'package:event_app/features/events/presentation/events_providers.dart';
 import 'package:event_app/main_navigation/main_navigation_page.dart';
 import 'package:flutter/material.dart';
+import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import '../../domain/event_model.dart';
 import '../state/selected_event_provider.dart';
 
@@ -16,8 +18,11 @@ class EventCard extends ConsumerWidget {
     final start = event.startDate;
     final end = event.endDate;
 
-    final dateText =
-        "${start.year}/${start.month}/${start.day} - ${end.year}/${end.month}/${end.day}";
+    final dateText = AppTimeFormatting.formatDateRangeYMMMd(
+      context,
+      start: start,
+      end: end,
+    );
 
     return Material(
       elevation: 4,
@@ -38,40 +43,40 @@ class EventCard extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(16),
                 child: event.bannerImageUrl != null
                     ? Image.network(
-                  event.bannerImageUrl!,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 180,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFFFF512F), Color(0xFFF09819)],
-                        ),
-                      ),
-                    );
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      height: 180,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFFFF512F), Color(0xFFF09819)],
-                        ),
-                      ),
-                    );
-                  },
-                )
+                        event.bannerImageUrl!,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 180,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFFFF512F), Color(0xFFF09819)],
+                              ),
+                            ),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            height: 180,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFFFF512F), Color(0xFFF09819)],
+                              ),
+                            ),
+                          );
+                        },
+                      )
                     : Container(
-                  height: 180,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFFF512F), Color(0xFFF09819)],
-                    ),
-                  ),
-                ),
+                        height: 180,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFFF512F), Color(0xFFF09819)],
+                          ),
+                        ),
+                      ),
               ),
 
               /// DARK OVERLAY FOR TEXT READABILITY
@@ -104,35 +109,42 @@ class EventCard extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         shadows: [
                           Shadow(
-                              color: Colors.black,
-                              offset: Offset(1, 1),
-                              blurRadius: 4),
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 4,
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      dateText,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Text(
+                        dateText,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                     const Spacer(),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: ElevatedButton(
+                      child: AppElevatedButton(
                         onPressed: () async {
                           final navigator = Navigator.of(context);
                           showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (_) => const Center(child: CircularProgressIndicator()),
+                            builder: (_) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           );
 
-                          // 1. Fetch event details from repository
-                          final repo = ref.read(eventsRepositoryProvider);
-                          final details = await repo.getEventDetails(event.id);
+                          // 1. Fetch event details (locale-aware)
+                          final details = await ref.read(
+                            eventDetailsProvider(event.id).future,
+                          );
 
                           navigator.pop(); // remove loader
 
@@ -141,9 +153,12 @@ class EventCard extends ConsumerWidget {
 
                           // 3. Navigate to main navigation
                           navigator.pushReplacement(
-                            MaterialPageRoute(builder: (_) => const MainNavigationPage()),
+                            MaterialPageRoute(
+                              builder: (_) => const MainNavigationPage(),
+                            ),
                           );
                         },
+                        child: Text(AppLocalizations.of(context)!.selectEvent),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.redAccent,
@@ -151,7 +166,6 @@ class EventCard extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(22),
                           ),
                         ),
-                        child: Text(AppLocalizations.of(context)!.selectEvent),
                       ),
                     ),
                   ],

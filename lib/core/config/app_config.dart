@@ -1,6 +1,8 @@
 class AppConfig {
-  static const String baseApiUrl = "https://api.event-management-digital-ocean.online/api";
-  static const String baseHubUrl = "https://api.event-management-digital-ocean.online/chatHub";
+  static const String baseApiUrl =
+      "https://api.event-management-digital-ocean.online/api";
+  static const String baseHubUrl =
+      "https://api.event-management-digital-ocean.online/chatHub";
 
   // 🔹 Auth Endpoints
   static const String login = "/auth/login";
@@ -16,22 +18,32 @@ class AppConfig {
 
   // 🔹 Speakers Endpoints
   static String getSpeakers(String? search) => "/speakers?Search=$search";
+  static String getSpeakerDetails(int speakerId) => "/speakers/$speakerId";
 
   // 🔹 Sessions Endpoints
   static const String getSessionsForAgenda = "/sessions";
-  static String getSessionsByCategory(String category) => "/sessions?Category=$category";
-  static const String getSessionsForMentorship = "/sessions?Category=Mentorship";
-  static String registerSession(int sessionId) => "/sessions/$sessionId/register";
-  static String cancelSessionRegistration(int sessionId) => "/sessions/$sessionId/cancel";
-  static String submitSessionFeedback(int sessionId) => "/sessions/$sessionId/feedback";
+  static String getSessionsByCategory(String category) =>
+      "/sessions?Category=$category";
+  static const String getSessionsForMentorship =
+      "/sessions?Category=Mentorship";
+  static String registerSession(int sessionId) =>
+      "/sessions/$sessionId/register";
+  static String cancelSessionRegistration(int sessionId) =>
+      "/sessions/$sessionId/cancel";
+  static String submitSessionFeedback(int sessionId) =>
+      "/sessions/$sessionId/feedback";
 
   // 🔹 Workshops Endpoints
   static const String getWorkshops = "/workshops";
   static const String registerWorkshop = "/workshops/register";
 
   // 🔹 Mentorship Endpoints
-  static String getMentors(String? search) => "/mentorship/mentors?Search=$search";
-  static String getMentorshipDetails(int sessionId) => "/mentorship/$sessionId/details";
+  static String getMentors(String? search) =>
+      "/mentorship/mentors?Search=$search";
+  static String getMentorDetails(int mentorId) =>
+      "/mentorship/mentors/$mentorId";
+  static String getMentorshipDetails(int sessionId) =>
+      "/mentorship/$sessionId/details";
   static const String bookTimeSlot = "/mentorship/slots/book";
   static const String cancelTimeSlot = "/mentorship/slots/cancel";
 
@@ -51,8 +63,16 @@ class AppConfig {
   static const String getPartners = "/partners";
 
   // 🔹 Session Reminder (server-driven notifications)
-  static String setSessionReminder(int sessionId) => "/sessions/$sessionId/reminder"; // PUT
-  static String deleteSessionReminder(int sessionId) => "/sessions/$sessionId/reminder"; // DELETE
+  static String setSessionReminder(int sessionId) =>
+      "/sessions/$sessionId/reminder"; // PUT
+  static String deleteSessionReminder(int sessionId) =>
+      "/sessions/$sessionId/reminder"; // DELETE
+
+  // 🔹 Quick Polls (per session)
+  static String getQuickPolls(int sessionId) =>
+      "/session/$sessionId/quick-polls";
+  static String voteQuickPoll(int sessionId, int pollId) =>
+      "/session/$sessionId/quick-polls/$pollId/vote";
 
   // 🔹 FAQs
   static const String getFaqs = "/faqs";
@@ -67,7 +87,11 @@ class AppConfig {
   static const String submitContactRequest = "/contact-request";
 
   // 🔹 Event Photos
-  static String getEventPhotos(int eventId, {int pageIndex = 1, int pageSize = 24}) {
+  static String getEventPhotos(
+    int eventId, {
+    int pageIndex = 1,
+    int pageSize = 24,
+  }) {
     return "/events/$eventId/photos?pageIndex=$pageIndex&pageSize=$pageSize";
   }
 

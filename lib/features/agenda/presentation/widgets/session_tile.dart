@@ -2,22 +2,23 @@ import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/utilities/session_category_helper.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:event_app/l10n/app_localizations.dart';
 
 class SessionTile extends StatelessWidget {
-  const SessionTile({super.key, required this.session, required this.onTapWidgetBuilder});
+  const SessionTile({
+    super.key,
+    required this.session,
+    required this.onTapWidgetBuilder,
+  });
 
   final SessionModel session;
   final WidgetBuilder onTapWidgetBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final timeFormat = DateFormat.jm();
-    final start = timeFormat.format(session.startTime.toLocal());
-    final end = timeFormat.format(session.endTime.toLocal());
-
     return Padding(
       padding: const EdgeInsets.only(
         top: AppSpacing.small,
@@ -28,25 +29,21 @@ class SessionTile extends StatelessWidget {
           context,
           bgColor: SessionCategoryHelper.getCategoryColor(
             context,
-            session.category,
+            session.categoryTag,
           ),
         ),
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: onTapWidgetBuilder,
-              ),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: onTapWidgetBuilder));
           },
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.item),
             child: Row(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // 👈 fixes top alignment
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // The colored indicator line, controlled by theme
                 Align(
                   child: Container(
                     width: 3,
@@ -58,38 +55,174 @@ class SessionTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.item),
-                // SESSION
                 Expanded(
                   child: Column(
                     children: [
-                      //Category + Track
                       Row(
                         children: [
                           const Icon(Icons.category_outlined, size: 15),
                           const SizedBox(width: AppSpacing.xSmall),
-                          Text(session.category,style: AppTextStyles.bodySmall),
+                          Text(
+                            session.category,
+                            style: AppTextStyles.bodySmall,
+                          ),
                           const Spacer(),
                           const Icon(Icons.lightbulb_outline, size: 15),
                           const SizedBox(width: AppSpacing.xSmall),
                           Text(session.track, style: AppTextStyles.bodySmall),
                         ],
                       ),
-                      Divider(),
-                      //NAME
+                      const Divider(),
                       Text(
                         session.name ?? '',
                         style: AppTextStyles.headlineMedium,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: AppSpacing.xSmall),
-                      Divider(),
-                      //SPEAKERS
+                      if (((session.maxCapacity != null &&
+                                  session.maxCapacity == 0) ||
+                              (session.currentBookings != null &&
+                                  session.maxCapacity != null)) ||
+                          session.hasQuickPolls)
+                        Row(
+                          children: [
+                            if ((session.maxCapacity != null &&
+                                    session.maxCapacity == 0) ||
+                                (session.currentBookings != null &&
+                                    session.maxCapacity != null))
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.group_outlined,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      (session.maxCapacity == 0)
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.unlimitedCapacity
+                                          : '${session.currentBookings}/${session.maxCapacity}',
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            if (((session.maxCapacity != null &&
+                                        session.maxCapacity == 0) ||
+                                    (session.currentBookings != null &&
+                                        session.maxCapacity != null)) &&
+                                session.hasQuickPolls)
+                              const Spacer(),
+                            if (session.hasQuickPolls)
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.poll_outlined,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.quickPolls,
+                                          style: AppTextStyles.bodySmall
+                                              .copyWith(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.primary,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      const SizedBox(height: AppSpacing.xSmall),
+                      if (session.isMaxCapacityReached && !session.isRegistered)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.error.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.warning_amber_outlined,
+                                  color: Theme.of(context).colorScheme.error,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.maxCapacityReached,
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: AppSpacing.xSmall),
+                      const Divider(),
                       Column(
                         children: [
                           ...session.speakers.map(
                             (speaker) => ListTile(
                               leading: CircleAvatar(
-                                backgroundImage: speaker.profileImageUrl.isNotEmpty
+                                backgroundImage:
+                                    speaker.profileImageUrl.isNotEmpty
                                     ? NetworkImage(speaker.profileImageUrl)
                                     : null,
                                 child: speaker.profileImageUrl.isEmpty
@@ -97,20 +230,19 @@ class SessionTile extends StatelessWidget {
                                     : null,
                               ),
                               title: Text(
-                                "${speaker.title} ${speaker.firstName} ${speaker.lastName}",
+                                '${speaker.title} ${speaker.firstName} ${speaker.lastName}',
                                 style: AppTextStyles.headlineTine,
                               ),
-                              //subtitle: Text("${speaker.companyName} — ${speaker.position}"),
                             ),
                           ),
-                          session.speakers.isNotEmpty ? Divider() : SizedBox.shrink(),
+                          if (session.speakers.isNotEmpty) const Divider(),
                         ],
                       ),
-                      //MENTOR
                       if (session.mentor != null) ...[
                         ListTile(
                           leading: CircleAvatar(
-                            backgroundImage: session.mentor!.profileImageUrl.isNotEmpty
+                            backgroundImage:
+                                session.mentor!.profileImageUrl.isNotEmpty
                                 ? NetworkImage(session.mentor!.profileImageUrl)
                                 : null,
                             child: session.mentor!.profileImageUrl.isEmpty
@@ -118,18 +250,22 @@ class SessionTile extends StatelessWidget {
                                 : null,
                           ),
                           title: Text(
-                            "${session.mentor!.title} ${session.mentor!.firstName} ${session.mentor!.lastName}",
+                            '${session.mentor!.title} ${session.mentor!.firstName} ${session.mentor!.lastName}',
                             style: AppTextStyles.headlineTine,
                           ),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
-                      // TIME + LOCATION
                       Row(
                         children: [
                           const Icon(Icons.date_range_outlined, size: 15),
                           const SizedBox(width: AppSpacing.xSmall),
-                          Text('$start – $end', style: AppTextStyles.bodySmall),
+                          AppTimeFormatting.timeRangeText(
+                            context,
+                            start: session.startTime,
+                            end: session.endTime,
+                            style: AppTextStyles.bodySmall,
+                          ),
                           const Spacer(),
                           const Icon(Icons.location_on_outlined, size: 15),
                           const SizedBox(width: AppSpacing.xSmall),
@@ -139,6 +275,7 @@ class SessionTile extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: AppSpacing.small),
                     ],
                   ),
                 ),

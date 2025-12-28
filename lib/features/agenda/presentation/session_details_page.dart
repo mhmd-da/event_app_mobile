@@ -2,12 +2,14 @@ import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/utilities/logger.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
+import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
+import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
@@ -17,6 +19,15 @@ import 'package:event_app/features/chat/presentation/chat_providers.dart';
 import 'package:event_app/core/utilities/scheduling.dart';
 import 'package:event_app/features/chat/presentation/chat_page.dart';
 import 'package:event_app/core/widgets/notifier.dart';
+import 'package:event_app/features/quick_polls/presentation/quick_polls_panel.dart';
+import 'package:event_app/features/speakers/presentation/speaker_details_page.dart';
+import 'package:event_app/features/speakers/presentation/speaker_providers.dart';
+import 'package:event_app/features/sponsors/domain/sponsor_model.dart';
+import 'package:event_app/features/sponsors/presentation/sponsor_details_page.dart';
+import 'package:event_app/features/sponsors/presentation/sponsor_providers.dart';
+import 'package:event_app/features/partners/domain/partner_model.dart';
+import 'package:event_app/features/partners/presentation/partner_details_page.dart';
+import 'package:event_app/features/partners/presentation/partner_providers.dart';
 
 class SessionDetailsPage extends ConsumerWidget {
   const SessionDetailsPage({super.key, required this.session});
@@ -45,41 +56,174 @@ class SessionDetailsPage extends ConsumerWidget {
             _buildSessionCard(context),
             const SizedBox(height: AppSpacing.section),
             _buildRegistrationButton(context, ref, isRegisteredNow),
+            _quickPollsCTA(context, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
             _buildReminderChip(context, ref),
             const SizedBox(height: AppSpacing.section),
             _buildChatActions(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
+            const SizedBox(height: AppSpacing.section),
             if (session.speakers.isNotEmpty)
               _buildSection(
                 context,
                 title: AppLocalizations.of(context)!.sessionSpeakers,
-                child: _buildPersonList(context, session.speakers),
+                child: _buildPersonList(context, ref, session.speakers),
               ),
             const SizedBox(height: AppSpacing.section),
             if (session.sponsors.isNotEmpty)
               _buildSection(
                 context,
                 title: AppLocalizations.of(context)!.poweredBy,
-                child: _buildLogoList(context, session.sponsors),
+                child: _buildLogoList(
+                  context,
+                  session.sponsors,
+                  onTapItem: (item) async {
+                    await _openSponsorDetails(context, ref, item as Sponsor);
+                  },
+                ),
               ),
             const SizedBox(height: AppSpacing.section),
             if (session.partners.isNotEmpty)
               _buildSection(
                 context,
                 title: AppLocalizations.of(context)!.partners,
-                child: _buildLogoList(context, session.partners),
+                child: _buildLogoList(
+                  context,
+                  session.partners,
+                  onTapItem: (item) async {
+                    await _openPartnerDetails(context, ref, item as Partner);
+                  },
+                ),
               ),
             const SizedBox(height: AppSpacing.section),
             if (session.materials.isNotEmpty)
               _buildSection(
                 context,
                 title: AppLocalizations.of(context)!.materials,
-                child: _buildMaterialsList(context, session.materials),
+                child: _buildMaterialsList(context, ref, session.materials),
               ),
           ],
         ),
       ),
+    );
+  }
+
+  String _normalizeKey(String input) {
+    return input.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+  }
+
+  T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
+    for (final item in items) {
+      if (test(item)) return item;
+    }
+    return null;
+  }
+
+  Future<void> _openSpeakerDetails(
+    BuildContext context,
+    WidgetRef ref,
+    Person person,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    int? speakerId = person.id;
+    if (speakerId == null) {
+      try {
+        final speakers = await ref.read(speakersListProvider.future);
+        final targetName = _normalizeKey(
+          '${person.firstName} ${person.lastName}',
+        );
+        final match =
+            _firstWhereOrNull(
+              speakers,
+              (s) =>
+                  _normalizeKey('${s.firstName} ${s.lastName}') == targetName,
+            ) ??
+            _firstWhereOrNull(
+              speakers,
+              (s) =>
+                  _normalizeKey(s.firstName) == _normalizeKey(person.firstName),
+            );
+        speakerId = match?.id;
+      } catch (_) {
+        speakerId = null;
+      }
+    }
+
+    if (speakerId == null) {
+      AppNotifier.error(context, l10n.actionFailed);
+      return;
+    }
+
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SpeakerDetailsPage(speakerId: speakerId!),
+      ),
+    );
+  }
+
+  Future<void> _openSponsorDetails(
+    BuildContext context,
+    WidgetRef ref,
+    Sponsor sponsor,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    SponsorModel? match;
+
+    try {
+      final sponsors = await ref.read(sponsorsListProvider.future);
+      if (sponsor.id != null) {
+        match = _firstWhereOrNull(sponsors, (s) => s.id == sponsor.id);
+      }
+      match ??= _firstWhereOrNull(
+        sponsors,
+        (s) => _normalizeKey(s.name) == _normalizeKey(sponsor.name),
+      );
+    } catch (_) {
+      match = null;
+    }
+
+    if (match == null) {
+      AppNotifier.error(context, l10n.actionFailed);
+      return;
+    }
+
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => SponsorDetailsPage(sponsor: match!)),
+    );
+  }
+
+  Future<void> _openPartnerDetails(
+    BuildContext context,
+    WidgetRef ref,
+    Partner partner,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    PartnerModel? match;
+
+    try {
+      final partners = await ref.read(partnersListProvider.future);
+      if (partner.id != null) {
+        match = _firstWhereOrNull(partners, (p) => p.id == partner.id);
+      }
+      match ??= _firstWhereOrNull(
+        partners,
+        (p) => _normalizeKey(p.name) == _normalizeKey(partner.name),
+      );
+    } catch (_) {
+      match = null;
+    }
+
+    if (match == null) {
+      AppNotifier.error(context, l10n.actionFailed);
+      return;
+    }
+
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => PartnerDetailsPage(partner: match!)),
     );
   }
 
@@ -95,7 +239,7 @@ class SessionDetailsPage extends ConsumerWidget {
     if (joined) {
       return SizedBox(
         width: double.infinity,
-        child: ElevatedButton.icon(
+        child: AppElevatedButton(
           icon: const Icon(Icons.chat_bubble_outline),
           label: Text(l10n.openChat),
           onPressed: () async {
@@ -111,7 +255,7 @@ class SessionDetailsPage extends ConsumerWidget {
     } else {
       return SizedBox(
         width: double.infinity,
-        child: ElevatedButton.icon(
+        child: AppElevatedButton(
           icon: const Icon(Icons.group_add_outlined),
           label: Text(l10n.joinChat),
           onPressed: () async {
@@ -147,64 +291,88 @@ class SessionDetailsPage extends ConsumerWidget {
     WidgetRef ref,
     bool isRegisteredNow,
   ) {
+    final capacityReached = session.isMaxCapacityReached;
+    final shouldDisableRegister = capacityReached && !isRegisteredNow;
     return SizedBox(
       width: double.infinity,
       child: Row(
         children: [
           Expanded(
-            child: ElevatedButton.icon(
+            child: AppElevatedButton(
               label: Text(
                 isRegisteredNow
                     ? AppLocalizations.of(context)!.unregister
+                    : shouldDisableRegister
+                    ? AppLocalizations.of(context)!.maxCapacityReached
                     : AppLocalizations.of(context)!.addToAgenda,
               ),
               icon: Icon(
                 isRegisteredNow
                     ? Icons.remove_circle_outline
+                    : shouldDisableRegister
+                    ? Icons.block
                     : Icons.check_circle_outline,
               ),
-              onPressed: () async {
-                final addedText = AppLocalizations.of(context)!.addedSuccess;
-                final removedText = AppLocalizations.of(
-                  context,
-                )!.removedSuccess;
-                final failedText = AppLocalizations.of(context)!.actionFailed;
-                try {
-                  if (isRegisteredNow) {
-                    await ref
-                        .read(sessionRepositoryProvider)
-                        .cancelSessionRegistration(session.id);
-                    // Ensure chat membership resets when unregistering
-                    ref
-                        .read(
-                          sessionChatMembershipProvider(session.id).notifier,
-                        )
-                        .set(false);
-                  } else {
-                    await ref
-                        .read(sessionRepositoryProvider)
-                        .registerSession(session.id);
-                  }
-                  Future.microtask(() {
-                    ref
-                        .read(
-                          sessionRegistrationStateProvider(session).notifier,
-                        )
-                        .set(!isRegisteredNow);
-                  });
-                  if (!context.mounted) return;
-                  AppNotifier.success(
-                    context,
-                    isRegisteredNow ? removedText : addedText,
-                  );
-                } catch (e) {
-                  AppNotifier.error(context, failedText);
-                }
-              },
+              onPressed: shouldDisableRegister
+                  ? null
+                  : () async {
+                      final addedText = AppLocalizations.of(
+                        context,
+                      )!.addedSuccess;
+                      final removedText = AppLocalizations.of(
+                        context,
+                      )!.removedSuccess;
+                      final failedText = AppLocalizations.of(
+                        context,
+                      )!.actionFailed;
+                      try {
+                        if (isRegisteredNow) {
+                          await ref
+                              .read(sessionRepositoryProvider)
+                              .cancelSessionRegistration(session.id);
+                          // Ensure chat membership resets when unregistering
+                          ref
+                              .read(
+                                sessionChatMembershipProvider(
+                                  session.id,
+                                ).notifier,
+                              )
+                              .set(false);
+                        } else {
+                          await ref
+                              .read(sessionRepositoryProvider)
+                              .registerSession(session.id);
+                        }
+                        Future.microtask(() {
+                          ref
+                              .read(
+                                sessionRegistrationStateProvider(
+                                  session,
+                                ).notifier,
+                              )
+                              .set(!isRegisteredNow);
+                        });
+                        if (!context.mounted) return;
+                        AppNotifier.success(
+                          context,
+                          isRegisteredNow ? removedText : addedText,
+                        );
+                      } catch (e) {
+                        AppNotifier.error(context, failedText);
+                      }
+                    },
               style: isRegisteredNow
                   ? ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.error,
                       foregroundColor: Theme.of(context).colorScheme.onError,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    )
+                  : shouldDisableRegister
+                  ? ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).disabledColor,
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -214,7 +382,7 @@ class SessionDetailsPage extends ConsumerWidget {
           ),
           const SizedBox(width: AppSpacing.item),
           Expanded(
-            child: OutlinedButton.icon(
+            child: AppOutlinedButton(
               icon: const Icon(Icons.feedback_outlined),
               label: Text(AppLocalizations.of(context)!.giveFeedback),
               onPressed: () {
@@ -247,8 +415,10 @@ class SessionDetailsPage extends ConsumerWidget {
           const SizedBox(height: AppSpacing.small),
 
           // Time
-          Text(
-            '${DateFormat.jm().format(session.startTime.toLocal())} - ${DateFormat.jm().format(session.endTime.toLocal())}',
+          AppTimeFormatting.timeRangeText(
+            context,
+            start: session.startTime,
+            end: session.endTime,
             style: AppTextStyles.bodySmall,
           ),
           const SizedBox(height: AppSpacing.small),
@@ -266,6 +436,49 @@ class SessionDetailsPage extends ConsumerWidget {
                 Expanded(
                   child: Text(session.location, style: AppTextStyles.bodySmall),
                 ),
+              ],
+            ),
+
+          const SizedBox(height: AppSpacing.small),
+
+          // Capacity info and badge
+          if (session.maxCapacity != null)
+            Row(
+              children: [
+                const Icon(Icons.group_outlined, size: 18),
+                const SizedBox(width: AppSpacing.xSmall),
+                Text('${session.maxCapacity}', style: AppTextStyles.bodySmall),
+                const Spacer(),
+                if (session.isMaxCapacityReached && !session.isRegistered)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.error.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.warning_amber_outlined,
+                          color: Theme.of(context).colorScheme.error,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          AppLocalizations.of(context)!.maxCapacityReached,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
         ],
@@ -466,7 +679,11 @@ class SessionDetailsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPersonList(BuildContext context, List<Person> people) {
+  Widget _buildPersonList(
+    BuildContext context,
+    WidgetRef ref,
+    List<Person> people,
+  ) {
     return Column(
       children: people.map((person) {
         return Container(
@@ -487,13 +704,8 @@ class SessionDetailsPage extends ConsumerWidget {
             ),
             subtitle: Text(person.title, style: AppTextStyles.bodySmall),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => SpeakerDetailsPage(person),
-              //   ),
-              // );
+            onTap: () async {
+              await _openSpeakerDetails(context, ref, person);
             },
           ),
         );
@@ -501,7 +713,11 @@ class SessionDetailsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildLogoList(BuildContext context, List<dynamic> items) {
+  Widget _buildLogoList(
+    BuildContext context,
+    List<dynamic> items, {
+    required Future<void> Function(dynamic item) onTapItem,
+  }) {
     return SizedBox(
       height: 110,
       child: ListView.separated(
@@ -510,29 +726,33 @@ class SessionDetailsPage extends ConsumerWidget {
         separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.section),
         itemBuilder: (_, index) {
           final item = items[index];
-          return Container(
-            width: 85,
-            padding: const EdgeInsets.all(AppSpacing.small),
-            decoration: AppDecorations.cardContainer(context),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Image.network(
-                    item.logoUrl,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.business_outlined, size: 32),
+          return InkWell(
+            onTap: () async => onTapItem(item),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              width: 85,
+              padding: const EdgeInsets.all(AppSpacing.small),
+              decoration: AppDecorations.cardContainer(context),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Image.network(
+                      item.logoUrl,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) =>
+                          const Icon(Icons.business_outlined, size: 32),
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.small),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.small),
+                  Text(
+                    item.name,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.bodySmall,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -542,6 +762,7 @@ class SessionDetailsPage extends ConsumerWidget {
 
   Widget _buildMaterialsList(
     BuildContext context,
+    WidgetRef ref,
     List<SessionMaterial> materials,
   ) {
     return Column(
@@ -559,10 +780,10 @@ class SessionDetailsPage extends ConsumerWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            trailing: IconButton(
+            trailing: AppIconButton(
               icon: const Icon(Icons.download_outlined),
               onPressed: () async {
-                await _downloadMaterial(context, m);
+                await _downloadMaterial(context, ref, m);
               },
             ),
             onTap: () async {
@@ -591,15 +812,23 @@ class SessionDetailsPage extends ConsumerWidget {
 
   Future<void> _downloadMaterial(
     BuildContext context,
+    WidgetRef ref,
     SessionMaterial material,
   ) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final dir = await getApplicationDocumentsDirectory();
+      final Directory dir;
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+        dir =
+            await getDownloadsDirectory() ??
+            await getApplicationDocumentsDirectory();
+      } else {
+        dir = await getApplicationDocumentsDirectory();
+      }
       final fileName = _safeFileName(material.name, material.url);
       final savePath = '${dir.path}/$fileName';
 
-      final dio = Dio();
+      final dio = ref.read(apiClientProvider).client;
       final response = await dio.get<List<int>>(
         material.url,
         options: Options(
@@ -608,8 +837,13 @@ class SessionDetailsPage extends ConsumerWidget {
         ),
       );
 
+      final bytes = response.data;
+      if (bytes == null || bytes.isEmpty) {
+        throw StateError('Downloaded empty response');
+      }
+
       final file = File(savePath);
-      await file.writeAsBytes(response.data ?? [], flush: true);
+      await file.writeAsBytes(bytes, flush: true);
       if (!context.mounted) return;
       AppNotifier.success(context, 'Saved to $fileName');
     } catch (e) {
@@ -640,6 +874,43 @@ class SessionDetailsPage extends ConsumerWidget {
       builder: (ctx) {
         return _FeedbackSheet(sessionId: session.id, ref: ref, colors: colors);
       },
+    );
+  }
+
+  void _showQuickPollsModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.page),
+            child: QuickPollsPanel(sessionId: session.id),
+          ),
+        );
+      },
+    );
+  }
+
+  // Full-width Quick Polls CTA below the row for better tap target
+  Widget _quickPollsCTA(BuildContext context, bool isRegisteredNow) {
+    if (!(isRegisteredNow && session.hasQuickPolls))
+      return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.item),
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          icon: const Icon(Icons.poll_outlined),
+          label: Text(AppLocalizations.of(context)!.quickPolls),
+          onPressed: () {
+            _showQuickPollsModal(context);
+          },
+        ),
+      ),
     );
   }
 }
@@ -690,7 +961,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(5, (i) {
               final filled = i < rating;
-              return IconButton(
+              return AppIconButton(
                 icon: Icon(
                   filled ? Icons.star : Icons.star_border,
                   color: filled
@@ -713,7 +984,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
           const SizedBox(height: AppSpacing.item),
           SizedBox(
             height: 48,
-            child: ElevatedButton(
+            child: AppElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.colors.primary,
                 foregroundColor: widget.colors.onPrimary,

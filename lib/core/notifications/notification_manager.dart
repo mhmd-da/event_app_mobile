@@ -22,8 +22,6 @@ class NotificationManager {
 
     // Get FCM token
     final token = await _fcm.getToken();
-    // ignore: avoid_print
-    print("FCM TOKEN = $token");
 
     if (token != null) {
       SecureStorageService().saveFcmToken(token);

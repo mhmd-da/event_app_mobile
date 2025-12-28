@@ -3,6 +3,9 @@ import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/contact/data/contact_repository.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:event_app/core/widgets/app_primary_button.dart';
+import 'package:event_app/core/widgets/app_text_input.dart';
+import 'package:event_app/core/widgets/app_dropdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/core/widgets/notifier.dart';
 
@@ -77,9 +80,7 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.7),
+                      Theme.of(context).colorScheme.primary.withAlpha(180),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
@@ -88,10 +89,8 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'We value your feedback and inquiries. Please fill the form and we will get back to you shortly.',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                      l.contactFormHeader,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),
                     ),
                   ],
                 ),
@@ -99,86 +98,46 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
               const SizedBox(height: 16),
 
               // Category
-              InputDecorator(
-                decoration: InputDecoration(
-                  labelText: l.contactCategory,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: _selectedCategory,
-                    items: _categories
-                        .map(
-                          (c) => DropdownMenuItem<String>(
-                            value: c,
-                            child: Text(_categoryLabel(context, c)),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (val) => setState(() => _selectedCategory = val),
-                  ),
-                ),
+              AppDropdown<String>(
+                value: _selectedCategory,
+                items: _categories,
+                itemLabel: (c) => _categoryLabel(context, c),
+                onChanged: (val) => setState(() => _selectedCategory = val),
+                label: l.contactCategory,
+                outlined: true,
+                validator: (v) => v == null ? l.fieldRequired : null,
               ),
               const SizedBox(height: 16),
 
               // Subject
-              TextFormField(
+              AppTextInput(
                 controller: _subjectController,
-                decoration: InputDecoration(
-                  labelText: l.contactSubject,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
+                label: l.contactSubject,
+                outlined: true,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
               ),
               const SizedBox(height: 16),
 
               // Message
-              TextFormField(
+              AppTextInput(
                 controller: _messageController,
+                label: l.contactMessage,
+                outlined: true,
+                minLines: 6,
                 maxLines: 6,
-                decoration: InputDecoration(
-                  labelText: l.contactMessage,
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l.fieldRequired : null,
               ),
 
               const SizedBox(height: 24),
 
               // Submit button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  icon: _submitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(Icons.send_rounded),
-                  label: Text(l.contactSubmit),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: _submitting
-                      ? null
-                      : () async {
+              AppPrimaryButton(
+                label: l.contactSubmit,
+                onPressed: _submitting
+                    ? () {}
+                    : () {
+                        // ignore: void_checks
+                        (() async {
                           if (_selectedCategory == null) {
                             AppNotifier.info(context, l.contactCategory);
                             return;
@@ -215,8 +174,9 @@ class _ContactFormPageState extends ConsumerState<ContactFormPage> {
                               setState(() => _submitting = false);
                             }
                           }
-                        },
-                ),
+                        })();
+                      },
+                expanded: true,
               ),
             ],
           ),

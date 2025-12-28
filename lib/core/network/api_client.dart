@@ -38,7 +38,7 @@ class ApiClient {
 
           // Add language header from current app locale
           if (_ref != null) {
-            final locale = _ref.read(appLocaleProvider);
+            final locale = _ref.watch(appLocaleProvider);
             options.headers["Language-Code"] = locale.languageCode; // 'en' or 'ar'
           }
 
@@ -70,7 +70,7 @@ class ApiClient {
     ));
 
     // ignore: avoid_print
-    print("ApiClient Log => calling ${client.options.baseUrl}");
+    //print("ApiClient Log => calling ${client.options.baseUrl}");
 
   }
 

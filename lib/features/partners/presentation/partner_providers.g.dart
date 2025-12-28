@@ -96,3 +96,109 @@ final class PartnersListProvider
 }
 
 String _$partnersListHash() => r'7f1694f521b5c750c1e6bba00d6f42fa7fe3c567';
+
+@ProviderFor(PartnerSearchText)
+const partnerSearchTextProvider = PartnerSearchTextProvider._();
+
+final class PartnerSearchTextProvider
+    extends $NotifierProvider<PartnerSearchText, String> {
+  const PartnerSearchTextProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'partnerSearchTextProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$partnerSearchTextHash();
+
+  @$internal
+  @override
+  PartnerSearchText create() => PartnerSearchText();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$partnerSearchTextHash() => r'4a5030aca7a672d519bd1e9449f5675312e09531';
+
+abstract class _$PartnerSearchText extends $Notifier<String> {
+  String build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String, String>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(PartnersViewType)
+const partnersViewTypeProvider = PartnersViewTypeProvider._();
+
+final class PartnersViewTypeProvider
+    extends $NotifierProvider<PartnersViewType, ListingViewType> {
+  const PartnersViewTypeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'partnersViewTypeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$partnersViewTypeHash();
+
+  @$internal
+  @override
+  PartnersViewType create() => PartnersViewType();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ListingViewType value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ListingViewType>(value),
+    );
+  }
+}
+
+String _$partnersViewTypeHash() => r'd4f0441affef45541e70bb4a9d3b3164ee7160fc';
+
+abstract class _$PartnersViewType extends $Notifier<ListingViewType> {
+  ListingViewType build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<ListingViewType, ListingViewType>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ListingViewType, ListingViewType>,
+              ListingViewType,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

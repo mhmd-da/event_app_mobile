@@ -1,4 +1,5 @@
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +12,6 @@ class HomeHeader extends ConsumerStatefulWidget {
 
 class _HomeHeaderState extends ConsumerState<HomeHeader>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
   late Animation<double> _scaleAnim;
@@ -25,16 +25,10 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
       duration: const Duration(milliseconds: 800),
     );
 
-    _fadeAnim = CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOut,
-    );
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
 
     _scaleAnim = Tween<double>(begin: 1.03, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animController,
-        curve: Curves.easeOutBack,
-      ),
+      CurvedAnimation(parent: _animController, curve: Curves.easeOutBack),
     );
 
     _animController.forward();
@@ -49,10 +43,13 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
   @override
   Widget build(BuildContext context) {
     final event = ref.watch(selectedEventProvider)!;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
 
-    final dateText =
-        "${event.startDate.year}/${event.startDate.month}/${event.startDate.day}"
-        " – ${event.endDate.year}/${event.endDate.month}/${event.endDate.day}";
+    final dateText = AppTimeFormatting.formatDateRangeYMMMd(
+      context,
+      start: event.startDate,
+      end: event.endDate,
+    );
 
     return FadeTransition(
       opacity: _fadeAnim,
@@ -71,17 +68,32 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: onSurface,
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  dateText,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black54,
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Text(
+                    dateText,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium!.copyWith(color: onSurface),
                   ),
                 ),
+                if ((event.venue?.name ?? '').trim().isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    event.venue?.name.trim() ?? '',
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium!.copyWith(color: onSurface),
+                  ),
+                ],
               ],
             ),
           ),
@@ -103,20 +115,23 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
                           // MAIN IMAGE
                           event.bannerImageUrl != null
                               ? Image.network(
-                            event.bannerImageUrl!,
-                            width: double.infinity,
-                            height: 190,
-                            fit: BoxFit.cover,
-                          )
+                                  event.bannerImageUrl!,
+                                  width: double.infinity,
+                                  height: 190,
+                                  fit: BoxFit.cover,
+                                )
                               : Container(
-                            height: 190,
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xFFFF512F), Color(0xFFF09819)],
-                              ),
-                            ),
-                          ),
+                                  height: 190,
+                                  width: double.infinity,
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFFFF512F),
+                                        Color(0xFFF09819),
+                                      ],
+                                    ),
+                                  ),
+                                ),
 
                           // GRADIENT OVERLAY
                           Container(

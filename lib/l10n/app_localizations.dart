@@ -368,6 +368,12 @@ abstract class AppLocalizations {
   /// **'Login to continue your event journey.'**
   String get loginToContinue;
 
+  /// No description provided for @loginHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGIN'**
+  String get loginHeading;
+
   /// No description provided for @emailLabel.
   ///
   /// In en, this message translates to:
@@ -434,6 +440,66 @@ abstract class AppLocalizations {
   /// **'Send'**
   String get sendLabel;
 
+  /// No description provided for @youLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get youLabel;
+
+  /// No description provided for @myQrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My QR'**
+  String get myQrTitle;
+
+  /// No description provided for @myQrSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this code to staff for check-in.'**
+  String get myQrSubtitle;
+
+  /// No description provided for @qrNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code not available.'**
+  String get qrNotAvailable;
+
+  /// No description provided for @qrNotAvailableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please sign in again while online.'**
+  String get qrNotAvailableHint;
+
+  /// No description provided for @qrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'QR'**
+  String get qrTitle;
+
+  /// No description provided for @scanQrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR'**
+  String get scanQrTitle;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing…'**
+  String get processing;
+
+  /// No description provided for @checkInSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get checkInSuccess;
+
+  /// No description provided for @checkInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in failed'**
+  String get checkInFailed;
+
   /// No description provided for @changeLanguage.
   ///
   /// In en, this message translates to:
@@ -445,6 +511,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Venue'**
   String get venue;
+
+  /// No description provided for @venueMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue Map'**
+  String get venueMap;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @aboutEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'About Event'**
+  String get aboutEvent;
+
+  /// No description provided for @venueAndInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue & Info'**
+  String get venueAndInfo;
+
+  /// No description provided for @venueMapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View all halls and rooms'**
+  String get venueMapSubtitle;
+
+  /// No description provided for @faqsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Common questions'**
+  String get faqsSubtitle;
+
+  /// No description provided for @contactUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach the organizers'**
+  String get contactUsSubtitle;
+
+  /// No description provided for @readMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Read More'**
+  String get readMore;
+
+  /// No description provided for @noDescriptionAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available.'**
+  String get noDescriptionAvailable;
 
   /// No description provided for @profile_name.
   ///
@@ -668,12 +788,6 @@ abstract class AppLocalizations {
   /// **'Last Name'**
   String get lastName;
 
-  /// No description provided for @email.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get email;
-
   /// No description provided for @phoneNumber.
   ///
   /// In en, this message translates to:
@@ -745,6 +859,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gender'**
   String get gender;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @passwordStrengthWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get passwordStrengthWeak;
+
+  /// No description provided for @passwordStrengthModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get passwordStrengthModerate;
+
+  /// No description provided for @passwordStrengthStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get passwordStrengthStrong;
 
   /// No description provided for @verifyCodeTitle.
   ///
@@ -860,6 +1004,18 @@ abstract class AppLocalizations {
   /// **'Toggle dark/light'**
   String get toggleTheme;
 
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get darkMode;
+
+  /// No description provided for @profileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile details'**
+  String get profileDetails;
+
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
@@ -925,6 +1081,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact Us'**
   String get contactFormTitle;
+
+  /// No description provided for @contactFormHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'We value your feedback and inquiries. Please fill the form and we will get back to you shortly.'**
+  String get contactFormHeader;
 
   /// No description provided for @contactCategory.
   ///
@@ -1009,12 +1171,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Website'**
   String get openWebsite;
-
-  /// No description provided for @category.
-  ///
-  /// In en, this message translates to:
-  /// **'Category'**
-  String get category;
 
   /// No description provided for @openMap.
   ///
@@ -1160,6 +1316,18 @@ abstract class AppLocalizations {
   /// **'Press back again to exit'**
   String get pressBackAgainToExit;
 
+  /// No description provided for @userIdentifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifier'**
+  String get userIdentifier;
+
+  /// No description provided for @notEditable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not editable'**
+  String get notEditable;
+
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
@@ -1189,6 +1357,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'REGISTER'**
   String get registerHeading;
+
+  /// No description provided for @quickPolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Polls'**
+  String get quickPolls;
+
+  /// No description provided for @noQuickPolls.
+  ///
+  /// In en, this message translates to:
+  /// **'No quick polls for this session'**
+  String get noQuickPolls;
+
+  /// No description provided for @vote.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote'**
+  String get vote;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @results.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
+  /// No description provided for @pollIndexOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll {index} of {total}'**
+  String pollIndexOfTotal(int index, int total);
+
+  /// No description provided for @totalVotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Total votes: {count}'**
+  String totalVotes(int count);
+
+  /// No description provided for @pollNotOpenYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll not open yet'**
+  String get pollNotOpenYet;
+
+  /// No description provided for @pollClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll closed'**
+  String get pollClosed;
+
+  /// No description provided for @openUntilTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Open until {time}'**
+  String openUntilTime(String time);
+
+  /// No description provided for @youVoted.
+  ///
+  /// In en, this message translates to:
+  /// **'You voted'**
+  String get youVoted;
+
+  /// No description provided for @website.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get website;
+
+  /// No description provided for @contactInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Info'**
+  String get contactInfo;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get mobile;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get position;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @offlineActionUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'You are offline. Action unavailable.'**
+  String get offlineActionUnavailable;
+
+  /// No description provided for @requiredField.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get requiredField;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @unlimitedCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited capacity'**
+  String get unlimitedCapacity;
 }
 
 class _AppLocalizationsDelegate

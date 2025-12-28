@@ -19,6 +19,7 @@ class ImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () => onTap?.call(),
       child: Container(
@@ -33,9 +34,22 @@ class ImageCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(16)),
-                child: Image.network(
-                  imageUrl ?? "",
-                  fit: BoxFit.cover,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      imageUrl ?? "",
+                      fit: BoxFit.cover,
+                    ),
+                    if (isDark)
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: AppDecorations.darkImageOverlayGradient(),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

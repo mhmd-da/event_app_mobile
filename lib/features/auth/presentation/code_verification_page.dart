@@ -6,28 +6,19 @@ import 'package:event_app/features/auth/presentation/widgets/otp_input.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:event_app/core/widgets/app_brand_waves.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/core/widgets/app_primary_button.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
-
-part 'code_verification_page.g.dart';
-
-@riverpod
-class OtpResendCooldown extends _$OtpResendCooldown {
-  @override
-  int build() => 0;
-  void set(int value) => state = value;
-  void decrement() => state = state - 1;
-}
+import 'code_verification_providers.dart';
 
 class CodeVerificationPage extends ConsumerStatefulWidget {
   const CodeVerificationPage({super.key});
 
   @override
-  ConsumerState<CodeVerificationPage> createState() => _CodeVerificationPageState();
+  ConsumerState<CodeVerificationPage> createState() =>
+      _CodeVerificationPageState();
 }
 
 class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
@@ -102,16 +93,36 @@ class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
               builder: (context) {
                 final topInset = MediaQuery.of(context).padding.top;
                 return Positioned(
+                  left: 24,
                   right: 18,
                   top: topInset + 8,
-                  child: CircleAvatar(
-                    radius: 44,
-                    backgroundColor: Colors.white.withValues(alpha: 0.9),
-                    child: const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                      backgroundImage: AssetImage('assets/icons/app_icon.png'),
-                    ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'KSU Tamkeen X 2026',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      CircleAvatar(
+                        radius: 44,
+                        backgroundColor: Colors.white.withValues(alpha: 0.9),
+                        child: const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage(
+                            'assets/icons/app_icon.png',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -146,7 +157,8 @@ class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
                         },
                         onCompleted: (_) => _trySubmit(),
                         validator: (code) {
-                          if (code.length != 6 || code.contains(RegExp('\\D'))) {
+                          if (code.length != 6 ||
+                              code.contains(RegExp('\\D'))) {
                             return l10n.otpError;
                           }
                           return null;
@@ -158,15 +170,22 @@ class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
                           : AppPrimaryButton(
                               label: l10n.verifyButton,
                               onPressed: () async {
-                                if (_formKey.currentState?.validate() == true && (_otp?.length ?? 0) == 6) {
+                                if (_formKey.currentState?.validate() == true &&
+                                    (_otp?.length ?? 0) == 6) {
                                   final navigator = Navigator.of(context);
                                   try {
-                                    await ref.read(loginControllerProvider.notifier).loginWithCode(_otp!);
-                                    final state = ref.read(loginControllerProvider);
+                                    await ref
+                                        .read(loginControllerProvider.notifier)
+                                        .loginWithCode(_otp!);
+                                    final state = ref.read(
+                                      loginControllerProvider,
+                                    );
                                     if (!mounted) return;
                                     if (state.isLoggedIn == true) {
                                       await navigator.pushAndRemoveUntil(
-                                        MaterialPageRoute(builder: (_) => LoginPage()),
+                                        MaterialPageRoute(
+                                          builder: (_) => LoginPage(),
+                                        ),
                                         (route) => false,
                                       );
                                     } else {
@@ -177,7 +196,10 @@ class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
                                     }
                                   } catch (e) {
                                     if (!mounted) return;
-                                    AppNotifier.error(context, '${l10n.actionFailed}: $e');
+                                    AppNotifier.error(
+                                      context,
+                                      '${l10n.actionFailed}: $e',
+                                    );
                                   }
                                 }
                               },
@@ -189,15 +211,27 @@ class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
                           onPressed: cooldown == 0
                               ? () async {
                                   try {
-                                    final authRepository = ref.read(authRepositoryProvider);
-                                    final storage = ref.read(secureStorageProvider);
-                                    await authRepository.resendVerificationCode(await storage.getUserId());
+                                    final authRepository = ref.read(
+                                      authRepositoryProvider,
+                                    );
+                                    final storage = ref.read(
+                                      secureStorageProvider,
+                                    );
+                                    await authRepository.resendVerificationCode(
+                                      await storage.getUserId(),
+                                    );
                                     _startCooldown();
                                     if (!mounted) return;
-                                    AppNotifier.success(context, l10n.verificationCodeResent);
+                                    AppNotifier.success(
+                                      context,
+                                      l10n.verificationCodeResent,
+                                    );
                                   } catch (e) {
                                     if (!mounted) return;
-                                    AppNotifier.error(context, l10n.failedToResendCode(e.toString()));
+                                    AppNotifier.error(
+                                      context,
+                                      l10n.failedToResendCode(e.toString()),
+                                    );
                                   }
                                 }
                               : null,
@@ -205,10 +239,10 @@ class _CodeVerificationPageState extends ConsumerState<CodeVerificationPage> {
                             cooldown == 0
                                 ? l10n.resendOtp
                                 : '${l10n.resendOtpIn} $cooldown ${l10n.seconds}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Theme.of(context).colorScheme.primary),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                         ),
                       ),

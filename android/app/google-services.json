@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:312423310680:android:81fd12180856c88ba5712d",
+        "mobilesdk_app_id": "1:312423310680:android:4d68854553509fe3a5712d",
         "android_client_info": {
-          "package_name": "com.event.app"
+          "package_name": "com.arabnet.tamkeenx"
         }
       },
       "oauth_client": [],

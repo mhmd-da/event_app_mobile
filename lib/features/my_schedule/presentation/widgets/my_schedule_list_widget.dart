@@ -4,9 +4,9 @@ import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
+import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 
 class MyScheduleListWidget extends StatelessWidget {
   final List<SessionModel> sessions;
@@ -17,7 +17,10 @@ class MyScheduleListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (sessions.isEmpty) {
       return Center(
-        child: Text(AppLocalizations.of(context)!.noSessionsFound, style: AppTextStyles.bodyMedium),
+        child: Text(
+          AppLocalizations.of(context)!.noSessionsFound,
+          style: AppTextStyles.bodyMedium,
+        ),
       );
     }
 
@@ -25,7 +28,11 @@ class MyScheduleListWidget extends StatelessWidget {
     final Map<DateTime, List<SessionModel>> grouped = {};
 
     for (var s in sessions) {
-      final key = DateTime(s.startTime.year, s.startTime.month, s.startTime.day);
+      final key = DateTime(
+        s.startTime.year,
+        s.startTime.month,
+        s.startTime.day,
+      );
       grouped.putIfAbsent(key, () => []).add(s);
     }
 
@@ -37,12 +44,10 @@ class MyScheduleListWidget extends StatelessWidget {
       itemCount: sortedKeys.length,
       itemBuilder: (_, index) {
         final day = sortedKeys[index];
-        final daySessions = grouped[day]!..sort((a, b) => a.startTime.compareTo(b.startTime));
+        final daySessions = grouped[day]!
+          ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
-        return _DaySection(
-          day: day,
-          sessions: daySessions,
-        );
+        return _DaySection(day: day, sessions: daySessions);
       },
     );
   }
@@ -52,10 +57,7 @@ class _DaySection extends StatelessWidget {
   final DateTime day;
   final List<SessionModel> sessions;
 
-  const _DaySection({
-    required this.day,
-    required this.sessions,
-  });
+  const _DaySection({required this.day, required this.sessions});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,7 @@ class _DaySection extends StatelessWidget {
     final isToday = DateTime(day.year, day.month, day.day) == today;
     final isTomorrow = DateTime(day.year, day.month, day.day) == tomorrow;
 
-    final dateLabel = DateFormat("MMM d", Localizations.localeOf(context).toLanguageTag()).format(day);
+    final dateLabel = AppTimeFormatting.formatShortMonthDay(context, day);
     final suffix = isToday
         ? ' • ${l10n.today}'
         : (isTomorrow ? ' • ${l10n.tomorrow}' : '');
@@ -77,10 +79,7 @@ class _DaySection extends StatelessWidget {
         // --- Day Header ---
         Padding(
           padding: const EdgeInsets.only(bottom: AppSpacing.section),
-          child: Text(
-            '$dateLabel$suffix',
-            style: AppTextStyles.headlineMedium,
-          ),
+          child: Text('$dateLabel$suffix', style: AppTextStyles.headlineMedium),
         ),
 
         // --- Sessions of the day ---
@@ -100,11 +99,10 @@ class _ListSessionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final timeFormat = DateFormat('h:mm a', Localizations.localeOf(context).toLanguageTag());
 
     final baseColor = SessionCategoryHelper.getCategoryColor(
       context,
-      session.category,
+      session.categoryTag,
     );
 
     final accent = _strongerOf(baseColor, context);
@@ -132,68 +130,102 @@ class _ListSessionRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(timeFormat.format(session.startTime), style: AppTextStyles.bodyMedium),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Text(
+                      AppTimeFormatting.formatTime(context, session.startTime),
+                      style: AppTextStyles.bodyMedium,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(_formatDuration(duration, l10n), style: AppTextStyles.bodyTiny.copyWith(color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7))),
+                  Text(
+                    _formatDuration(duration, l10n),
+                    style: AppTextStyles.bodyTiny.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                    ),
+                  ),
                 ],
               ),
             ),
 
             // Timeline divider
-            Container(width: 3, margin: const EdgeInsets.symmetric(horizontal: 6), decoration: BoxDecoration(color: Theme.of(context).dividerColor.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2))),
+            Container(
+              width: 3,
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
 
             // Event tile with accent bar
             Expanded(
               child: GestureDetector(
                 onTap: openDetails,
                 child: Container(
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: bg.withValues(alpha: 0.8)),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(width: 4, decoration: BoxDecoration(color: accent, borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)))),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              session.name ?? '',
-                              style: AppTextStyles.headlineSmall,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 6),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 1.5),
-                                  child: Icon(Icons.location_on_outlined, size: 14),
-                                ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    session.location,
-                                    style: AppTextStyles.bodySmall,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                  decoration: BoxDecoration(
+                    color: bg,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: bg.withValues(alpha: 0.8)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        width: 4,
+                        decoration: BoxDecoration(
+                          color: accent,
+                          borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(12),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                session.name ?? '',
+                                style: AppTextStyles.headlineSmall,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 1.5),
+                                    child: Icon(
+                                      Icons.location_on_outlined,
+                                      size: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      session.location,
+                                      style: AppTextStyles.bodySmall,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
