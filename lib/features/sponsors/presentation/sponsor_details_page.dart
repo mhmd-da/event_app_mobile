@@ -2,6 +2,7 @@ import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
+import 'package:event_app/core/widgets/tappable_circle_image.dart';
 import 'package:event_app/features/sponsors/domain/sponsor_model.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -21,17 +22,11 @@ class SponsorDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Logo card
             Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: AspectRatio(
-                  aspectRatio: 1.6,
-                  child: Image.network(
-                    sponsor.logoUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+              child: TappableCircleImage(
+                imageUrl: sponsor.logoUrl,
+                radius: 56,
+                placeholderIcon: Icons.business_outlined,
               ),
             ),
             const SizedBox(height: AppSpacing.section),
@@ -43,7 +38,10 @@ class SponsorDetailsPage extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                _Chip(label: '${AppLocalizations.of(context)!.category}: ${sponsor.category}'),
+                _Chip(
+                  label:
+                      '${AppLocalizations.of(context)!.category}: ${sponsor.category}',
+                ),
               ],
             ),
 

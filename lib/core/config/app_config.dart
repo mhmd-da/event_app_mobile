@@ -80,6 +80,8 @@ class AppConfig {
   // 🔹 Users
   static const String getProfile = "/user/profile";
   static const String updateProfile = "/user/profile";
+  static const String uploadProfileImage = "/user/profile/upload-image";
+    static const String updateProfileLanguage = "/user/profile/language"; // PUT
   static const String registerDevice = "/user/register-device";
   static const String unregisterDevice = "/user/unregister-device"; // DELETE
 

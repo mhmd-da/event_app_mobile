@@ -69,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get speakers => 'Speakers';
 
   @override
+  String get moderator => 'Moderator';
+
+  @override
   String get noSpeakersFound => 'No speakers found';
 
   @override
@@ -125,6 +128,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications => 'Notifications';
+
+  @override
+  String get socialLinks => 'Social Links';
+
+  @override
+  String get noSocialLinksAvailable => 'No social links available.';
 
   @override
   String get sponsors => 'Sponsors';
@@ -318,6 +327,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionFailed => 'Action failed. Please try again.';
 
   @override
+  String get saveDialogUnavailableRestart =>
+      'Save dialog isn\'t available right now. Please restart the app and try again.';
+
+  @override
+  String get failedToUpdateReminder => 'Failed to update reminder';
+
+  @override
+  String savedToFile(String fileName) {
+    return 'Saved to $fileName';
+  }
+
+  @override
+  String get downloadedEmptyResponse => 'Downloaded empty response';
+
+  @override
+  String get feedbackSubmittedThankYou => 'Feedback submitted. Thank you!';
+
+  @override
+  String get loading => 'Loading…';
+
+  @override
+  String get success => 'Success';
+
+  @override
   String get mentorshipSessions => 'Mentorship Sessions';
 
   @override
@@ -472,6 +505,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileDetails => 'Profile details';
+
+  @override
+  String get changePhoto => 'Change photo';
 
   @override
   String get themeSystem => 'System';

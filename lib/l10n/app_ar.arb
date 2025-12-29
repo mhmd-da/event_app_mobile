@@ -22,6 +22,7 @@
   "noMentorsFound": "لم يتم العثور على مرشدين",
   "errorLoadingMentors": "خطأ في تحميل المرشدين",
   "speakers": "المتحدثون",
+  "moderator": "مُدير الجلسة",
   "noSpeakersFound": "لم يتم العثور على متحدثين",
   "errorLoadingSpeakers": "خطأ في تحميل المتحدثين",
   "noSessionsLinkedYet": "لا توجد محاضرات مرتبطة بعد.",
@@ -48,6 +49,8 @@
   "mentorship": "الإرشاد",
   "resources": "الموارد",
   "notifications": "الإشعارات",
+  "socialLinks": "روابط التواصل",
+  "noSocialLinksAvailable": "لا توجد روابط تواصل.",
   "sponsors": "الرعاة",
   "partners": "الشركاء",
   "exhibitions": "المعارض",
@@ -120,6 +123,21 @@
   "addedSuccess": "تمت الإضافة بنجاح!",
   "removedSuccess": "تمت الإزالة بنجاح!",
   "actionFailed": "فشلت العملية. حاول مرة أخرى.",
+  "saveDialogUnavailableRestart": "تعذّر فتح نافذة الحفظ الآن. الرجاء إعادة تشغيل التطبيق ثم المحاولة مرة أخرى.",
+  "failedToUpdateReminder": "فشل تحديث التذكير",
+  "savedToFile": "تم الحفظ في {fileName}",
+  "@savedToFile": {
+    "placeholders": {
+      "fileName": {
+        "type": "String",
+        "example": "slides.pdf"
+      }
+    }
+  },
+  "downloadedEmptyResponse": "تم تنزيل محتوى فارغ",
+  "feedbackSubmittedThankYou": "تم إرسال ملاحظاتك. شكرًا لك!",
+  "loading": "جارٍ التحميل…",
+  "success": "تم بنجاح",
 
   "mentorshipSessions": "جلسات الإرشاد",
   "mentorshipTimeSlots": "أوقات جلسات الإرشاد",
@@ -184,6 +202,7 @@
   ,
   "darkMode": "الوضع الداكن",
   "profileDetails": "تفاصيل الملف الشخصي",
+  "changePhoto": "تغيير الصورة",
   "themeSystem": "النظام",
   "themeLight": "فاتح",
   "themeDark": "داكن",

@@ -69,6 +69,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get speakers => 'المتحدثون';
 
   @override
+  String get moderator => 'مُدير الجلسة';
+
+  @override
   String get noSpeakersFound => 'لم يتم العثور على متحدثين';
 
   @override
@@ -125,6 +128,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifications => 'الإشعارات';
+
+  @override
+  String get socialLinks => 'روابط التواصل';
+
+  @override
+  String get noSocialLinksAvailable => 'لا توجد روابط تواصل.';
 
   @override
   String get sponsors => 'الرعاة';
@@ -319,6 +328,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionFailed => 'فشلت العملية. حاول مرة أخرى.';
 
   @override
+  String get saveDialogUnavailableRestart =>
+      'تعذّر فتح نافذة الحفظ الآن. الرجاء إعادة تشغيل التطبيق ثم المحاولة مرة أخرى.';
+
+  @override
+  String get failedToUpdateReminder => 'فشل تحديث التذكير';
+
+  @override
+  String savedToFile(String fileName) {
+    return 'تم الحفظ في $fileName';
+  }
+
+  @override
+  String get downloadedEmptyResponse => 'تم تنزيل محتوى فارغ';
+
+  @override
+  String get feedbackSubmittedThankYou => 'تم إرسال ملاحظاتك. شكرًا لك!';
+
+  @override
+  String get loading => 'جارٍ التحميل…';
+
+  @override
+  String get success => 'تم بنجاح';
+
+  @override
   String get mentorshipSessions => 'جلسات الإرشاد';
 
   @override
@@ -473,6 +506,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileDetails => 'تفاصيل الملف الشخصي';
+
+  @override
+  String get changePhoto => 'تغيير الصورة';
 
   @override
   String get themeSystem => 'النظام';

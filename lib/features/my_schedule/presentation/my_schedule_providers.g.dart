@@ -130,7 +130,7 @@ final class ScheduleViewModeProvider
   }
 }
 
-String _$scheduleViewModeHash() => r'fd98463c1308ebb499e37ff0fbc39775d6e0532a';
+String _$scheduleViewModeHash() => r'4134daea94cc1b1d3a17f95df4f396e4a994ba94';
 
 abstract class _$ScheduleViewMode extends $Notifier<MyScheduleViewMode> {
   MyScheduleViewMode build();

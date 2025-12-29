@@ -36,14 +36,18 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginControllerProvider);
     final l10n = AppLocalizations.of(context)!;
+
+    final headerHeight = appHeaderWaveHeightForAuth(context);
+    final footerHeight = appFooterWaveHeightForAuth(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      bottomNavigationBar: const AppFooterWave(height: 120),
+      bottomNavigationBar: AppFooterWave(height: footerHeight),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AppHeaderWave(
-            height: 200,
+            height: headerHeight,
             overlay: Builder(
               builder: (context) {
                 final topInset = MediaQuery.of(context).padding.top;

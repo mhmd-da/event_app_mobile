@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:event_app/core/theme/app_colors.dart';
 
+double appHeaderWaveHeightForAuth(BuildContext context) {
+  final h = MediaQuery.sizeOf(context).height;
+  return (h * 0.24).clamp(140.0, 220.0).toDouble();
+}
+
+double appFooterWaveHeightForAuth(BuildContext context) {
+  final h = MediaQuery.sizeOf(context).height;
+  return (h * 0.16).clamp(90.0, 140.0).toDouble();
+}
+
 class AppHeaderWave extends StatelessWidget {
   final double height;
   final Widget? overlay;

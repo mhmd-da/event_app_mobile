@@ -29,14 +29,21 @@ void main() async {
   final langCode = await LanguageStorage().loadLocale();
   if (langCode != null && langCode.isNotEmpty) {
     container.read(appLocaleProvider.notifier).set(Locale(langCode));
+  } else {
+    final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+    final normalized = deviceLocale.languageCode.toLowerCase() == 'ar'
+        ? 'ar'
+        : 'en';
+    await LanguageStorage().saveLocale(normalized);
+    container.read(appLocaleProvider.notifier).set(Locale(normalized));
   }
   final themeSaved = await ThemeStorage().loadThemeMode();
   if (themeSaved != null) {
     final mode = themeSaved == 'dark'
         ? ThemeMode.dark
         : themeSaved == 'light'
-            ? ThemeMode.light
-            : ThemeMode.system;
+        ? ThemeMode.light
+        : ThemeMode.system;
     container.read(appThemeModeProvider.notifier).set(mode);
   }
 
@@ -69,7 +76,6 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();

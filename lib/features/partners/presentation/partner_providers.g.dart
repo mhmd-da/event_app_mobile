@@ -75,7 +75,7 @@ final class PartnersListProvider
         argument: null,
         retry: null,
         name: r'partnersListProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -95,7 +95,7 @@ final class PartnersListProvider
   }
 }
 
-String _$partnersListHash() => r'7f1694f521b5c750c1e6bba00d6f42fa7fe3c567';
+String _$partnersListHash() => r'ac4bc3d651d19155934f4ce954bcace02a75625a';
 
 @ProviderFor(PartnerSearchText)
 const partnerSearchTextProvider = PartnerSearchTextProvider._();

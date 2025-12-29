@@ -2,6 +2,7 @@ import 'package:event_app/features/events/presentation/events_providers.dart';
 import 'package:event_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/events/domain/event_details_model.dart';
 import '../core/storage/secure_storage_service.dart';
 import '../features/auth/presentation/login_page.dart';
 import '../features/events/presentation/state/selected_event_provider.dart';
@@ -16,9 +17,7 @@ class StartUpPage extends ConsumerWidget {
     return FutureBuilder(
       future: _bootstrap(ref),
       builder: (context, snap) {
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        );
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
       },
     );
   }
@@ -34,39 +33,38 @@ class StartUpPage extends ConsumerWidget {
       return;
     }
 
-    // 2. User has a token → fetch event details with error handling
+    // 2. User has a token → attempt to load event details.
+    // Important: do NOT log out when offline. Use cached event details if available.
+    final eventId = await auth.getEventId();
+
     try {
-      // 2. User has a token → fetch registered events
-      //final events = null ;//await auth.getUserRegisteredEvents();
-
-      // find ongoing event
-      //final now = DateTime.now();
-      //final ongoing = events.firstWhere(
-      //      (e) => !e.startDate.isAfter(now) && !e.endDate.isBefore(now),
-      //  orElse: () => null,
-      //);
-
-      //if (ongoing != null) {
-      //  // 3. There is an ongoing event → go inside the event
-      //  ref.read(selectedEventProvider.notifier).state = ongoing;
-      //  _go(const MainNavigationPage());
-      //} else {
-
-        // 4. No ongoing event → show events page
-      // _go(const EventsPage());
-
-      //FOR NOW, WE DON'T NEED ANYTHING RELATED TO EVENTS, JUST GO TO THE MAIN NAVIGATION PAGE
-      var eventId = await auth.getEventId();
-      // Timeout after 8 seconds to avoid hanging forever
-      var eventDetails = await ref.watch(eventDetailsProvider(eventId).future).timeout(const Duration(seconds: 8));
+      final eventDetails = await ref
+          .read(eventDetailsProvider(eventId).future)
+          .timeout(const Duration(seconds: 8));
       deferAfterBuild(() {
         ref.read(selectedEventProvider.notifier).set(eventDetails);
         _go(const MainNavigationPage());
       });
-    } catch (e) {
-      // On any error (timeout, network, etc): clear token and go to login
-      await auth.clear();
-      _go(LoginPage());
+    } catch (_) {
+      // Offline (or timeout) fallback:
+      // - If event details were cached locally, the provider should succeed even offline.
+      // - If not cached, proceed into the app with a minimal placeholder event.
+      deferAfterBuild(() {
+        ref
+            .read(selectedEventProvider.notifier)
+            .set(
+              EventDetailsModel(
+                id: eventId,
+                name: '',
+                description: null,
+                venue: null,
+                startDate: DateTime.now(),
+                endDate: DateTime.now(),
+                bannerImageUrl: null,
+              ),
+            );
+        _go(const MainNavigationPage());
+      });
     }
   }
 

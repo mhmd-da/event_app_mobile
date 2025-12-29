@@ -75,7 +75,7 @@ final class SponsorsListProvider
         argument: null,
         retry: null,
         name: r'sponsorsListProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -95,7 +95,7 @@ final class SponsorsListProvider
   }
 }
 
-String _$sponsorsListHash() => r'294400d8c6a918fe7a3faedccbdee1d3d7823dfd';
+String _$sponsorsListHash() => r'6f1a644d45270973b756b9b903e1c27506c38cc7';
 
 @ProviderFor(SponsorSearchText)
 const sponsorSearchTextProvider = SponsorSearchTextProvider._();

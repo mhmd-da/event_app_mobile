@@ -65,11 +65,14 @@ class SpeakersPage extends ConsumerWidget {
                 }
 
                 return RefreshIndicator(
-                  onRefresh: () async => ref.invalidate(speakersListProvider),
+                  onRefresh: () async {
+                    await ref.refresh(speakersListProvider.future);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.page),
                     child: viewType == ListingViewType.imageCard
                         ? GridView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: AppSpacing.section,
@@ -90,6 +93,7 @@ class SpeakersPage extends ConsumerWidget {
                             },
                           )
                         : ListView.separated(
+                            physics: const AlwaysScrollableScrollPhysics(),
                             itemCount: filtered.length,
                             separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.item),
                             itemBuilder: (context, index) {

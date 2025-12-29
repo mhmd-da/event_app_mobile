@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:event_app/features/chat/presentation/chat_providers.dart';
 import 'package:event_app/core/utilities/scheduling.dart';
 import 'package:event_app/features/chat/presentation/chat_page.dart';
@@ -22,12 +23,12 @@ import 'package:event_app/core/widgets/notifier.dart';
 import 'package:event_app/features/quick_polls/presentation/quick_polls_panel.dart';
 import 'package:event_app/features/speakers/presentation/speaker_details_page.dart';
 import 'package:event_app/features/speakers/presentation/speaker_providers.dart';
-import 'package:event_app/features/sponsors/domain/sponsor_model.dart';
-import 'package:event_app/features/sponsors/presentation/sponsor_details_page.dart';
-import 'package:event_app/features/sponsors/presentation/sponsor_providers.dart';
-import 'package:event_app/features/partners/domain/partner_model.dart';
-import 'package:event_app/features/partners/presentation/partner_details_page.dart';
-import 'package:event_app/features/partners/presentation/partner_providers.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:event_app/features/agenda/presentation/widgets/session_feedback.dart';
+import 'package:event_app/features/agenda/presentation/widgets/session_info_card.dart';
+import 'package:event_app/features/agenda/presentation/widgets/session_reminder_chip.dart';
+import 'package:event_app/features/agenda/presentation/widgets/session_sponsors_partners_sections.dart';
+import 'package:event_app/core/widgets/moderator_badge.dart';
 
 class SessionDetailsPage extends ConsumerWidget {
   const SessionDetailsPage({super.key, required this.session});
@@ -53,12 +54,12 @@ class SessionDetailsPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSessionCard(context),
+            SessionInfoCard(session: session),
             const SizedBox(height: AppSpacing.section),
             _buildRegistrationButton(context, ref, isRegisteredNow),
             _quickPollsCTA(context, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
-            _buildReminderChip(context, ref),
+            SessionReminderChip(sessionId: session.id),
             const SizedBox(height: AppSpacing.section),
             _buildChatActions(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),
@@ -71,30 +72,10 @@ class SessionDetailsPage extends ConsumerWidget {
               ),
             const SizedBox(height: AppSpacing.section),
             if (session.sponsors.isNotEmpty)
-              _buildSection(
-                context,
-                title: AppLocalizations.of(context)!.poweredBy,
-                child: _buildLogoList(
-                  context,
-                  session.sponsors,
-                  onTapItem: (item) async {
-                    await _openSponsorDetails(context, ref, item as Sponsor);
-                  },
-                ),
-              ),
+              SessionSponsorsSection(sponsors: session.sponsors),
             const SizedBox(height: AppSpacing.section),
             if (session.partners.isNotEmpty)
-              _buildSection(
-                context,
-                title: AppLocalizations.of(context)!.partners,
-                child: _buildLogoList(
-                  context,
-                  session.partners,
-                  onTapItem: (item) async {
-                    await _openPartnerDetails(context, ref, item as Partner);
-                  },
-                ),
-              ),
+              SessionPartnersSection(partners: session.partners),
             const SizedBox(height: AppSpacing.section),
             if (session.materials.isNotEmpty)
               _buildSection(
@@ -160,70 +141,6 @@ class SessionDetailsPage extends ConsumerWidget {
       MaterialPageRoute(
         builder: (_) => SpeakerDetailsPage(speakerId: speakerId!),
       ),
-    );
-  }
-
-  Future<void> _openSponsorDetails(
-    BuildContext context,
-    WidgetRef ref,
-    Sponsor sponsor,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    SponsorModel? match;
-
-    try {
-      final sponsors = await ref.read(sponsorsListProvider.future);
-      if (sponsor.id != null) {
-        match = _firstWhereOrNull(sponsors, (s) => s.id == sponsor.id);
-      }
-      match ??= _firstWhereOrNull(
-        sponsors,
-        (s) => _normalizeKey(s.name) == _normalizeKey(sponsor.name),
-      );
-    } catch (_) {
-      match = null;
-    }
-
-    if (match == null) {
-      AppNotifier.error(context, l10n.actionFailed);
-      return;
-    }
-
-    if (!context.mounted) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => SponsorDetailsPage(sponsor: match!)),
-    );
-  }
-
-  Future<void> _openPartnerDetails(
-    BuildContext context,
-    WidgetRef ref,
-    Partner partner,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    PartnerModel? match;
-
-    try {
-      final partners = await ref.read(partnersListProvider.future);
-      if (partner.id != null) {
-        match = _firstWhereOrNull(partners, (p) => p.id == partner.id);
-      }
-      match ??= _firstWhereOrNull(
-        partners,
-        (p) => _normalizeKey(p.name) == _normalizeKey(partner.name),
-      );
-    } catch (_) {
-      match = null;
-    }
-
-    if (match == null) {
-      AppNotifier.error(context, l10n.actionFailed);
-      return;
-    }
-
-    if (!context.mounted) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => PartnerDetailsPage(partner: match!)),
     );
   }
 
@@ -316,15 +233,10 @@ class SessionDetailsPage extends ConsumerWidget {
               onPressed: shouldDisableRegister
                   ? null
                   : () async {
-                      final addedText = AppLocalizations.of(
-                        context,
-                      )!.addedSuccess;
-                      final removedText = AppLocalizations.of(
-                        context,
-                      )!.removedSuccess;
-                      final failedText = AppLocalizations.of(
-                        context,
-                      )!.actionFailed;
+                      final l10n = AppLocalizations.of(context)!;
+                      final addedText = l10n.addedSuccess;
+                      final removedText = l10n.removedSuccess;
+                      final failedText = l10n.actionFailed;
                       try {
                         if (isRegisteredNow) {
                           await ref
@@ -358,7 +270,16 @@ class SessionDetailsPage extends ConsumerWidget {
                           isRegisteredNow ? removedText : addedText,
                         );
                       } catch (e) {
-                        AppNotifier.error(context, failedText);
+                        final raw = e is String ? e : e.toString();
+                        final cleaned = raw.replaceFirst(
+                          RegExp(r'^Exception:\s*'),
+                          '',
+                        );
+                        final message = cleaned.trim();
+                        AppNotifier.error(
+                          context,
+                          message.isNotEmpty ? message : failedText,
+                        );
                       }
                     },
               style: isRegisteredNow
@@ -381,288 +302,13 @@ class SessionDetailsPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.item),
-          Expanded(
-            child: AppOutlinedButton(
-              icon: const Icon(Icons.feedback_outlined),
-              label: Text(AppLocalizations.of(context)!.giveFeedback),
-              onPressed: () {
-                _showFeedbackSheet(context, ref);
-              },
-            ),
-          ),
+          Expanded(child: SessionFeedbackButton(sessionId: session.id)),
         ],
       ),
     );
   }
 
   // ---------------- UI Components -------------------
-
-  Widget _buildSessionCard(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: AppDecorations.cardContainer(context),
-      padding: const EdgeInsets.all(AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(session.name ?? '', style: AppTextStyles.headlineLarge),
-
-          const SizedBox(height: AppSpacing.small),
-
-          // Description
-          Text(session.description, style: AppTextStyles.bodyMedium),
-
-          const SizedBox(height: AppSpacing.small),
-
-          // Time
-          AppTimeFormatting.timeRangeText(
-            context,
-            start: session.startTime,
-            end: session.endTime,
-            style: AppTextStyles.bodySmall,
-          ),
-          const SizedBox(height: AppSpacing.small),
-
-          // Location
-          if (session.location.isNotEmpty)
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: AppSpacing.small),
-                Expanded(
-                  child: Text(session.location, style: AppTextStyles.bodySmall),
-                ),
-              ],
-            ),
-
-          const SizedBox(height: AppSpacing.small),
-
-          // Capacity info and badge
-          if (session.maxCapacity != null)
-            Row(
-              children: [
-                const Icon(Icons.group_outlined, size: 18),
-                const SizedBox(width: AppSpacing.xSmall),
-                Text('${session.maxCapacity}', style: AppTextStyles.bodySmall),
-                const Spacer(),
-                if (session.isMaxCapacityReached && !session.isRegistered)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.error.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.warning_amber_outlined,
-                          color: Theme.of(context).colorScheme.error,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          AppLocalizations.of(context)!.maxCapacityReached,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReminderChip(BuildContext context, WidgetRef ref) {
-    final enabled = ref.watch(sessionReminderEnabledProvider(session.id));
-    final lead = ref.watch(sessionReminderLeadMinutesProvider(session.id));
-    final saving = ref.watch(sessionReminderSavingProvider(session.id));
-
-    String label;
-    if (enabled && lead != null) {
-      label = _labelForLeadMinutes(context, lead);
-    } else {
-      label = AppLocalizations.of(context)!.noReminderSet;
-    }
-    return Container(
-      width: double.infinity,
-      decoration: AppDecorations.chipContainer(context),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.item,
-        vertical: AppSpacing.small,
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.notifications_outlined,
-            size: 18,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(width: AppSpacing.item),
-          Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: saving ? null : () => _showReminderPicker(context, ref),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      '${AppLocalizations.of(context)!.reminder}: $label',
-                      style: AppTextStyles.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  saving
-                      ? SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Icon(
-                          Icons.arrow_drop_down,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showReminderPicker(BuildContext context, WidgetRef ref) async {
-    final options = const [5, 10, 15, 30, 60, 1440];
-
-    final l10n = AppLocalizations.of(context)!;
-
-    final selected = await showModalBottomSheet<int>(
-      context: context,
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: AppSpacing.item),
-              Text(
-                AppLocalizations.of(context)!.alertMeBefore,
-                style: AppTextStyles.headlineSmall,
-              ),
-              const SizedBox(height: AppSpacing.item),
-              for (final m in options)
-                ListTile(
-                  title: Text(_optionLabel(context, m)),
-                  onTap: () => Navigator.pop(ctx, m),
-                ),
-              const SizedBox(height: AppSpacing.item),
-              ListTile(
-                leading: const Icon(Icons.notifications_off_outlined),
-                title: Text(AppLocalizations.of(context)!.disableReminder),
-                onTap: () => Navigator.pop(ctx, -1),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-
-    if (selected == null) return;
-
-    ref.read(sessionReminderSavingProvider(session.id).notifier).set(true);
-    try {
-      if (selected == -1) {
-        final ok = await ref
-            .read(sessionRepositoryProvider)
-            .deleteReminder(session.id);
-        if (ok) {
-          ref
-              .read(sessionReminderEnabledProvider(session.id).notifier)
-              .set(false);
-          ref
-              .read(sessionReminderLeadMinutesProvider(session.id).notifier)
-              .set(null);
-          if (!context.mounted) return;
-          AppNotifier.info(context, l10n.disableReminder);
-        }
-      } else {
-        final ok = await ref
-            .read(sessionRepositoryProvider)
-            .setReminder(session.id, selected, true);
-        if (ok) {
-          ref
-              .read(sessionReminderEnabledProvider(session.id).notifier)
-              .set(true);
-          ref
-              .read(sessionReminderLeadMinutesProvider(session.id).notifier)
-              .set(selected);
-          final selectedLabel = _labelForLeadMinutesL10n(l10n, selected);
-          if (!context.mounted) return;
-          AppNotifier.info(context, '${l10n.reminder}: $selectedLabel');
-        }
-      }
-    } catch (_) {
-      AppNotifier.error(context, 'Failed to update reminder');
-    } finally {
-      ref.read(sessionReminderSavingProvider(session.id).notifier).set(false);
-    }
-  }
-
-  String _labelForLeadMinutes(BuildContext context, int lead) {
-    switch (lead) {
-      case 5:
-        return AppLocalizations.of(context)!.minutesBefore(5);
-      case 10:
-        return AppLocalizations.of(context)!.minutesBefore(10);
-      case 15:
-        return AppLocalizations.of(context)!.minutesBefore(15);
-      case 30:
-        return AppLocalizations.of(context)!.minutesBefore(30);
-      case 60:
-        return AppLocalizations.of(context)!.minutesBefore(60);
-      case 1440:
-        return AppLocalizations.of(context)!.minutesBefore(1440);
-      default:
-        return AppLocalizations.of(context)!.minutesBefore(lead);
-    }
-  }
-
-  String _labelForLeadMinutesL10n(AppLocalizations l10n, int lead) {
-    switch (lead) {
-      case 5:
-        return l10n.minutesBefore(5);
-      case 10:
-        return l10n.minutesBefore(10);
-      case 15:
-        return l10n.minutesBefore(15);
-      case 30:
-        return l10n.minutesBefore(30);
-      case 60:
-        return l10n.minutesBefore(60);
-      case 1440:
-        return l10n.minutesBefore(1440);
-      default:
-        return l10n.minutesBefore(lead);
-    }
-  }
-
-  String _optionLabel(BuildContext context, int lead) {
-    final reminderPrefix = '${AppLocalizations.of(context)!.reminder}: ';
-    return _labelForLeadMinutes(context, lead).replaceAll(reminderPrefix, '');
-  }
 
   Widget _buildSection(
     BuildContext context, {
@@ -684,6 +330,7 @@ class SessionDetailsPage extends ConsumerWidget {
     WidgetRef ref,
     List<Person> people,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: people.map((person) {
         return Container(
@@ -698,9 +345,24 @@ class SessionDetailsPage extends ConsumerWidget {
                   ? const Icon(Icons.person_outline)
                   : null,
             ),
-            title: Text(
-              '${person.firstName} ${person.lastName}',
-              style: AppTextStyles.bodyMedium,
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${person.firstName} ${person.lastName}',
+                    style: AppTextStyles.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (person.isModerator) ...[
+                  const SizedBox(width: 6),
+                  Semantics(
+                    label: l10n.moderator,
+                    child: const ModeratorBadge(),
+                  ),
+                ],
+              ],
             ),
             subtitle: Text(person.title, style: AppTextStyles.bodySmall),
             trailing: const Icon(Icons.chevron_right),
@@ -774,12 +436,7 @@ class SessionDetailsPage extends ConsumerWidget {
           child: ListTile(
             leading: Icon(icon),
             title: Text(m.name, style: AppTextStyles.bodyMedium),
-            subtitle: Text(
-              m.url,
-              style: AppTextStyles.bodySmall,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+
             trailing: AppIconButton(
               icon: const Icon(Icons.download_outlined),
               onPressed: () async {
@@ -817,17 +474,6 @@ class SessionDetailsPage extends ConsumerWidget {
   ) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final Directory dir;
-      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-        dir =
-            await getDownloadsDirectory() ??
-            await getApplicationDocumentsDirectory();
-      } else {
-        dir = await getApplicationDocumentsDirectory();
-      }
-      final fileName = _safeFileName(material.name, material.url);
-      final savePath = '${dir.path}/$fileName';
-
       final dio = ref.read(apiClientProvider).client;
       final response = await dio.get<List<int>>(
         material.url,
@@ -837,44 +483,125 @@ class SessionDetailsPage extends ConsumerWidget {
         ),
       );
 
+      final fileName = _safeFileName(
+        material.name,
+        material.url,
+        typeHint: material.type,
+        contentType: response.headers.value('content-type'),
+      );
+
       final bytes = response.data;
       if (bytes == null || bytes.isEmpty) {
-        throw StateError('Downloaded empty response');
+        throw StateError(l10n.downloadedEmptyResponse);
       }
 
+      // iOS/Android: stay permissionless by writing to a temp file and letting the
+      // OS "Save As" dialog handle saving (Files/Downloads/etc.).
+      if (Platform.isAndroid || Platform.isIOS) {
+        final dir = await getTemporaryDirectory();
+        final savePath = '${dir.path}/$fileName';
+        final file = File(savePath);
+        await file.writeAsBytes(bytes, flush: true);
+        if (!context.mounted) return;
+
+        final params = SaveFileDialogParams(
+          sourceFilePath: file.path,
+          fileName: fileName,
+        );
+        try {
+          final savedPath = await FlutterFileDialog.saveFile(params: params);
+          if (savedPath != null && savedPath.trim().isNotEmpty) {
+            if (!context.mounted) return;
+            AppNotifier.success(context, l10n.savedToFile(fileName));
+          }
+        } on MissingPluginException {
+          if (!context.mounted) return;
+          AppNotifier.error(context, l10n.saveDialogUnavailableRestart);
+        }
+        return;
+      }
+
+      // Desktop: save directly to Downloads when available.
+      final Directory dir =
+          await getDownloadsDirectory() ??
+          await getApplicationDocumentsDirectory();
+      final savePath = '${dir.path}/$fileName';
       final file = File(savePath);
       await file.writeAsBytes(bytes, flush: true);
       if (!context.mounted) return;
-      AppNotifier.success(context, 'Saved to $fileName');
+      AppNotifier.success(context, l10n.savedToFile(fileName));
     } catch (e) {
       AppNotifier.error(context, l10n.actionFailed);
     }
   }
 
-  String _safeFileName(String name, String url) {
+  String _safeFileName(
+    String name,
+    String url, {
+    String? typeHint,
+    String? contentType,
+  }) {
     final uri = Uri.parse(url);
     final urlName = uri.pathSegments.isNotEmpty
         ? uri.pathSegments.last
         : 'file';
-    final base = (name.isNotEmpty ? name : urlName).replaceAll(
-      RegExp(r'[^A-Za-z0-9._-]'),
-      '_',
+
+    final raw = (name.isNotEmpty ? name : urlName);
+    final safeBase = raw.replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+
+    String fileName = safeBase.isEmpty ? 'file' : safeBase;
+    if (_hasFileExtension(fileName)) return fileName;
+
+    final ext = _inferExtension(
+      urlName: urlName,
+      typeHint: typeHint,
+      contentType: contentType,
     );
-    return base.isEmpty ? 'file' : base;
+    if (ext == null) return fileName;
+    return '$fileName.$ext';
   }
 
-  void _showFeedbackSheet(BuildContext context, WidgetRef ref) {
-    final colors = Theme.of(context).colorScheme;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return _FeedbackSheet(sessionId: session.id, ref: ref, colors: colors);
-      },
-    );
+  bool _hasFileExtension(String fileName) {
+    final dot = fileName.lastIndexOf('.');
+    if (dot <= 0 || dot == fileName.length - 1) return false;
+    final ext = fileName.substring(dot + 1);
+    // Avoid treating trailing dots or very long "extensions" as valid.
+    return ext.length >= 2 && ext.length <= 8;
+  }
+
+  String? _inferExtension({
+    required String urlName,
+    String? typeHint,
+    String? contentType,
+  }) {
+    // 1) From URL path segment
+    final dot = urlName.lastIndexOf('.');
+    if (dot > 0 && dot < urlName.length - 1) {
+      final ext = urlName.substring(dot + 1).toLowerCase();
+      if (ext.length >= 2 && ext.length <= 8) return ext;
+    }
+
+    // 2) From backend material.type (often "pdf", "pptx"...) if present
+    final t = typeHint?.trim().toLowerCase();
+    if (t != null && t.isNotEmpty) {
+      final normalized = t.startsWith('.') ? t.substring(1) : t;
+      if (RegExp(r'^[a-z0-9]{2,8}$').hasMatch(normalized)) return normalized;
+    }
+
+    // 3) From HTTP content-type
+    final ct = contentType?.toLowerCase();
+    if (ct == null || ct.isEmpty) return null;
+    if (ct.contains('pdf')) return 'pdf';
+    if (ct.contains('zip')) return 'zip';
+    if (ct.contains('msword')) return 'doc';
+    if (ct.contains('wordprocessingml')) return 'docx';
+    if (ct.contains('spreadsheetml')) return 'xlsx';
+    if (ct.contains('presentationml')) return 'pptx';
+    if (ct.contains('text/plain')) return 'txt';
+    if (ct.contains('text/html')) return 'html';
+    if (ct.contains('image/png')) return 'png';
+    if (ct.contains('image/jpeg')) return 'jpg';
+    return null;
   }
 
   void _showQuickPollsModal(BuildContext context) {
@@ -910,117 +637,6 @@ class SessionDetailsPage extends ConsumerWidget {
             _showQuickPollsModal(context);
           },
         ),
-      ),
-    );
-  }
-}
-
-class _FeedbackSheet extends StatefulWidget {
-  const _FeedbackSheet({
-    required this.sessionId,
-    required this.ref,
-    required this.colors,
-  });
-  final int sessionId;
-  final WidgetRef ref;
-  final ColorScheme colors;
-
-  @override
-  State<_FeedbackSheet> createState() => _FeedbackSheetState();
-}
-
-class _FeedbackSheetState extends State<_FeedbackSheet> {
-  int rating = 0;
-  final TextEditingController commentController = TextEditingController();
-
-  @override
-  void dispose() {
-    commentController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.sessionFeedbackTitle,
-            style: AppTextStyles.headlineMedium,
-          ),
-          const SizedBox(height: AppSpacing.item),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (i) {
-              final filled = i < rating;
-              return AppIconButton(
-                icon: Icon(
-                  filled ? Icons.star : Icons.star_border,
-                  color: filled
-                      ? widget.colors.primary
-                      : widget.colors.onSurfaceVariant,
-                ),
-                onPressed: () => setState(() => rating = i + 1),
-              );
-            }),
-          ),
-          TextField(
-            controller: commentController,
-            minLines: 3,
-            maxLines: 5,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.feedbackHint,
-              border: const OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.item),
-          SizedBox(
-            height: 48,
-            child: AppElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.colors.primary,
-                foregroundColor: widget.colors.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () async {
-                final navigator = Navigator.of(context);
-                final l10n = AppLocalizations.of(context)!;
-                if (rating == 0) {
-                  AppNotifier.info(context, l10n.pleaseSelectRating);
-                  return;
-                }
-                try {
-                  await widget.ref
-                      .read(sessionRepositoryProvider)
-                      .submitFeedback(
-                        widget.sessionId,
-                        rating,
-                        commentController.text,
-                      );
-                  if (!mounted) return;
-                  navigator.pop();
-                  AppNotifier.success(
-                    context,
-                    'Feedback submitted. Thank you!',
-                  );
-                } catch (e) {
-                  AppNotifier.error(context, l10n.actionFailed);
-                }
-              },
-              child: Text(AppLocalizations.of(context)!.submit),
-            ),
-          ),
-        ],
       ),
     );
   }

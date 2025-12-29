@@ -50,8 +50,8 @@ class SessionModel extends BaseModel {
       id: json['id'],
       name: json['name'],
       description: json['description'] ?? '',
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
+      startTime: DateTime.parse(json['startTime']).toLocal(),
+      endTime: DateTime.parse(json['endTime']).toLocal(),
       location: json['location'] ?? '',
       category: json['category'] ?? '',
       categoryTag: json['categoryTag'] ?? '',
@@ -98,6 +98,7 @@ class Person {
   final String firstName;
   final String lastName;
   final String profileImageUrl;
+  final bool isModerator;
 
   Person({
     this.id,
@@ -105,15 +106,17 @@ class Person {
     required this.firstName,
     required this.lastName,
     required this.profileImageUrl,
+    required this.isModerator,
   });
 
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
-      id: json['id'] ?? '',
+      id: (json['id'] as num?)?.toInt(),
       title: json['title'] ?? '',
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
       profileImageUrl: json['profileImageUrl'] ?? '',
+      isModerator: json['isModerator'] ?? false,
     );
   }
 }
@@ -127,7 +130,7 @@ class Sponsor {
 
   factory Sponsor.fromJson(Map<String, dynamic> json) {
     return Sponsor(
-      id: json['id'] ?? '',
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] ?? '',
       logoUrl: json['logoUrl'] ?? '',
     );
@@ -143,7 +146,7 @@ class Partner {
 
   factory Partner.fromJson(Map<String, dynamic> json) {
     return Partner(
-      id: json['id'] ?? '',
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] ?? '',
       logoUrl: json['logoUrl'] ?? '',
     );

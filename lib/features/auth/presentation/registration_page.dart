@@ -3,6 +3,7 @@ import 'package:event_app/features/auth/presentation/code_verification_page.dart
 import 'package:event_app/core/widgets/notifier.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/shared/providers/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/core/widgets/app_text_input.dart';
@@ -102,14 +103,17 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
     final formState = ref.watch(registrationFormControllerProvider);
     final l10n = AppLocalizations.of(context)!;
 
+    final headerHeight = appHeaderWaveHeightForAuth(context);
+    final footerHeight = appFooterWaveHeightForAuth(context);
+
     return Scaffold(
-      bottomNavigationBar: const AppFooterWave(height: 120),
+      bottomNavigationBar: AppFooterWave(height: footerHeight),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Fixed header wave with icon bubble overlay
           AppHeaderWave(
-            height: 200,
+            height: headerHeight,
             overlay: Builder(
               builder: (context) {
                 final topInset = MediaQuery.of(context).padding.top;
@@ -393,6 +397,9 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                     final navigator = Navigator.of(context);
 
                     final form = ref.read(registrationFormControllerProvider);
+                    final preferredLanguage = ref
+                        .read(appLocaleProvider)
+                        .languageCode;
                     final formData = {
                       'title': form.title,
                       'firstName': form.firstName,
@@ -403,6 +410,7 @@ class _RegistrationPageState extends ConsumerState<RegistrationPage> {
                       'password': form.password,
                       'confirmPassword': form.confirmPassword,
                       'gender': form.gender,
+                      'preferredLanguage': preferredLanguage,
                     };
 
                     setState(() => _submitting = true);

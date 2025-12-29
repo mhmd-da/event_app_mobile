@@ -4,15 +4,15 @@ class MentorshipDetailsModel extends BaseModel {
   final Mentor mentor;
   final List<Slot> slots;
 
-  MentorshipDetailsModel({
-    required this.mentor,
-    required this.slots,
-  });
+  MentorshipDetailsModel({required this.mentor, required this.slots});
 
   factory MentorshipDetailsModel.fromJson(Map<String, dynamic> json) {
     return MentorshipDetailsModel(
-      mentor: Mentor.fromJson(json['mentor']),
-      slots: (json['slots'] as List<dynamic>).map((e) => Slot.fromJson(e)).toList(),
+      mentor: Mentor.fromJson((json['mentor'] as Map<String, dynamic>?) ?? const {}),
+      slots:
+          ((json['slots'] as List<dynamic>?) ?? const <dynamic>[]) // tolerate null
+              .map((e) => Slot.fromJson((e as Map<String, dynamic>?) ?? const {}))
+              .toList(),
     );
   }
 }
@@ -34,11 +34,11 @@ class Mentor {
 
   factory Mentor.fromJson(Map<String, dynamic> json) {
     return Mentor(
-      id: json['id'],
-      title: json['title'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      profileImageUrl: json['profileImageUrl'],
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      title: (json['title'] as String?) ?? '',
+      firstName: (json['firstName'] as String?) ?? '',
+      lastName: (json['lastName'] as String?) ?? '',
+      profileImageUrl: (json['profileImageUrl'] as String?) ?? '',
     );
   }
 }
@@ -59,12 +59,17 @@ class Slot {
   });
 
   factory Slot.fromJson(Map<String, dynamic> json) {
+    final startRaw = json['startTime']?.toString();
+    final endRaw = json['endTime']?.toString();
+    final startParsed = startRaw == null ? null : DateTime.tryParse(startRaw);
+    final endParsed = endRaw == null ? null : DateTime.tryParse(endRaw);
+
     return Slot(
-      slotId: json['slotId'],
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
-      isBooked: json['isBooked'],
-      isAvailable: json['isAvailable'],
+      slotId: (json['slotId'] as num?)?.toInt() ?? 0,
+      startTime: (startParsed ?? DateTime.fromMillisecondsSinceEpoch(0)).toLocal(),
+      endTime: (endParsed ?? DateTime.fromMillisecondsSinceEpoch(0)).toLocal(),
+      isBooked: json['isBooked'] == true,
+      isAvailable: json['isAvailable'] == true,
     );
   }
 }

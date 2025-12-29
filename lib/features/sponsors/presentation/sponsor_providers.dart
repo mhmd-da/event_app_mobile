@@ -9,7 +9,7 @@ part 'sponsor_providers.g.dart';
 @Riverpod(keepAlive: true)
 SponsorRepository sponsorRepository(Ref ref) => SponsorRepository(ref.watch(apiClientProvider));
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<SponsorModel>> sponsorsList(Ref ref) async => ref.watch(sponsorRepositoryProvider).getSponsors();
  
 // Search text for Sponsors page

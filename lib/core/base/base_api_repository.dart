@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:event_app/core/base/base_model.dart';
 import 'package:event_app/core/network/api_client.dart';
 import 'package:event_app/core/network/network_status_provider.dart';
@@ -5,7 +6,6 @@ import 'package:event_app/core/storage/local_cache_service.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-
 
 class BaseApiRepository<T extends BaseModel> {
   final ApiClient _apiClient;
@@ -22,7 +22,6 @@ class BaseApiRepository<T extends BaseModel> {
     _db = sqlite3.open(file.path);
     _cache = LocalCacheService(_db!);
   }
-
 
   Future<List<T>> fetchList(String endpoint, {String? cacheKey}) async {
     return fetchListGeneric<T>(endpoint, fromJson!, cacheKey: cacheKey);
@@ -68,7 +67,6 @@ class BaseApiRepository<T extends BaseModel> {
       throw Exception('No internet connection and no cached data available.');
     }
   }
-
 
   Future<T> fetchSingle(String endpoint, {String? cacheKey, String? id}) async {
     return fetchSingleGeneric<T>(
@@ -166,6 +164,44 @@ class BaseApiRepository<T extends BaseModel> {
     }
 
     return fromJson(response.data["data"]);
+  }
+
+  Future<TH> putDataFile<TH>(String endpoint, File file) async {
+    final fileName = file.path.split(Platform.pathSeparator).last;
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+
+    final response = await _apiClient.client.put(
+      endpoint,
+      data: formData,
+      options: Options(contentType: 'multipart/form-data'),
+    );
+
+    if (response.statusCode != 200) {
+      throw (response.data?["message"] ?? 'Something went wrong');
+    }
+
+    return response.data["data"];
+  }
+
+  Future<TH> postDataFile<TH>(String endpoint, File file) async {
+    final fileName = file.path.split(Platform.pathSeparator).last;
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+
+    final response = await _apiClient.client.post(
+      endpoint,
+      data: formData,
+      options: Options(contentType: 'multipart/form-data'),
+    );
+
+    if (response.statusCode != 200) {
+      throw (response.data?["message"] ?? 'Something went wrong');
+    }
+
+    return response.data["data"];
   }
 
   Future<TH> deleteData<TH>(String endpoint, Map<String, dynamic>? data) async {

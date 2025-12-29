@@ -82,7 +82,7 @@ final class LocaleLoaderProvider
   }
 }
 
-String _$localeLoaderHash() => r'a2b33523298fdaa1c22168b630c156f0626eb6e4';
+String _$localeLoaderHash() => r'00632a4a7a3b8cbfa3a169c4428282594acd454d';
 
 @ProviderFor(AppLocale)
 const appLocaleProvider = AppLocaleProvider._();

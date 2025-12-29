@@ -1,6 +1,5 @@
 import 'package:event_app/features/speakers/data/speaker_repository.dart';
 import 'package:event_app/features/speakers/domain/speaker_model.dart';
-import 'package:event_app/features/speakers/domain/speaker_details_model.dart';
 import 'package:event_app/core/widgets/listing_view_toggle.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/api_client_provider.dart';
@@ -14,27 +13,27 @@ SpeakerRepository speakerRepository(Ref ref) {
 }
 
 // Existing non-parameterized list (backward-compatible)
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<SpeakerModel>> speakersList(Ref ref) async {
   return ref.watch(speakerRepositoryProvider).getSpeakers('');
 }
 
-@riverpod
-Future<List<SpeakerModel>> speakersListBySearch(
-  Ref ref,
-  String? search,
-) async {
-  return ref.watch(speakerRepositoryProvider).getSpeakers(search);
-}
+// @riverpod
+// Future<List<SpeakerModel>> speakersListBySearch(
+//   Ref ref,
+//   String? search,
+// ) async {
+//   return ref.watch(speakerRepositoryProvider).getSpeakers(search);
+// }
 
 // Details provider (family)
-@riverpod
-Future<SpeakerDetailsModel> speakerDetails(
-  Ref ref,
-  int speakerId,
-) async {
-  return ref.watch(speakerRepositoryProvider).getSpeakerDetails(speakerId);
-}
+// @riverpod
+// Future<SpeakerDetailsModel> speakerDetails(
+//   Ref ref,
+//   int speakerId,
+// ) async {
+//   return ref.watch(speakerRepositoryProvider).getSpeakerDetails(speakerId);
+// }
 
 // UI view type for Speakers list (grid vs row)
 @riverpod

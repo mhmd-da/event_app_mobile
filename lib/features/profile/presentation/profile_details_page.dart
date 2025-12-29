@@ -145,13 +145,15 @@ class ProfileDetailsPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   AppElevatedButton(
                     onPressed: () async {
-                      await Navigator.push(
+                      final didChange = await Navigator.push<bool>(
                         context,
                         MaterialPageRoute(
                           builder: (_) => UpdateProfilePage(profile: profile),
                         ),
                       );
-                      ref.invalidate(profileProvider);
+                      if (didChange == true) {
+                        ref.invalidate(profileProvider);
+                      }
                     },
                     child: Text(l10n.edit),
                   ),

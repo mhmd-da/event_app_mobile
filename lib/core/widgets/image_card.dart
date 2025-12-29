@@ -20,27 +20,47 @@ class ImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    Widget buildImage() {
+      final url = imageUrl;
+      if (url == null || url.trim().isEmpty) {
+        return Image.asset(
+          'assets/images/default_avatar.png',
+          fit: BoxFit.cover,
+        );
+      }
+
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            'assets/images/default_avatar.png',
+            fit: BoxFit.cover,
+          );
+        },
+      );
+    }
+
     return GestureDetector(
       onTap: () => onTap?.call(),
       child: Container(
-        decoration: AppDecorations.cardContainer(context).copyWith(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        decoration: AppDecorations.cardContainer(
+          context,
+        ).copyWith(borderRadius: BorderRadius.circular(16)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // IMAGE — SAME STYLE AS MUSCLE IMAGES
             Expanded(
               child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      imageUrl ?? "",
-                      fit: BoxFit.cover,
-                    ),
+                    buildImage(),
                     if (isDark)
                       Positioned.fill(
                         child: DecoratedBox(

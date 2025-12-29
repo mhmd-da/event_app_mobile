@@ -1,5 +1,4 @@
 import 'package:event_app/features/mentors/data/mentor_repository.dart';
-import 'package:event_app/features/mentors/domain/mentor_details_model.dart';
 import 'package:event_app/features/mentors/domain/mentor_model.dart';
 import 'package:event_app/core/widgets/listing_view_toggle.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,17 +9,17 @@ part 'mentor_providers.g.dart';
 @Riverpod(keepAlive: true)
 MentorRepository mentorRepository(Ref ref) => MentorRepository(ref.watch(apiClientProvider));
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<MentorModel>> mentorsList(Ref ref) async => ref.watch(mentorRepositoryProvider).getMentors('');
 
 // Details provider (family)
-@riverpod
-Future<MentorDetailsModel> mentorDetails(
-	Ref ref,
-	int mentorId,
-) async {
-	return ref.watch(mentorRepositoryProvider).getMentorDetails(mentorId);
-}
+// @riverpod
+// Future<MentorDetailsModel> mentorDetails(
+// 	Ref ref,
+// 	int mentorId,
+// ) async {
+// 	return ref.watch(mentorRepositoryProvider).getMentorDetails(mentorId);
+// }
 
 // View type toggle for Mentors page
 @riverpod

@@ -113,7 +113,7 @@ class _ListSessionRow extends StatelessWidget {
       final tag = session.categoryTag.trim().toUpperCase();
       final isMentorship = tag == 'MENTORSHIP';
       final page = isMentorship
-          ? MentorshipTimeSlotsPage(sessionId: session.id)
+          ? MentorshipTimeSlotsPage(session: session)
           : SessionDetailsPage(session: session);
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
     }

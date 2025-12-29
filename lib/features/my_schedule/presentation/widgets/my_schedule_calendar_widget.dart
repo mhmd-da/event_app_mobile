@@ -57,12 +57,12 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
 
         // 🔥 Compute startHour and endHour automatically
         final earliestHour = sessions
-          .map((s) => s.startTime.hour)
-          .reduce((a, b) => a < b ? a : b);
+            .map((s) => s.startTime.hour)
+            .reduce((a, b) => a < b ? a : b);
 
         final latestHour = sessions
-          .map((s) => s.endTime.hour)
-          .reduce((a, b) => a > b ? a : b);
+            .map((s) => s.endTime.hour)
+            .reduce((a, b) => a > b ? a : b);
 
         // Add padding (optional)
         final startHour = (earliestHour - 2).clamp(0, 23);
@@ -102,6 +102,7 @@ class _CalendarContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final appTextDirection = Directionality.of(context);
 
     // calendar_view defaults can look too bright in dark mode.
     // Forcing canvas/scaffold colors makes the internal Materials respect
@@ -120,55 +121,74 @@ class _CalendarContent extends StatelessWidget {
       data: calendarTheme,
       child: Material(
         color: colorScheme.surface,
-        child: DayView(
-          backgroundColor: colorScheme.surface,
-          headerStyle: HeaderStyle(
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-            ),
-            headerTextStyle: theme.textTheme.titleMedium?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-            leftIconConfig: IconDataConfig(
-              color: colorScheme.onSurface,
-              size: 22,
-              padding: const EdgeInsets.all(8),
-            ),
-            rightIconConfig: IconDataConfig(
-              color: colorScheme.onSurface,
-              size: 22,
-              padding: const EdgeInsets.all(8),
-            ),
-          ),
-          initialDay: initialDay,
-          startHour: startHour,
-          endHour: endHour,
-          eventTileBuilder: (date, events, boundary, start, end) {
-            return _eventCardBuilder(
-              context,
-              date,
-              events,
-              boundary,
-              start,
-              end,
-            );
-          },
-          showVerticalLine: true,
-          heightPerMinute: 3.6,
-          minDay: minDay,
-          maxDay: maxDay,
-          timeLineBuilder: (date) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              AppTimeFormatting.ltrIsolate(
-                AppTimeFormatting.formatTime(context, date),
+        // calendar_view uses a Stack with AlignmentDirectional.topStart.
+        // In RTL, that becomes top-right which places the timeline column on the right,
+        // making the Arabic time labels appear "inside" the grid.
+        // Force the DayView layout direction to LTR so the timeline stays on the left,
+        // while preserving the app's direction for event tiles.
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: DayView(
+            backgroundColor: colorScheme.surface,
+            headerStyle: HeaderStyle(
+              decoration: BoxDecoration(color: colorScheme.surface),
+              headerTextStyle: theme.textTheme.titleMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
               ),
-              style: AppTextStyles.bodyTiny.copyWith(
-                color: colorScheme.onSurface.withValues(alpha: 0.72),
+              leftIconConfig: IconDataConfig(
+                color: colorScheme.onSurface,
+                size: 22,
+                padding: const EdgeInsets.all(8),
               ),
-              textAlign: TextAlign.center,
+              rightIconConfig: IconDataConfig(
+                color: colorScheme.onSurface,
+                size: 22,
+                padding: const EdgeInsets.all(8),
+              ),
             ),
+            initialDay: initialDay,
+            startHour: startHour,
+            endHour: endHour,
+            timeLineWidth: 84,
+            eventTileBuilder: (date, events, boundary, start, end) {
+              return Directionality(
+                textDirection: appTextDirection,
+                child: _eventCardBuilder(
+                  context,
+                  date,
+                  events,
+                  boundary,
+                  start,
+                  end,
+                ),
+              );
+            },
+            showVerticalLine: true,
+            heightPerMinute: 3.6,
+            minDay: minDay,
+            maxDay: maxDay,
+            timeLineBuilder: (date) {
+              // Keep Arabic ordering for (ص/م) while keeping the timeline column outside.
+              return Padding(
+                padding: const EdgeInsets.only(right: 10, top: 4, bottom: 4),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Text(
+                      AppTimeFormatting.formatTime(context, date),
+                      style: AppTextStyles.bodyTiny.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.72),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -205,7 +225,7 @@ Widget _eventCardBuilder(
     final tag = session.categoryTag.trim().toUpperCase();
     final isMentorship = tag == 'MENTORSHIP';
     final page = isMentorship
-        ? MentorshipTimeSlotsPage(sessionId: session.id)
+        ? MentorshipTimeSlotsPage(session: session)
         : SessionDetailsPage(session: session);
 
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));

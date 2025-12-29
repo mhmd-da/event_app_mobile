@@ -23,6 +23,7 @@
   "noMentorsFound": "No mentors found",
   "errorLoadingMentors": "Error loading mentors",
   "speakers": "Speakers",
+  "moderator": "Moderator",
   "noSpeakersFound": "No speakers found",
   "errorLoadingSpeakers": "Error loading speakers",
   "noSessionsLinkedYet": "No sessions linked yet.",
@@ -46,6 +47,8 @@
     "mentorship": "Mentorship",
     "resources": "Resources",
     "notifications": "Notifications",
+    "socialLinks": "Social Links",
+    "noSocialLinksAvailable": "No social links available.",
     "sponsors": "Sponsors",
     "partners": "Partners",
     "exhibitions": "Exhibitions",
@@ -118,6 +121,21 @@
   "addedSuccess": "Added successfully!",
   "removedSuccess": "Removed successfully!",
   "actionFailed": "Action failed. Please try again.",
+  "saveDialogUnavailableRestart": "Save dialog isn't available right now. Please restart the app and try again.",
+  "failedToUpdateReminder": "Failed to update reminder",
+  "savedToFile": "Saved to {fileName}",
+  "@savedToFile": {
+    "placeholders": {
+      "fileName": {
+        "type": "String",
+        "example": "slides.pdf"
+      }
+    }
+  },
+  "downloadedEmptyResponse": "Downloaded empty response",
+  "feedbackSubmittedThankYou": "Feedback submitted. Thank you!",
+  "loading": "Loading…",
+  "success": "Success",
   "mentorshipSessions": "Mentorship Sessions",
   "mentorshipTimeSlots": "Mentorship Time Slots",
   "noTimeSlotsAvailable": "No time slots available.",
@@ -179,6 +197,7 @@
   ,
   "darkMode": "Dark mode",
   "profileDetails": "Profile details",
+  "changePhoto": "Change photo",
   "themeSystem": "System",
   "themeLight": "Light",
   "themeDark": "Dark",

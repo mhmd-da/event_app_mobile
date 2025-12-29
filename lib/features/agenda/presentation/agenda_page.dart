@@ -223,7 +223,7 @@ class AgendaPage extends ConsumerWidget {
     final tag = s.categoryTag.trim().toUpperCase();
     final isMentorship = tag == 'MENTORSHIP';
     if (isMentorship) {
-      return MentorshipTimeSlotsPage(sessionId: s.id);
+      return MentorshipTimeSlotsPage(session: s);
     }
     return SessionDetailsPage(session: s);
   }

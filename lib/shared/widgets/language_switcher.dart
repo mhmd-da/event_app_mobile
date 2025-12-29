@@ -1,7 +1,9 @@
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/core/utilities/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/shared/providers/language_provider.dart';
+import 'package:event_app/features/profile/presentation/profile_providers.dart';
 
 class LanguageSwitcherWidget extends ConsumerWidget {
   const LanguageSwitcherWidget({super.key});
@@ -21,18 +23,29 @@ class LanguageSwitcherWidget extends ConsumerWidget {
           ),
           subtitle: Text(AppLocalizations.of(context)!.toggleLanguage),
           value: locale.languageCode == 'ar', // 👈 ON = Arabic
-          onChanged: (isArabic) {
+          onChanged: (isArabic) async {
             final newLocale = isArabic
                 ? const Locale('ar')
                 : const Locale('en');
+
+            if (newLocale.languageCode == locale.languageCode) return;
 
             // Update UI immediately
             ref.read(appLocaleProvider.notifier).set(newLocale);
 
             // Save preference
-            ref
+            await ref
                 .read(languageStorageProvider)
                 .saveLocale(newLocale.languageCode);
+
+            // Sync preference to backend (best-effort)
+            try {
+              await ref
+                  .read(profileRepositoryProvider)
+                  .updatePreferredLanguage(newLocale.languageCode);
+            } catch (e, st) {
+              logError('Failed to update preferred language', e, st);
+            }
           },
         ),
       ],

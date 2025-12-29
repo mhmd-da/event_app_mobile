@@ -31,27 +31,40 @@ class InfoRowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final decoration = AppDecorations.cardContainer(context).copyWith(
-      borderRadius: BorderRadius.circular(16),
-    );
+    final decoration = AppDecorations.cardContainer(
+      context,
+    ).copyWith(borderRadius: BorderRadius.circular(16));
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colorScheme = Theme.of(context).colorScheme;
+
+    Widget buildImage() {
+      final url = imageUrl;
+      if (url == null || url.trim().isEmpty) {
+        return Image.asset(
+          'assets/images/default_avatar.png',
+          fit: BoxFit.cover,
+        );
+      }
+
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            'assets/images/default_avatar.png',
+            fit: BoxFit.cover,
+          );
+        },
+      );
+    }
 
     final image = ClipRRect(
-      borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+      borderRadius: imageBorderRadius,
       child: AspectRatio(
         aspectRatio: 1,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            imageUrl == null || imageUrl!.isEmpty
-                ? Container(
-                    color: isDark ? colorScheme.surfaceVariant : colorScheme.surface,
-                  )
-                : Image.network(
-                    imageUrl!,
-                    fit: BoxFit.cover,
-                  ),
+            buildImage(),
             if (isDark)
               Positioned.fill(
                 child: DecoratedBox(
@@ -87,11 +100,7 @@ class InfoRowCard extends StatelessWidget {
     final content = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          width: 85,
-          height: 85,
-          child: image,
-        ),
+        SizedBox(width: imageWidth, height: imageHeight, child: image),
         const SizedBox(width: AppSpacing.item),
         Expanded(
           child: Column(
@@ -108,7 +117,7 @@ class InfoRowCard extends StatelessWidget {
     );
 
     final container = Container(
-      height: height ?? 85,
+      height: height ?? imageHeight,
       padding: padding,
       decoration: decoration,
       child: content,

@@ -4,6 +4,7 @@ import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
+import 'package:event_app/core/widgets/moderator_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 
@@ -19,6 +20,8 @@ class SessionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.only(
         top: AppSpacing.small,
@@ -229,9 +232,24 @@ class SessionTile extends StatelessWidget {
                                     ? const Icon(Icons.person)
                                     : null,
                               ),
-                              title: Text(
-                                '${speaker.title} ${speaker.firstName} ${speaker.lastName}',
-                                style: AppTextStyles.headlineTine,
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${speaker.title} ${speaker.firstName} ${speaker.lastName}',
+                                      style: AppTextStyles.headlineTine,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (speaker.isModerator) ...[
+                                    const SizedBox(width: 6),
+                                    Semantics(
+                                      label: l10n.moderator,
+                                      child: const ModeratorBadge(),
+                                    ),
+                                  ],
+                                ],
                               ),
                             ),
                           ),

@@ -12,6 +12,8 @@ class SpeakerModel extends BaseModel {
   final String? companyName;
   final String? bio;
   final String? profileImageUrl;
+  final List<SpeakerSocialLink> socialLinks;
+  final List<SpeakerSession> sessions;
 
   SpeakerModel({
     required this.id,
@@ -25,6 +27,8 @@ class SpeakerModel extends BaseModel {
     this.companyName,
     this.bio,
     this.profileImageUrl,
+    required this.socialLinks,
+    required this.sessions,
   });
 
   factory SpeakerModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +44,50 @@ class SpeakerModel extends BaseModel {
       companyName: json['companyName'],
       bio: json['bio'],
       profileImageUrl: json['profileImageUrl'],
+      socialLinks: (json['socialLinks'] as List<dynamic>?)?.map((e) => SpeakerSocialLink.fromJson(e)).toList() ?? <SpeakerSocialLink>[],
+      sessions: (json['sessions'] as List<dynamic>?)?.map((e) => SpeakerSession.fromJson(e)).toList() ?? <SpeakerSession>[],
     );
   }
 }
+
+
+
+
+class SpeakerSocialLink {
+  final int id;
+  final String? name;
+  final String url;
+  final String? thumbnail;
+
+  SpeakerSocialLink({required this.id, this.name, required this.url, this.thumbnail});
+
+  factory SpeakerSocialLink.fromJson(Map<String, dynamic> json) {
+    return SpeakerSocialLink(
+      id: json['id'] as int,
+      name: json['name'],
+      url: json['url'] ?? '',
+      thumbnail: json['thumbnail'],
+    );
+  }
+}
+
+class SpeakerSession {
+  final int id;
+  final String title;
+  final String startTime;
+  final String endTime;
+  final String? location;
+
+  SpeakerSession({required this.id, required this.title, required this.startTime, required this.endTime, this.location});
+
+  factory SpeakerSession.fromJson(Map<String, dynamic> json) {
+    return SpeakerSession(
+      id: json['id'] as int,
+      title: json['title'] ?? '',
+      startTime: json['startTime'] ?? '',
+      endTime: json['endTime'] ?? '',
+      location: json['location'],
+    );
+  }
+}
+

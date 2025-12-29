@@ -25,8 +25,8 @@ class EventDetailsModel {
       name: json['name'] as String,
       description: json['description'] as String?,
       venue: json['venue'] != null ? Venue.fromJson(json['venue']) : null,
-      startDate: DateTime.parse(json['startDate'] as String),
-      endDate: DateTime.parse(json['endDate'] as String),
+      startDate: DateTime.parse(json['startDate'] as String).toLocal(),
+      endDate: DateTime.parse(json['endDate'] as String).toLocal(),
       bannerImageUrl: json['bannerImageUrl'] as String?,
       //schedule: (json['schedule'] as List<dynamic>)
       //    .map((e) => EventDaySchedule.fromJson(e as Map<String, dynamic>))
@@ -99,10 +99,6 @@ class EventDetailsModel {
 //   }
 // }
 
-
-
-
-
 class Venue {
   final int id;
   final String name;
@@ -132,9 +128,9 @@ class FloorPlan {
 
   factory FloorPlan.fromJson(Map<String, dynamic> json) {
     return FloorPlan(
-        id: json['id'] as int,
-        name: json['name'] as String,
-        imageUrl: json['imageUrl'] as String?
+      id: json['id'] as int,
+      name: json['name'] as String,
+      imageUrl: json['imageUrl'] as String?,
     );
   }
 }

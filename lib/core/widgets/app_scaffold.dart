@@ -167,13 +167,19 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                           actions: [
                             Builder(
                               builder: (_) {
+                                final badgeCount = ref.watch(
+                                  unreadBadgeCountProvider,
+                                );
                                 final unreadAsync = ref.watch(
                                   unreadCountProvider,
                                 );
-                                final count = unreadAsync.maybeWhen(
-                                  data: (c) => c,
-                                  orElse: () => 0,
-                                );
+                                final count =
+                                    (badgeCount ??
+                                        unreadAsync.maybeWhen(
+                                          data: (c) => c,
+                                          orElse: () => 0,
+                                        )) ??
+                                    0;
                                 return Stack(
                                   clipBehavior: Clip.none,
                                   children: [

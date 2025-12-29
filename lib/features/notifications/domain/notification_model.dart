@@ -27,4 +27,21 @@ class AppNotification extends BaseModel {
       read: json['read'] == true,
     );
   }
+
+  AppNotification copyWith({
+    String? title,
+    String? body,
+    String? type,
+    DateTime? sentAt,
+    bool? read,
+  }) {
+    return AppNotification(
+      id: id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      type: type ?? this.type,
+      sentAt: sentAt ?? this.sentAt,
+      read: read ?? this.read,
+    );
+  }
 }

@@ -9,7 +9,7 @@ part 'partner_providers.g.dart';
 @Riverpod(keepAlive: true)
 PartnerRepository partnerRepository(Ref ref) => PartnerRepository(ref.watch(apiClientProvider));
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<PartnerModel>> partnersList(Ref ref) async => ref.watch(partnerRepositoryProvider).getPartners();
 
 // Search text for Partners page

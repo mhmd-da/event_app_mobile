@@ -74,7 +74,7 @@ final class MentorsListProvider
         argument: null,
         retry: null,
         name: r'mentorsListProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -94,84 +94,7 @@ final class MentorsListProvider
   }
 }
 
-String _$mentorsListHash() => r'1bc6493c39428d7dcfb5df110540f98cb6c99814';
-
-@ProviderFor(mentorDetails)
-const mentorDetailsProvider = MentorDetailsFamily._();
-
-final class MentorDetailsProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<MentorDetailsModel>,
-          MentorDetailsModel,
-          FutureOr<MentorDetailsModel>
-        >
-    with
-        $FutureModifier<MentorDetailsModel>,
-        $FutureProvider<MentorDetailsModel> {
-  const MentorDetailsProvider._({
-    required MentorDetailsFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'mentorDetailsProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$mentorDetailsHash();
-
-  @override
-  String toString() {
-    return r'mentorDetailsProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  $FutureProviderElement<MentorDetailsModel> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<MentorDetailsModel> create(Ref ref) {
-    final argument = this.argument as int;
-    return mentorDetails(ref, argument);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is MentorDetailsProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$mentorDetailsHash() => r'17a57d3e927e52e63ec6ddd19c52fd447c71a399';
-
-final class MentorDetailsFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<MentorDetailsModel>, int> {
-  const MentorDetailsFamily._()
-    : super(
-        retry: null,
-        name: r'mentorDetailsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  MentorDetailsProvider call(int mentorId) =>
-      MentorDetailsProvider._(argument: mentorId, from: this);
-
-  @override
-  String toString() => r'mentorDetailsProvider';
-}
+String _$mentorsListHash() => r'175f62cf6e33485fa6285673b5b8be11839d9baa';
 
 @ProviderFor(MentorsViewType)
 const mentorsViewTypeProvider = MentorsViewTypeProvider._();

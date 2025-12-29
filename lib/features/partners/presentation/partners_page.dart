@@ -58,73 +58,79 @@ class PartnersPage extends ConsumerWidget {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(AppSpacing.page),
-                  itemCount: groups.length,
-                  itemBuilder: (context, index) {
-                    final group = groups[index];
-                    final list = [...group.value]..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.item),
-                          child: GroupRibbon(label: group.key, colorResolver: _partnerRibbonColor),
-                        ),
-                        if (viewType == ListingViewType.imageCard)
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: AppSpacing.section,
-                              crossAxisSpacing: AppSpacing.section,
-                              childAspectRatio: 0.80,
-                            ),
-                            itemCount: list.length,
-                            itemBuilder: (context, i) {
-                              final p = list[i];
-                              return ImageCard(
-                                imageUrl: p.logoUrl,
-                                cardTitle: p.name,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => PartnerDetailsPage(partner: p),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          )
-                        else
-                          ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: list.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.item),
-                            itemBuilder: (context, i) {
-                              final p = list[i];
-                              return InfoRowCard(
-                                imageUrl: p.logoUrl,
-                                title: p.name,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => PartnerDetailsPage(partner: p),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        const SizedBox(height: AppSpacing.section * 1.5),
-                      ],
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await ref.refresh(partnersListProvider.future);
                   },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(AppSpacing.page),
+                    itemCount: groups.length,
+                    itemBuilder: (context, index) {
+                      final group = groups[index];
+                      final list = [...group.value]..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacing.item),
+                            child: GroupRibbon(label: group.key, colorResolver: _partnerRibbonColor),
+                          ),
+                          if (viewType == ListingViewType.imageCard)
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: AppSpacing.section,
+                                crossAxisSpacing: AppSpacing.section,
+                                childAspectRatio: 0.80,
+                              ),
+                              itemCount: list.length,
+                              itemBuilder: (context, i) {
+                                final p = list[i];
+                                return ImageCard(
+                                  imageUrl: p.logoUrl,
+                                  cardTitle: p.name,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => PartnerDetailsPage(partner: p),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            )
+                          else
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: list.length,
+                              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.item),
+                              itemBuilder: (context, i) {
+                                final p = list[i];
+                                return InfoRowCard(
+                                  imageUrl: p.logoUrl,
+                                  title: p.name,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => PartnerDetailsPage(partner: p),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          const SizedBox(height: AppSpacing.section * 1.5),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

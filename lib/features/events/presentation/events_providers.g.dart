@@ -92,7 +92,7 @@ final class EventsListProvider
   }
 }
 
-String _$eventsListHash() => r'3c19035fcc135b8acb6968a36a7acc487f248c88';
+String _$eventsListHash() => r'bd9b9d434c3ac9109e40b5fdd9113cfb0bc29a5a';
 
 @ProviderFor(eventDetails)
 const eventDetailsProvider = EventDetailsFamily._();
@@ -113,7 +113,7 @@ final class EventDetailsProvider
   }) : super(
          retry: null,
          name: r'eventDetailsProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -151,7 +151,7 @@ final class EventDetailsProvider
   }
 }
 
-String _$eventDetailsHash() => r'0c1c6b1dfd6480906744b25c69885b7c3bc8e33f';
+String _$eventDetailsHash() => r'fdbc0b15b3038e6fbc99d2d636331d2335fa0179';
 
 final class EventDetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<EventDetailsModel>, int> {
@@ -161,7 +161,7 @@ final class EventDetailsFamily extends $Family
         name: r'eventDetailsProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
   EventDetailsProvider call(int eventId) =>

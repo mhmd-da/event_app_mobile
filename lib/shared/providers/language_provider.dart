@@ -13,8 +13,14 @@ LanguageStorage languageStorage(Ref ref) => LanguageStorage();
 Future<Locale> localeLoader(Ref ref) async {
   final storage = ref.read(languageStorageProvider);
   final stored = await storage.loadLocale();
-  if (stored == null) return const Locale('en');
-  return Locale(stored);
+  if (stored != null && stored.isNotEmpty) return Locale(stored);
+
+  final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+  final normalized = deviceLocale.languageCode.toLowerCase() == 'ar'
+      ? 'ar'
+      : 'en';
+  await storage.saveLocale(normalized);
+  return Locale(normalized);
 }
 
 // Current app locale (sync state)

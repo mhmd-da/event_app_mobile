@@ -218,6 +218,12 @@ abstract class AppLocalizations {
   /// **'Speakers'**
   String get speakers;
 
+  /// No description provided for @moderator.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderator'**
+  String get moderator;
+
   /// No description provided for @noSpeakersFound.
   ///
   /// In en, this message translates to:
@@ -331,6 +337,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+
+  /// No description provided for @socialLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Social Links'**
+  String get socialLinks;
+
+  /// No description provided for @noSocialLinksAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No social links available.'**
+  String get noSocialLinksAvailable;
 
   /// No description provided for @sponsors.
   ///
@@ -710,6 +728,48 @@ abstract class AppLocalizations {
   /// **'Action failed. Please try again.'**
   String get actionFailed;
 
+  /// No description provided for @saveDialogUnavailableRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Save dialog isn\'t available right now. Please restart the app and try again.'**
+  String get saveDialogUnavailableRestart;
+
+  /// No description provided for @failedToUpdateReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update reminder'**
+  String get failedToUpdateReminder;
+
+  /// No description provided for @savedToFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to {fileName}'**
+  String savedToFile(String fileName);
+
+  /// No description provided for @downloadedEmptyResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded empty response'**
+  String get downloadedEmptyResponse;
+
+  /// No description provided for @feedbackSubmittedThankYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback submitted. Thank you!'**
+  String get feedbackSubmittedThankYou;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get loading;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
   /// No description provided for @mentorshipSessions.
   ///
   /// In en, this message translates to:
@@ -1015,6 +1075,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile details'**
   String get profileDetails;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get changePhoto;
 
   /// No description provided for @themeSystem.
   ///

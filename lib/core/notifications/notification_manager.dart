@@ -1,4 +1,5 @@
 import 'package:event_app/core/storage/secure_storage_service.dart';
+import 'package:event_app/features/notifications/presentation/notifications_providers.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'local_notification_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,6 +30,7 @@ class NotificationManager {
 
     // Listen for foreground notifications
     FirebaseMessaging.onMessage.listen((message) {
+      ref.read(unreadBadgeCountProvider.notifier).increment(1);
       LocalNotificationService.show(
         title: message.notification?.title,
         body: message.notification?.body,
