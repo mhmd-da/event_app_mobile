@@ -13,7 +13,7 @@ class ApiClient {
       headers: {"Content-Type": "application/json"},
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
-      validateStatus: (status) => true
+      validateStatus: (status) => true,
     ),
   );
 
@@ -38,21 +38,24 @@ class ApiClient {
 
           // Add language header from current app locale
           if (_ref != null) {
-            final locale = _ref.watch(appLocaleProvider);
-            options.headers["Language-Code"] = locale.languageCode; // 'en' or 'ar'
+            final locale = _ref.read(appLocaleProvider);
+            options.headers["Language-Code"] =
+                locale.languageCode; // 'en' or 'ar'
           }
 
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          final suppress = response.requestOptions.extra['suppressLoading'] == true;
+          final suppress =
+              response.requestOptions.extra['suppressLoading'] == true;
           if (_ref != null && !suppress) {
             _ref.read(globalLoadingProvider.notifier).end();
           }
           return handler.next(response);
         },
         onError: (error, handler) {
-          final suppress = error.requestOptions.extra['suppressLoading'] == true;
+          final suppress =
+              error.requestOptions.extra['suppressLoading'] == true;
           if (_ref != null && !suppress) {
             _ref.read(globalLoadingProvider.notifier).end();
           }
@@ -62,16 +65,17 @@ class ApiClient {
       ),
     );
 
-    _dio.interceptors.add(LogInterceptor(
-      request: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-    ));
+    _dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+      ),
+    );
 
     // ignore: avoid_print
     //print("ApiClient Log => calling ${client.options.baseUrl}");
-
   }
 
   Dio get client => _dio;

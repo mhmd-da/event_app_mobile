@@ -114,7 +114,7 @@ final class SessionsForAgendaListProvider
 }
 
 String _$sessionsForAgendaListHash() =>
-    r'64f4f2a27cb07926cade02604d4d0e139891b48b';
+    r'f1e3147c458653e1b326fe33300cd4f9c67fc145';
 
 final class SessionsForAgendaListFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<SessionModel>>, String?> {

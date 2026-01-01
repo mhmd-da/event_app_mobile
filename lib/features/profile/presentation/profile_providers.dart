@@ -7,12 +7,18 @@ import '../domain/profile_model.dart';
 part 'profile_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-ProfileRepository profileRepository(Ref ref) => ProfileRepository(ref.watch(apiClientProvider));
+ProfileRepository profileRepository(Ref ref) =>
+    ProfileRepository(ref.watch(apiClientProvider));
 
-@riverpod
-Future<Profile> profile(Ref ref) async => ref.watch(profileRepositoryProvider).getProfile();
+@Riverpod(keepAlive: true)
+Future<Profile> profile(Ref ref) async =>
+    ref.watch(profileRepositoryProvider).getProfile();
 
 @riverpod
 Future<void> updateProfile(Ref ref, UpdateProfile profile) async {
   await ref.watch(profileRepositoryProvider).updateProfile(profile);
+
+  // Any successful mutation that changes profile-related fields should refresh
+  // the cached profile getter.
+  ref.invalidate(profileProvider);
 }

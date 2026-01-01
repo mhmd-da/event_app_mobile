@@ -67,7 +67,7 @@ final class FaqsListProvider
         argument: null,
         retry: null,
         name: r'faqsListProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -86,4 +86,4 @@ final class FaqsListProvider
   }
 }
 
-String _$faqsListHash() => r'caaf749d915d0d420a953d89e2e78e7f5260c028';
+String _$faqsListHash() => r'2b941ac21454a2ce58a5ea10ab88115172eebe1f';

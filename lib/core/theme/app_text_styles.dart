@@ -5,7 +5,7 @@ class AppTextStyles {
   static TextStyle headlineLarge = const TextStyle(
     fontSize: 24, // standard for main section headers
     fontWeight: FontWeight.w700,
-    height: 1.32,
+    height: 1.32
   );
 
   static TextStyle headlineMedium = const TextStyle(

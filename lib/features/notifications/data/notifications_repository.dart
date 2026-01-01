@@ -1,6 +1,7 @@
 import 'package:event_app/core/base/base_api_repository.dart';
 import 'package:event_app/core/config/app_config.dart';
 import 'package:event_app/core/network/api_client.dart';
+import 'package:event_app/core/network/network_status_provider.dart';
 import '../domain/notification_model.dart';
 
 class NotificationsPageResult {
@@ -24,25 +25,57 @@ class NotificationsRepository extends BaseApiRepository<AppNotification> {
     int pageSize,
   ) async {
     final endpoint = AppConfig.getNotificationsPaged(pageIndex, pageSize);
-    final response = await _apiClient.client.get(endpoint);
 
-    if (response.statusCode != 200) {
-      throw (response.data["message"] ?? 'Something went wrong');
+    await BaseApiRepository.ensureDbInitialized();
+    final isOnline = NetworkStatusUtils.lastStatus == NetworkStatus.online;
+    final table = endpoint.replaceAll('/', '_');
+    if (isOnline) {
+      try {
+        final response = await _apiClient.client.get(endpoint);
+
+        if (response.statusCode != 200) {
+          throw (response.data["message"] ?? 'Something went wrong');
+        }
+
+        final data = response.data["data"];
+        final list = (data is Map<String, dynamic>) ? data["items"] : null;
+        final itemsJson = (list is List) ? list : const [];
+
+        for (final item in list) {
+          final id =
+              item['id']?.toString() ??
+              DateTime.now().microsecondsSinceEpoch.toString();
+          BaseApiRepository.cache!.put(table, id, item);
+        }
+
+        final unreadRaw = (data is Map<String, dynamic>)
+            ? (data["unreadCount"] ??
+                  data["UnreadCount"] ??
+                  data["unread_count"])
+            : null;
+        final unreadCount = unreadRaw is int
+            ? unreadRaw
+            : int.tryParse(unreadRaw?.toString() ?? '') ?? 0;
+
+        final items = itemsJson
+            .map((e) => AppNotification.fromJson(e))
+            .toList();
+        return NotificationsPageResult(items: items, unreadCount: unreadCount);
+      } catch (e) {
+        // Fallback to cache if API fails
+        final cached = BaseApiRepository.cache!.getAll(table);
+        if (cached.isNotEmpty) {
+          return NotificationsPageResult(items: cached.map((u) => AppNotification.fromJson(u)).toList(), unreadCount: 0);
+        }
+        throw Exception('No internet connection and no cached data available.');
+      }
+    } else {
+      final cached = BaseApiRepository.cache!.getAll(table);
+      if (cached.isNotEmpty) {
+        return NotificationsPageResult(items: cached.map((u) => AppNotification.fromJson(u)).toList(), unreadCount: 0);
+      }
+      throw Exception('No internet connection and no cached data available.');
     }
-
-    final data = response.data["data"];
-    final list = (data is Map<String, dynamic>) ? data["items"] : null;
-    final itemsJson = (list is List) ? list : const [];
-
-    final unreadRaw = (data is Map<String, dynamic>)
-        ? (data["unreadCount"] ?? data["UnreadCount"] ?? data["unread_count"])
-        : null;
-    final unreadCount = unreadRaw is int
-        ? unreadRaw
-        : int.tryParse(unreadRaw?.toString() ?? '') ?? 0;
-
-    final items = itemsJson.map((e) => AppNotification.fromJson(e)).toList();
-    return NotificationsPageResult(items: items, unreadCount: unreadCount);
   }
 
   Future<int> getUnreadCountFast() async {

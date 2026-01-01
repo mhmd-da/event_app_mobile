@@ -68,7 +68,7 @@ final class ProfileProvider
         argument: null,
         retry: null,
         name: r'profileProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -87,7 +87,7 @@ final class ProfileProvider
   }
 }
 
-String _$profileHash() => r'2a7cfb39bf694276943ab614a173e8d0b736b608';
+String _$profileHash() => r'8a61fef233a24ae1534cfe96912696f3dea9a00f';
 
 @ProviderFor(updateProfile)
 const updateProfileProvider = UpdateProfileFamily._();
@@ -138,7 +138,7 @@ final class UpdateProfileProvider
   }
 }
 
-String _$updateProfileHash() => r'05e7724217c5bff539b672f8f4b2b39554998cb0';
+String _$updateProfileHash() => r'9c38c95f062747eff90f8e5bf385f4b807fdd525';
 
 final class UpdateProfileFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<void>, UpdateProfile> {

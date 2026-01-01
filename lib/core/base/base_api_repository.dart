@@ -11,16 +11,16 @@ class BaseApiRepository<T extends BaseModel> {
   final ApiClient _apiClient;
   final T Function(Map<String, dynamic>)? fromJson;
   static Database? _db;
-  static LocalCacheService? _cache;
+  static LocalCacheService? cache;
 
   BaseApiRepository(this._apiClient, {this.fromJson});
 
   static Future<void> ensureDbInitialized() async {
-    if (_db != null && _cache != null) return;
+    if (_db != null && cache != null) return;
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/event_app_cache.db');
     _db = sqlite3.open(file.path);
-    _cache = LocalCacheService(_db!);
+    cache = LocalCacheService(_db!);
   }
 
   Future<List<T>> fetchList(String endpoint, {String? cacheKey}) async {
@@ -48,19 +48,19 @@ class BaseApiRepository<T extends BaseModel> {
           final id =
               item['id']?.toString() ??
               DateTime.now().microsecondsSinceEpoch.toString();
-          _cache!.put(table, id, item);
+          cache!.put(table, id, item);
         }
         return list.map((u) => fromJson(u)).toList();
       } catch (e) {
         // Fallback to cache if API fails
-        final cached = _cache!.getAll(table);
+        final cached = cache!.getAll(table);
         if (cached.isNotEmpty) {
           return cached.map((u) => fromJson(u)).toList();
         }
         throw Exception('No internet connection and no cached data available.');
       }
     } else {
-      final cached = _cache!.getAll(table);
+      final cached = cache!.getAll(table);
       if (cached.isNotEmpty) {
         return cached.map((u) => fromJson(u)).toList();
       }
@@ -86,7 +86,7 @@ class BaseApiRepository<T extends BaseModel> {
     await ensureDbInitialized();
     final isOnline = NetworkStatusUtils.lastStatus == NetworkStatus.online;
     final table = cacheKey ?? endpoint.replaceAll('/', '_');
-    final cacheId = id;
+    final cacheId = id ?? '0';
     if (isOnline) {
       try {
         final response = await _apiClient.client.get(endpoint);
@@ -94,25 +94,19 @@ class BaseApiRepository<T extends BaseModel> {
           throw (response.data["message"] ?? 'Something went wrong');
         }
         final data = response.data["data"];
-        if (cacheId != null) {
-          _cache!.put(table, cacheId, data);
-        }
+        cache!.put(table, cacheId, data);
         return fromJson(data);
       } catch (e) {
-        if (cacheId != null) {
-          final cached = _cache!.get(table, cacheId);
-          if (cached != null) {
-            return fromJson(cached);
-          }
-        }
-        throw Exception('No internet connection and no cached data available.');
-      }
-    } else {
-      if (cacheId != null) {
-        final cached = _cache!.get(table, cacheId);
+        final cached = cache!.get(table, cacheId);
         if (cached != null) {
           return fromJson(cached);
         }
+        throw Exception('Something went wrong. Please try again.');
+      }
+    } else {
+      final cached = cache!.get(table, cacheId);
+      if (cached != null) {
+        return fromJson(cached);
       }
       throw Exception('No internet connection and no cached data available.');
     }

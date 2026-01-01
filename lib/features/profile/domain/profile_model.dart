@@ -43,7 +43,7 @@ class Profile extends BaseModel{
       university: json['university'],
       department: json['department'],
       major: json['major'],
-      phone: json['phone'],
+      phone: json['phoneNumber'],
       email: json['email'],
       userIdentifier: json['userIdentifier'],
     );

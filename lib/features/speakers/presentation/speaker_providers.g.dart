@@ -95,7 +95,7 @@ final class SpeakersListProvider
   }
 }
 
-String _$speakersListHash() => r'e72e3e471e62177da3bfaf8f0b5f6358074b7f03';
+String _$speakersListHash() => r'a88108d00a2c54896c24f7f97bf3890210eaeec3';
 
 @ProviderFor(SpeakersViewType)
 const speakersViewTypeProvider = SpeakersViewTypeProvider._();

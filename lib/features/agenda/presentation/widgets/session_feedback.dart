@@ -1,7 +1,6 @@
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/widgets/app_buttons.dart';
-import 'package:event_app/core/widgets/app_icon_button.dart';
 import 'package:event_app/core/widgets/notifier.dart';
 import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:event_app/l10n/app_localizations.dart';

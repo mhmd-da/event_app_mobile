@@ -8,5 +8,5 @@ part 'faqs_providers.g.dart';
 @Riverpod(keepAlive: true)
 FaqsRepository faqsRepository(Ref ref) => FaqsRepository(ref.watch(apiClientProvider));
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<Faq>> faqsList(Ref ref) async => ref.watch(faqsRepositoryProvider).getFaqs();

@@ -57,48 +57,6 @@ final class MentorshipRepositoryProvider
 String _$mentorshipRepositoryHash() =>
     r'9071d84e59e436c9b61ac5918c97171d168ce763';
 
-@ProviderFor(sessionsForMentorship)
-const sessionsForMentorshipProvider = SessionsForMentorshipProvider._();
-
-final class SessionsForMentorshipProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<SessionModel>>,
-          List<SessionModel>,
-          FutureOr<List<SessionModel>>
-        >
-    with
-        $FutureModifier<List<SessionModel>>,
-        $FutureProvider<List<SessionModel>> {
-  const SessionsForMentorshipProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sessionsForMentorshipProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$sessionsForMentorshipHash();
-
-  @$internal
-  @override
-  $FutureProviderElement<List<SessionModel>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<List<SessionModel>> create(Ref ref) {
-    return sessionsForMentorship(ref);
-  }
-}
-
-String _$sessionsForMentorshipHash() =>
-    r'3353b5adeb6dd2a028a086e838d94a46986db6ea';
-
 @ProviderFor(mentorshipSessions)
 const mentorshipSessionsProvider = MentorshipSessionsFamily._();
 
@@ -175,58 +133,4 @@ final class MentorshipSessionsFamily extends $Family
 
   @override
   String toString() => r'mentorshipSessionsProvider';
-}
-
-@ProviderFor(SelectedMentorshipDate)
-const selectedMentorshipDateProvider = SelectedMentorshipDateProvider._();
-
-final class SelectedMentorshipDateProvider
-    extends $NotifierProvider<SelectedMentorshipDate, String?> {
-  const SelectedMentorshipDateProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'selectedMentorshipDateProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$selectedMentorshipDateHash();
-
-  @$internal
-  @override
-  SelectedMentorshipDate create() => SelectedMentorshipDate();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
-  }
-}
-
-String _$selectedMentorshipDateHash() =>
-    r'a377ca91550a0fa10e19fb4196e676d1ae0c2100';
-
-abstract class _$SelectedMentorshipDate extends $Notifier<String?> {
-  String? build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<String?, String?>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
-  }
 }

@@ -94,7 +94,7 @@ final class MentorsListProvider
   }
 }
 
-String _$mentorsListHash() => r'175f62cf6e33485fa6285673b5b8be11839d9baa';
+String _$mentorsListHash() => r'f891019d822da5d3e0529071ebabb5a10f212db1';
 
 @ProviderFor(MentorsViewType)
 const mentorsViewTypeProvider = MentorsViewTypeProvider._();

@@ -59,7 +59,7 @@ class AppElevatedButton extends ConsumerWidget {
     final contentTextStyle = TextStyle(
       color: isOffline
           ? Theme.of(context).disabledColor
-          : Theme.of(context).colorScheme.onPrimary,
+          : Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.w600,
     );

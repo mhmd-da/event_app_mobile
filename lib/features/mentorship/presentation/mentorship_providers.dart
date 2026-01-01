@@ -12,18 +12,7 @@ MentorshipRepository mentorshipRepository(Ref ref) {
 }
 
 @riverpod
-Future<List<SessionModel>> sessionsForMentorship(Ref ref) async {
-  return ref.watch(mentorshipRepositoryProvider).getSessionsForMentorship();
-}
-
-@riverpod
 Future<MentorshipDetailsModel> mentorshipSessions(Ref ref, int sessionId) async {
   return ref.watch(mentorshipRepositoryProvider).getMentorshipDetails(sessionId);
 }
 
-@riverpod
-class SelectedMentorshipDate extends _$SelectedMentorshipDate {
-  @override
-  String? build() => null;
-  void set(String? value) => state = value;
-}

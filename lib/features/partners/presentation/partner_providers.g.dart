@@ -95,7 +95,7 @@ final class PartnersListProvider
   }
 }
 
-String _$partnersListHash() => r'ac4bc3d651d19155934f4ce954bcace02a75625a';
+String _$partnersListHash() => r'7d53f5f35446fcd5b5984b4be990f16be188e076';
 
 @ProviderFor(PartnerSearchText)
 const partnerSearchTextProvider = PartnerSearchTextProvider._();

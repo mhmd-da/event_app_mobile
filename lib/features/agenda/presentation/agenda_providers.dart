@@ -11,7 +11,10 @@ SessionRepository sessionRepository(Ref ref) {
 }
 
 @riverpod
-Future<List<SessionModel>> sessionsForAgendaList(Ref ref, String? category) async {
+Future<List<SessionModel>> sessionsForAgendaList(
+  Ref ref,
+  String? category,
+) async {
   return ref.watch(sessionRepositoryProvider).getSessions(category: category);
 }
 

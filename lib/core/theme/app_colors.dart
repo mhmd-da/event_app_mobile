@@ -76,7 +76,12 @@ static const LinearGradient primaryGradient = LinearGradient(
       ? const Color(0xFFF48FB1).withValues(alpha: 0.22)
       : const Color(0xFFE91E63).withValues(alpha: 0.15);
 
-  static Color othersBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
-      ? const Color(0xD3D3D3D3).withValues(alpha: 0.22)
-      : const Color(0xA9A9A9A9).withValues(alpha: 0.15);
+static Color othersBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
+    ? const Color(0xFF4DB6AC).withValues(alpha: 0.22)
+    : const Color(0xFF26A69A).withValues(alpha: 0.15);
+
+static Color defaultBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightness.dark
+    ? const Color(0xFF64B5F6).withValues(alpha: 0.22)
+    : const Color(0xFF2196F3).withValues(alpha: 0.15);
+
 }

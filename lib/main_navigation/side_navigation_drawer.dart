@@ -3,6 +3,7 @@ import 'package:event_app/features/auth/presentation/login_controller.dart';
 import 'package:event_app/features/settings/presentation/settings_page.dart';
 import 'package:event_app/features/speakers/presentation/speakers_page.dart';
 import 'package:event_app/features/faqs/presentation/faqs_page.dart';
+import 'package:event_app/features/sponsors/presentation/sponsors_page.dart';
 import 'package:event_app/features/venue/presentation/venue_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -77,13 +78,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                       AppLocalizations.of(context)!.appTitle,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      AppLocalizations.of(context)!.mentors,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -164,11 +158,11 @@ class SideNavigationDrawer extends ConsumerWidget {
                         MaterialPageRoute(builder: (_) => const MentorsPage()),
                       ),
                     ),
-                    // tile(
-                    //   icon: Icons.favorite_border,
-                    //   label: AppLocalizations.of(context)!.sponsors,
-                    //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SponsorsPage())),
-                    // ),
+                    tile(
+                      icon: Icons.favorite_border,
+                      label: AppLocalizations.of(context)!.sponsors,
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SponsorsPage())),
+                    ),
                     tile(
                       icon: Icons.handshake_outlined,
                       label: AppLocalizations.of(context)!.partners,
