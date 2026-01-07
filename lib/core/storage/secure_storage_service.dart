@@ -55,10 +55,6 @@ class SecureStorageService {
     await storage.write(key: "user_id", value: userId.toString());
   }
 
-  Future<void> saveFcmToken(String fcmToken) async {
-    await storage.write(key: "fcm_token", value: fcmToken);
-  }
-
   Future<String?> getToken() async {
     return _readKey("token");
   }
@@ -74,10 +70,6 @@ class SecureStorageService {
     if (key == null) return 0;
 
     return int.tryParse(key) ?? 0;
-  }
-
-  Future<String?> getFcmToken() async {
-    return _readKey("fcm_token");
   }
 
   Future<String?> getExpiry() async {

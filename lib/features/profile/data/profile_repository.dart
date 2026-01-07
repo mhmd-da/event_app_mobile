@@ -23,14 +23,6 @@ class ProfileRepository extends BaseApiRepository<Profile> {
         "major": profile.major,
       });
 
-  Future<bool> registerDevice(String deviceToken) async => await putData<bool>(
-    AppConfig.registerDevice,
-    {"token": deviceToken, "platform": Platform.operatingSystem},
-  );
-
-  Future<bool> unregisterDevice(String deviceToken) async =>
-      await putData<bool>(AppConfig.unregisterDevice, {"token": deviceToken});
-
   Future<bool> uploadProfileImage(File file) async =>
       putDataFile<bool>(AppConfig.uploadProfileImage, file);
 

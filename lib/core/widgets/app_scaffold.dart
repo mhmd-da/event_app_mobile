@@ -1,5 +1,3 @@
-import 'package:event_app/features/notifications/presentation/notifications_page.dart';
-import 'package:event_app/features/notifications/presentation/notifications_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:ui';
@@ -11,7 +9,6 @@ import 'app_buttons.dart';
 import '../../core/network/network_status_provider.dart';
 
 // File-level navigation guards to prevent multiple pushes
-bool _notificationNavGuard = false;
 bool _settingsNavGuard = false;
 
 class AppScaffold extends ConsumerStatefulWidget {
@@ -165,77 +162,6 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                           ),
                           centerTitle: widget.centerTitle,
                           actions: [
-                            Builder(
-                              builder: (_) {
-                                final badgeCount = ref.watch(
-                                  unreadBadgeCountProvider,
-                                );
-                                final unreadAsync = ref.watch(
-                                  unreadCountProvider,
-                                );
-                                final count =
-                                    (badgeCount ??
-                                        unreadAsync.maybeWhen(
-                                          data: (c) => c,
-                                          orElse: () => 0,
-                                        )) ??
-                                    0;
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    AppIconButton(
-                                      icon: Icon(
-                                        Icons.notifications_none_outlined,
-                                        color: Colors.white,
-                                      ),
-                                      tooltip: 'Notifications',
-                                      onPressed: () {
-                                        if (_notificationNavGuard) return;
-                                        _notificationNavGuard = true;
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                const NotificationsPage(),
-                                          ),
-                                        ).then((_) {
-                                          _notificationNavGuard = false;
-                                        });
-                                      },
-                                    ),
-                                    if (count > 0)
-                                      Positioned(
-                                        right: 6,
-                                        top: 6,
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.error,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            '$count',
-                                            style: TextStyle(
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.onError,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
                             AppIconButton(
                               icon: Icon(
                                 Icons.settings_outlined,

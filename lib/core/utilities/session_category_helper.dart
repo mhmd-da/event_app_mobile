@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SessionCategoryHelper {
 
   static Color getCategoryColor(BuildContext ctx, String category) {
-    return AppColors.defaultBg(ctx);
+    return AppColors.agendaSessionBg(ctx);
     // return switch (category.toLowerCase()) {
     //   "panel" => AppColors.panelBg(ctx),
     //   "workshop" => AppColors.workshopBg(ctx),

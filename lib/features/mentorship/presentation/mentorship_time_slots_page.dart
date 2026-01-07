@@ -5,7 +5,6 @@ import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_feedback.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_info_card.dart';
-import 'package:event_app/features/agenda/presentation/widgets/session_reminder_chip.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_sponsors_partners_sections.dart';
 import 'package:event_app/features/mentors/presentation/mentor_details_page.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_providers.dart';
@@ -49,8 +48,6 @@ class MentorshipTimeSlotsPage extends ConsumerWidget {
                   showTime: false,
                   showCapacity: false,
                 ),
-                const SizedBox(height: AppSpacing.section),
-                SessionReminderChip(sessionId: session.id),
                 const SizedBox(height: AppSpacing.item),
                 SizedBox(
                   width: double.infinity,

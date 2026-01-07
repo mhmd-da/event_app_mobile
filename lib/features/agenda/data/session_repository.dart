@@ -21,16 +21,4 @@ class SessionRepository extends BaseApiRepository<SessionModel> {
     return await putData<bool>(AppConfig.submitSessionFeedback(sessionId), payload);
   }
 
-  Future<bool> setReminder(int sessionId, int leadMinutes, bool enabled) async {
-    return await putData<bool>(
-      AppConfig.setSessionReminder(sessionId),
-      {
-        'enabled': enabled,
-        'leadMinutes': leadMinutes,
-      },
-    );
-  }
-
-  Future<bool> deleteReminder(int sessionId) async => deleteData(AppConfig.deleteSessionReminder(sessionId), null);
-
 }

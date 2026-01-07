@@ -4,8 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/storage/secure_storage_service.dart';
 import '../data/auth_repository.dart';
 import 'login_state.dart';
-import '../../profile/presentation/profile_providers.dart';
-import '../../profile/data/profile_repository.dart';
 
 part 'login_controller.g.dart';
 
@@ -23,29 +21,6 @@ class LoginController extends _$LoginController {
 
   AuthRepository get _repo => ref.watch(authRepositoryProvider);
   SecureStorageService get _storage => ref.watch(secureStorageProvider);
-  ProfileRepository get _profileRepo => ref.watch(profileRepositoryProvider);
-
-  Future<void> _registerDeviceIfAvailable() async {
-    try {
-      final token = await _storage.getFcmToken();
-      if (token != null && token.isNotEmpty) {
-        await _profileRepo.registerDevice(token);
-      }
-    } catch (_) {
-      // swallow errors; registration is best-effort
-    }
-  }
-
-  Future<void> _unregisterDeviceIfAvailable() async {
-    try {
-      final token = await _storage.getFcmToken();
-      if (token != null && token.isNotEmpty) {
-        await _profileRepo.unregisterDevice(token);
-      }
-    } catch (_) {
-      // swallow errors; unregistration is best-effort
-    }
-  }
 
   Future<void> login(String username, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -53,7 +28,6 @@ class LoginController extends _$LoginController {
     try {
       final auth = await _repo.login(username, password);
       await _storage.saveAuth(auth);
-      await _registerDeviceIfAvailable();
       if (!ref.mounted) return;
       state = state.copyWith(
         isLoading: false,
@@ -88,7 +62,6 @@ class LoginController extends _$LoginController {
       final auth = await _repo.verifyCode(await _storage.getUserId(), otp);
 
       await _storage.saveAuth(auth);
-      await _registerDeviceIfAvailable();
       if (!ref.mounted) return;
       state = state.copyWith(isLoading: false, isLoggedIn: true);
     } catch (e) {
@@ -119,7 +92,6 @@ class LoginController extends _$LoginController {
       final auth = await _repo.resetPassword(userId, password, code);
       await _storage.saveAuth(auth);
       state = state.copyWith(isLoading: false, errorMessage: null);
-      await _registerDeviceIfAvailable();
       if (!ref.mounted) return;
       state = state.copyWith(isLoading: false, isLoggedIn: true);
     } catch (e) {
@@ -132,7 +104,6 @@ class LoginController extends _$LoginController {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      await _unregisterDeviceIfAvailable();
       await _storage.clear();
       if (!ref.mounted) return;
       state = state.copyWith(isLoading: false, isLoggedIn: false);

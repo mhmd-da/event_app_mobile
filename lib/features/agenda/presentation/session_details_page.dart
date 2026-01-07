@@ -25,7 +25,6 @@ import 'package:event_app/features/speakers/presentation/speaker_providers.dart'
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_feedback.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_info_card.dart';
-import 'package:event_app/features/agenda/presentation/widgets/session_reminder_chip.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_sponsors_partners_sections.dart';
 import 'package:event_app/core/widgets/moderator_badge.dart';
 
@@ -57,8 +56,6 @@ class SessionDetailsPage extends ConsumerWidget {
             const SizedBox(height: AppSpacing.section),
             _buildRegistrationButton(context, ref, isRegisteredNow),
             _quickPollsCTA(context, isRegisteredNow),
-            const SizedBox(height: AppSpacing.section),
-            SessionReminderChip(sessionId: session.id),
             const SizedBox(height: AppSpacing.section),
             _buildChatActions(context, ref, isRegisteredNow),
             const SizedBox(height: AppSpacing.section),

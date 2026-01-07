@@ -52,21 +52,9 @@ class AppConfig {
   static const String cancelWorkshop = "/my-schedule/cancel-workshop";
   static const String cancelMentorship = "/my-schedule/cancel-mentorship";
 
-  // 🔹 Notifications
-  static const String getNotifications = "/notifications";
-  static const String markNotificationRead = "/notifications/mark-read";
-  static String getNotificationsPaged(int pageIndex, int pageSize) =>
-      "/notifications?pageIndex=$pageIndex&pageSize=$pageSize";
-
   // 🔹 Sponsors & Partners
   static const String getSponsors = "/sponsors";
   static const String getPartners = "/partners";
-
-  // 🔹 Session Reminder (server-driven notifications)
-  static String setSessionReminder(int sessionId) =>
-      "/sessions/$sessionId/reminder"; // PUT
-  static String deleteSessionReminder(int sessionId) =>
-      "/sessions/$sessionId/reminder"; // DELETE
 
   // 🔹 Quick Polls (per session)
   static String getQuickPolls(int sessionId) =>
@@ -81,9 +69,7 @@ class AppConfig {
   static const String getProfile = "/user/profile";
   static const String updateProfile = "/user/profile";
   static const String uploadProfileImage = "/user/profile/upload-image";
-    static const String updateProfileLanguage = "/user/profile/language"; // PUT
-  static const String registerDevice = "/user/register-device";
-  static const String unregisterDevice = "/user/unregister-device"; // DELETE
+  static const String updateProfileLanguage = "/user/profile/language"; // PUT
 
   // 🔹 Contact Requests
   static const String submitContactRequest = "/contact-request";

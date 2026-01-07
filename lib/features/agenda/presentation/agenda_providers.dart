@@ -39,28 +39,6 @@ class GroupingMethod extends _$GroupingMethod {
   void set(String value) => state = value;
 }
 
-// Reminder state per session (server-driven notifications)
-@riverpod
-class SessionReminderEnabled extends _$SessionReminderEnabled {
-  @override
-  bool build(int sessionId) => false;
-  void set(bool value) => state = value;
-}
-
-@riverpod
-class SessionReminderLeadMinutes extends _$SessionReminderLeadMinutes {
-  @override
-  int? build(int sessionId) => null;
-  void set(int? value) => state = value;
-}
-
-@riverpod
-class SessionReminderSaving extends _$SessionReminderSaving {
-  @override
-  bool build(int sessionId) => false;
-  void set(bool value) => state = value;
-}
-
 @riverpod
 class SessionChatMembership extends _$SessionChatMembership {
   @override

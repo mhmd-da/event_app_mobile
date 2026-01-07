@@ -1,3 +1,4 @@
+import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
@@ -7,8 +8,10 @@ import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/core/widgets/moderator_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SessionTile extends StatelessWidget {
+class SessionTile extends ConsumerWidget {
   const SessionTile({
     super.key,
     required this.session,
@@ -19,206 +22,245 @@ class SessionTile extends StatelessWidget {
   final WidgetBuilder onTapWidgetBuilder;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final timezonePreference = ref.watch(appTimezonePreferenceProvider);
+    final color = SessionCategoryHelper.getCategoryColor(
+      context,
+      session.categoryTag,
+    );
 
     return Padding(
       padding: const EdgeInsets.only(
         top: AppSpacing.small,
         bottom: AppSpacing.item,
+        left: AppSpacing.small,
+        right: AppSpacing.xSmall,
       ),
-      child: Container(
-        decoration: AppDecorations.agendaSessionCard(
-          context,
-          bgColor: SessionCategoryHelper.getCategoryColor(
-            context,
-            session.categoryTag,
-          ),
-        ),
-        child: InkWell(
-          onTap: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: onTapWidgetBuilder));
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.item),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  child: Container(
-                    width: 3,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
+      child: IntrinsicHeight(
+        child: Row(
+          textDirection: TextDirection.ltr,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: AppDecorations.strongerOf(
+                  AppColors.defaultBg(context),
+                  context,
                 ),
-                const SizedBox(width: AppSpacing.item),
-                Expanded(
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(12),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                decoration: AppDecorations.agendaSessionCard(
+                  context,
+                  bgColor: color,
+                  borderColor: AppColors.defaultBg(context),
+                  radius: 14,
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(
+                      context,
+                    ).push(MaterialPageRoute(builder: onTapWidgetBuilder));
+                  },
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(14),
+                    bottomRight: Radius.circular(14),
+                  ),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.category_outlined, size: 15),
-                          const SizedBox(width: AppSpacing.xSmall),
-                          Text(
-                            session.category,
-                            style: AppTextStyles.bodySmall,
-                          ),
-                          const Spacer(),
-                          const Icon(Icons.lightbulb_outline, size: 15),
-                          const SizedBox(width: AppSpacing.xSmall),
-                          Text(session.track, style: AppTextStyles.bodySmall),
-                        ],
-                      ),
-                      const Divider(),
-                      Text(
-                        session.name ?? '',
-                        style: AppTextStyles.headlineMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.xSmall),
-                      if (((session.maxCapacity != null &&
-                                  session.maxCapacity == 0) ||
-                              (session.currentBookings != null &&
-                                  session.maxCapacity != null)) ||
-                          session.hasQuickPolls)
-                        Row(
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: AppSpacing.small,
+                          left: AppSpacing.small,
+                          right: AppSpacing.small,
+                          bottom: AppSpacing.xSmall,
+                        ),
+                        child: Row(
                           children: [
-                            if ((session.maxCapacity != null &&
-                                    session.maxCapacity == 0) ||
-                                (session.currentBookings != null &&
-                                    session.maxCapacity != null))
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.group_outlined,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                      size: 16,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      (session.maxCapacity == 0)
-                                          ? AppLocalizations.of(
-                                              context,
-                                            )!.unlimitedCapacity
-                                          : '${session.currentBookings}/${session.maxCapacity}',
-                                      style: AppTextStyles.bodySmall.copyWith(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            const Icon(Icons.category_outlined, size: 15),
+                            const SizedBox(width: AppSpacing.xSmall),
+                            Text(
+                              session.category,
+                              style: AppTextStyles.bodySmall,
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.lightbulb_outline, size: 15),
+                            const SizedBox(width: AppSpacing.xSmall),
+                            Text(session.track, style: AppTextStyles.bodySmall),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        //color: AppColors.defaultBg(context),
+                        decoration: AppDecorations.agendaSessionCard(
+                          context,
+                          bgColor: AppColors.defaultBg(context),
+                          borderColor: Colors.transparent,
+                          radius: 0,
+                          borderWidth: 0.4,
+                        ),
+                        child: Column(
+                          children: [
+                            // const Divider(color: Colors.black),
+                            Text(
+                              session.name ?? '',
+                              style: AppTextStyles.headlineMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: AppSpacing.xSmall),
                             if (((session.maxCapacity != null &&
                                         session.maxCapacity == 0) ||
                                     (session.currentBookings != null &&
-                                        session.maxCapacity != null)) &&
+                                        session.maxCapacity != null)) ||
                                 session.hasQuickPolls)
-                              const Spacer(),
-                            if (session.hasQuickPolls)
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
+                              Row(
+                                children: [
+                                  if ((session.maxCapacity != null &&
+                                          session.maxCapacity == 0) ||
+                                      (session.currentBookings != null &&
+                                          session.maxCapacity != null))
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.group_outlined,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            (session.maxCapacity == 0)
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.unlimitedCapacity
+                                                : '${session.currentBookings}/${session.maxCapacity}',
+                                            style: AppTextStyles.bodySmall
+                                                .copyWith(
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).colorScheme.primary,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withValues(alpha: 0.12),
-                                      borderRadius: BorderRadius.circular(8),
+                                  if (((session.maxCapacity != null &&
+                                              session.maxCapacity == 0) ||
+                                          (session.currentBookings != null &&
+                                              session.maxCapacity != null)) &&
+                                      session.hasQuickPolls)
+                                    const Spacer(),
+                                  if (session.hasQuickPolls)
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withValues(alpha: 0.12),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.poll_outlined,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.quickPolls,
+                                              style: AppTextStyles.bodySmall
+                                                  .copyWith(
+                                                    color: Theme.of(
+                                                      context,
+                                                    ).colorScheme.primary,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.poll_outlined,
+                                ],
+                              ),
+                            const SizedBox(height: AppSpacing.xSmall),
+                            if (session.isMaxCapacityReached &&
+                                !session.isRegistered)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.error.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.warning_amber_outlined,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.maxCapacityReached,
+                                        style: AppTextStyles.bodySmall.copyWith(
                                           color: Theme.of(
                                             context,
-                                          ).colorScheme.primary,
-                                          size: 16,
+                                          ).colorScheme.error,
                                         ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.quickPolls,
-                                          style: AppTextStyles.bodySmall
-                                              .copyWith(
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.primary,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
+                            const SizedBox(height: AppSpacing.xSmall),
+                            //const Divider(color: Colors.black),
                           ],
                         ),
-                      const SizedBox(height: AppSpacing.xSmall),
-                      if (session.isMaxCapacityReached && !session.isRegistered)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.error.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.warning_amber_outlined,
-                                  color: Theme.of(context).colorScheme.error,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.maxCapacityReached,
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: AppSpacing.xSmall),
-                      const Divider(),
+                      ),
                       Column(
                         children: [
                           ...session.speakers.map(
@@ -274,32 +316,40 @@ class SessionTile extends StatelessWidget {
                         ),
                         const Divider(),
                       ],
-                      Row(
-                        children: [
-                          const Icon(Icons.date_range_outlined, size: 15),
-                          const SizedBox(width: AppSpacing.xSmall),
-                          AppTimeFormatting.timeRangeText(
-                            context,
-                            start: session.startTime,
-                            end: session.endTime,
-                            style: AppTextStyles.bodySmall,
-                          ),
-                          const Spacer(),
-                          const Icon(Icons.location_on_outlined, size: 15),
-                          const SizedBox(width: AppSpacing.xSmall),
-                          Text(
-                            session.location,
-                            style: AppTextStyles.bodySmall,
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: AppSpacing.small,
+                          left: AppSpacing.small,
+                          right: AppSpacing.small,
+                          bottom: AppSpacing.small,
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.date_range_outlined, size: 15),
+                            const SizedBox(width: AppSpacing.xSmall),
+                            AppTimeFormatting.timeRangeText(
+                              context,
+                              start: session.startTime,
+                              end: session.endTime,
+                              style: AppTextStyles.bodySmall,
+                              timezonePreference: timezonePreference,
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.location_on_outlined, size: 15),
+                            const SizedBox(width: AppSpacing.xSmall),
+                            Text(
+                              session.location,
+                              style: AppTextStyles.bodySmall,
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: AppSpacing.small),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
