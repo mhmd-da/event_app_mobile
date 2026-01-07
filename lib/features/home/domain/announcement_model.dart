@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class AnnouncementModel extends BaseModel {
   final int id;
@@ -18,7 +19,7 @@ class AnnouncementModel extends BaseModel {
       id: json['id'] as int,
       title: json['title'] ?? '',
       message: json['message'] ?? '',
-      date: json['date'] != null ? DateTime.tryParse(json['date']) : null,
+      date: AppDateTimeParsing.tryParseServerToLocal(json['date']),
     );
   }
 }

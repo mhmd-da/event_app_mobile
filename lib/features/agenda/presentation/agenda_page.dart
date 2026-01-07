@@ -6,6 +6,7 @@ import 'package:event_app/features/agenda/presentation/widgets/agenda_date_tabs.
 import 'package:event_app/features/agenda/presentation/widgets/session_tile.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
 import 'package:event_app/core/utilities/time_formatting.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,7 @@ class AgendaPage extends ConsumerWidget {
     final sessionsAsync = ref.watch(sessionsForAgendaListProvider(category));
     final groupingMethod = ref.watch(groupingMethodProvider);
     final selectedDate = ref.watch(selectedAgendaDateProvider);
+    final timezonePreference = ref.watch(appTimezonePreferenceProvider);
 
     String? appTitle;
     if (category != null) {
@@ -63,7 +65,11 @@ class AgendaPage extends ConsumerWidget {
 
           final groupedSessions = groupBy(
             sessions,
-            (s) => AppTimeFormatting.formatDayLabelEeeD(context, s.startTime),
+            (s) => AppTimeFormatting.formatDayLabelEeeD(
+              context,
+              s.startTime,
+              timezonePreference: timezonePreference,
+            ),
           );
           final dateTabs = groupedSessions.keys.toList();
 

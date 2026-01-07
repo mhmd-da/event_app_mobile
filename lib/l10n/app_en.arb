@@ -192,6 +192,10 @@
   "registrationFailed": "Registration failed. Please try again.",
   "settings": "Settings"
   ,
+  "timeZone": "Time zone",
+  "timeZoneSystem": "System",
+  "timeZoneHelper": "Default: System time zone"
+  ,
   "theme": "Theme",
   "toggleTheme": "Toggle dark/light"
   ,

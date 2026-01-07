@@ -1052,6 +1052,24 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
+  /// No description provided for @timeZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Time zone'**
+  String get timeZone;
+
+  /// No description provided for @timeZoneSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get timeZoneSystem;
+
+  /// No description provided for @timeZoneHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Default: System time zone'**
+  String get timeZoneHelper;
+
   /// No description provided for @theme.
   ///
   /// In en, this message translates to:

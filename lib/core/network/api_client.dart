@@ -28,13 +28,18 @@ class ApiClient {
           // Load token from secure storage
           var storage = SecureStorageService();
 
-          final token = await storage.getToken();
-          if (token != null && token.isNotEmpty) {
-            options.headers["Authorization"] = "Bearer $token";
-          }
+          try {
+            final token = await storage.getToken();
+            if (token != null && token.isNotEmpty) {
+              options.headers["Authorization"] = "Bearer $token";
+            }
 
-          final eventId = await storage.getEventId();
-          options.headers["Event-Id"] = eventId;
+            final eventId = await storage.getEventId();
+            options.headers["Event-Id"] = eventId;
+          } catch (_) {
+            // If secure storage throws (e.g. keystore decrypt error), don't crash the request.
+            // Proceed without auth headers; caller will handle unauthorized responses.
+          }
 
           // Add language header from current app locale
           if (_ref != null) {

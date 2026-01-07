@@ -1,4 +1,4 @@
-import 'package:event_app/core/utilities/session_category_helper.dart';
+import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
 import '../my_schedule_providers.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
@@ -16,6 +17,7 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionsAsync = ref.watch(myScheduleProvider);
+    final timezonePreference = ref.watch(appTimezonePreferenceProvider);
 
     return sessionsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -36,10 +38,18 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
         }
 
         final events = sessions.map((s) {
+          final displayStart = AppTimeFormatting.toDisplayTime(
+            s.startTime,
+            timezonePreference: timezonePreference,
+          );
+          final displayEnd = AppTimeFormatting.toDisplayTime(
+            s.endTime,
+            timezonePreference: timezonePreference,
+          );
           return CalendarEventData(
-            date: s.startTime,
-            startTime: s.startTime,
-            endTime: s.endTime,
+            date: displayStart,
+            startTime: displayStart,
+            endTime: displayEnd,
             title: s.name ?? '',
             description: s.location,
             event: s,
@@ -49,7 +59,12 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
         final now = DateTime.now();
         final initialDay = DateUtils.dateOnly(
           sessions
-              .map((s) => s.startTime)
+              .map(
+                (s) => AppTimeFormatting.toDisplayTime(
+                  s.startTime,
+                  timezonePreference: timezonePreference,
+                ),
+              )
               .reduce((a, b) => a.isBefore(b) ? a : b),
         );
         final minDay = now.subtract(const Duration(days: 365));
@@ -57,11 +72,21 @@ class MyScheduleCalendarWidget extends ConsumerWidget {
 
         // 🔥 Compute startHour and endHour automatically
         final earliestHour = sessions
-            .map((s) => s.startTime.hour)
+            .map(
+              (s) => AppTimeFormatting.toDisplayTime(
+                s.startTime,
+                timezonePreference: timezonePreference,
+              ).hour,
+            )
             .reduce((a, b) => a < b ? a : b);
 
         final latestHour = sessions
-            .map((s) => s.endTime.hour)
+            .map(
+              (s) => AppTimeFormatting.toDisplayTime(
+                s.endTime,
+                timezonePreference: timezonePreference,
+              ).hour,
+            )
             .reduce((a, b) => a > b ? a : b);
 
         // Add padding (optional)
@@ -212,10 +237,11 @@ Widget _eventCardBuilder(
   final isDark = theme.brightness == Brightness.dark;
 
   // --- Color based on type ---
-  final baseColor = SessionCategoryHelper.getCategoryColor(
-    context,
-    session.categoryTag,
-  );
+  // final baseColor = SessionCategoryHelper.getCategoryColor(
+  //   context,
+  //   session.categoryTag,
+  // );
+  final baseColor = AppColors.defaultBg(context);
 
   final titleColor = colorScheme.onSurface;
   final subtitleColor = colorScheme.onSurface.withValues(alpha: 0.82);

@@ -84,4 +84,12 @@ static Color defaultBg(BuildContext ctx) => Theme.of(ctx).brightness == Brightne
     ? const Color(0xFF64B5F6).withValues(alpha: 0.22)
     : const Color(0xFF2196F3).withValues(alpha: 0.15);
 
+
+static Color agendaSessionBg(BuildContext ctx) =>
+    Theme.of(ctx).brightness == Brightness.dark
+        // Dark mode: soft charcoal (not pure black)
+        ? const Color(0xFF1E1E1E).withValues(alpha: 0.85)
+        // Light mode: soft off-white card surface
+        : const Color(0xFFF6F6F6);
+
 }

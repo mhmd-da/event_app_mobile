@@ -496,6 +496,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settings => 'الإعدادات';
 
   @override
+  String get timeZone => 'المنطقة الزمنية';
+
+  @override
+  String get timeZoneSystem => 'النظام';
+
+  @override
+  String get timeZoneHelper => 'الافتراضي: المنطقة الزمنية للنظام';
+
+  @override
   String get theme => 'السمة';
 
   @override

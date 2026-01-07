@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class AuthModel extends BaseModel {
   final String token;
@@ -14,7 +15,10 @@ class AuthModel extends BaseModel {
   factory AuthModel.fromJson(Map<String, dynamic> json) {
     return AuthModel(
       token: json['token'],
-      expiryDate: DateTime.parse(json['expiry_date']),
+      expiryDate: AppDateTimeParsing.parseServerToUtcOr(
+        json['expiry_date'],
+        fallback: DateTime.fromMillisecondsSinceEpoch(0).toUtc(),
+      ),
       isVerified: json['is_verified'],
     );
   }

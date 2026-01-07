@@ -1,3 +1,5 @@
+import 'package:event_app/core/utilities/date_time_parsing.dart';
+
 class EventDetailsModel {
   final int id;
   final String name;
@@ -25,8 +27,12 @@ class EventDetailsModel {
       name: json['name'] as String,
       description: json['description'] as String?,
       venue: json['venue'] != null ? Venue.fromJson(json['venue']) : null,
-      startDate: DateTime.parse(json['startDate'] as String).toLocal(),
-      endDate: DateTime.parse(json['endDate'] as String).toLocal(),
+      startDate: AppDateTimeParsing.parseServerToLocalOrEpoch(
+        json['startDate'] as String?,
+      ),
+      endDate: AppDateTimeParsing.parseServerToLocalOrEpoch(
+        json['endDate'] as String?,
+      ),
       bannerImageUrl: json['bannerImageUrl'] as String?,
       //schedule: (json['schedule'] as List<dynamic>)
       //    .map((e) => EventDaySchedule.fromJson(e as Map<String, dynamic>))

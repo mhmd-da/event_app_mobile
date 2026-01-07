@@ -1,4 +1,5 @@
 import 'package:event_app/core/utilities/time_formatting.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 import 'package:event_app/core/widgets/tappable_circle_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,9 +25,7 @@ class PersonSessionsCard<T> extends StatelessWidget {
   });
 
   DateTime? _tryParseDateTime(String raw) {
-    final text = raw.trim();
-    if (text.isEmpty) return null;
-    return DateTime.tryParse(text);
+    return AppDateTimeParsing.tryParseServerToLocal(raw);
   }
 
   @override
@@ -47,8 +46,9 @@ class PersonSessionsCard<T> extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               if (sessions.isEmpty)
@@ -68,7 +68,8 @@ class PersonSessionsCard<T> extends StatelessWidget {
 
                     final String? dateText;
                     if (start != null && end != null) {
-                      final sameDay = start.year == end.year &&
+                      final sameDay =
+                          start.year == end.year &&
                           start.month == end.month &&
                           start.day == end.day;
                       dateText = sameDay
@@ -79,7 +80,10 @@ class PersonSessionsCard<T> extends StatelessWidget {
                               end: end,
                             );
                     } else if (start != null) {
-                      dateText = AppTimeFormatting.formatDateYMMMd(context, start);
+                      dateText = AppTimeFormatting.formatDateYMMMd(
+                        context,
+                        start,
+                      );
                     } else {
                       dateText = null;
                     }
@@ -163,8 +167,9 @@ class PersonSocialLinksCard<T> extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               if (links.isEmpty)
@@ -189,9 +194,7 @@ class PersonSocialLinksCard<T> extends StatelessWidget {
                         width: 40,
                         height: 40,
                         child: thumbnail.isEmpty
-                            ? const CircleAvatar(
-                                child: Icon(Icons.link),
-                              )
+                            ? const CircleAvatar(child: Icon(Icons.link))
                             : TappableCircleImage(
                                 imageUrl: thumbnail,
                                 radius: 20,

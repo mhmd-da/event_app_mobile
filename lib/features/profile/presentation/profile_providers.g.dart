@@ -87,7 +87,7 @@ final class ProfileProvider
   }
 }
 
-String _$profileHash() => r'8a61fef233a24ae1534cfe96912696f3dea9a00f';
+String _$profileHash() => r'ad549d386e3f956de069927022b864afff54e679';
 
 @ProviderFor(updateProfile)
 const updateProfileProvider = UpdateProfileFamily._();

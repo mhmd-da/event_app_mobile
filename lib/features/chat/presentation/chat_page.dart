@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/features/chat/presentation/chat_providers.dart';
 import 'package:event_app/features/chat/data/chat_sqlite_repository.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final int sessionId;
@@ -109,6 +111,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final timezonePreference = ref.watch(appTimezonePreferenceProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -195,6 +198,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                               AppTimeFormatting.formatTimeHm(
                                 context,
                                 m.createdAt,
+                                timezonePreference: timezonePreference,
                               ),
                               style: TextStyle(
                                 color: textColor.withValues(alpha: 0.8),
@@ -331,18 +335,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   // Parse server timestamps that may be emitted as UTC without timezone info.
   // Ensures we treat naive strings as UTC, then convert to local only at render.
   DateTime _parseServerUtc(String s) {
-    if (s.isEmpty) return DateTime.now().toUtc();
-    final hasZone = RegExp(r'(Z|[+-]\d{2}:?\d{2})$').hasMatch(s);
-    final normalized = hasZone ? s : '${s}Z';
-    try {
-      return DateTime.parse(normalized).toUtc();
-    } catch (_) {
-      try {
-        return DateTime.parse(s).toUtc();
-      } catch (_) {
-        return DateTime.now().toUtc();
-      }
-    }
+    return AppDateTimeParsing.parseServerToUtcOr(
+      s,
+      fallback: DateTime.now().toUtc(),
+    );
   }
 
   List<ChatMessage> _composeMessages(ChatSqliteRepository repo) {

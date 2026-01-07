@@ -51,7 +51,16 @@ class ChatSqliteRepository {
   }) async {
     _db!.execute(
       'INSERT INTO chat_messages (group_id, server_message_id, client_message_id, sender_user_id, sender_name, text, created_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [groupId, serverMessageId, clientMessageId ?? '', senderUserId, senderName ?? '', text, createdAt.toIso8601String(), 'sent'],
+      [
+        groupId,
+        serverMessageId,
+        clientMessageId ?? '',
+        senderUserId,
+        senderName ?? '',
+        text,
+        createdAt.toIso8601String(),
+        'sent',
+      ],
     );
   }
 
@@ -64,7 +73,16 @@ class ChatSqliteRepository {
   }) async {
     _db!.execute(
       'INSERT INTO chat_messages (group_id, server_message_id, client_message_id, sender_user_id, sender_name, text, created_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [groupId, null, clientMessageId, senderUserId, '', text, createdAt.toIso8601String(), 'pending'],
+      [
+        groupId,
+        null,
+        clientMessageId,
+        senderUserId,
+        '',
+        text,
+        createdAt.toIso8601String(),
+        'pending',
+      ],
     );
   }
 
@@ -78,9 +96,7 @@ class ChatSqliteRepository {
     );
   }
 
-  Future<void> markMessageFailed({
-    required String clientMessageId,
-  }) async {
+  Future<void> markMessageFailed({required String clientMessageId}) async {
     _db!.execute(
       'UPDATE chat_messages SET status = ? WHERE client_message_id = ?',
       ['failed', clientMessageId],
@@ -109,7 +125,9 @@ class ChatSqliteRepository {
         senderUserId: row['sender_user_id'] as int,
         senderName: (row['sender_name'] as String?) ?? '',
         text: row['text'] as String,
-        createdAt: DateTime.parse(row['created_at'] as String),
+        createdAt:
+            DateTime.tryParse(row['created_at'] as String) ??
+            DateTime.fromMillisecondsSinceEpoch(0),
         status: row['status'] as String,
       );
     }).toList();

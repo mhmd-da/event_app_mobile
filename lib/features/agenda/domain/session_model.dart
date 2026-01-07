@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class SessionModel extends BaseModel {
   final int id;
@@ -50,8 +51,10 @@ class SessionModel extends BaseModel {
       id: json['id'],
       name: json['name'],
       description: json['description'] ?? '',
-      startTime: DateTime.parse(json['startTime']).toLocal(),
-      endTime: DateTime.parse(json['endTime']).toLocal(),
+      startTime: AppDateTimeParsing.parseServerToLocalOrEpoch(
+        json['startTime'],
+      ),
+      endTime: AppDateTimeParsing.parseServerToLocalOrEpoch(json['endTime']),
       location: json['location'] ?? '',
       category: json['category'] ?? '',
       categoryTag: json['categoryTag'] ?? '',

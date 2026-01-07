@@ -1,24 +1,50 @@
+import 'package:event_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppDecorations {
   static BoxDecoration agendaSessionCard(
     BuildContext ctx, {
     Color? bgColor,
-  }) => BoxDecoration(
-    borderRadius: BorderRadius.circular(14),
+    Color? borderColor,
+    double? radius,
+    double? borderWidth,
+  }) {
+   return BoxDecoration(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(radius ?? 14),
+        bottomRight: Radius.circular(radius ?? 14),
+      ),
+    // border: Border.all(
+    //   color: accent.withValues(alpha: 0.3),
+    //   width: 1.5,
+    // ),
     border: Border(
-      left: BorderSide(color: bgColor ?? Theme.of(ctx).primaryColor, width: 5),
+      // left: BorderSide(color: bgColor ?? Theme.of(ctx).primaryColor, width: 5),
+      right: BorderSide(color: borderColor ?? bgColor ?? AppColors.defaultBg(ctx).withValues(alpha: 0.8) , width: borderWidth ?? 1),
+      top: BorderSide(color: borderColor ?? bgColor ?? AppColors.defaultBg(ctx).withValues(alpha: 0.8), width: borderWidth ?? 1),
+      bottom: BorderSide(color: borderColor ?? bgColor ?? AppColors.defaultBg(ctx).withValues(alpha: 0.8), width: borderWidth ?? 1),
     ),
     color: (bgColor ?? Theme.of(ctx).primaryColor).withValues(alpha: 0.08),
-    boxShadow: [
-      BoxShadow(
-        blurRadius: 6,
-        spreadRadius: 1,
-        offset: const Offset(0, 2),
-        color: bgColor ?? Theme.of(ctx).primaryColor.withValues(alpha: 0.01),
-      ),
-    ],
+    // boxShadow: [
+    //   BoxShadow(
+    //     blurRadius: 6,
+    //     spreadRadius: 1,
+    //     offset: const Offset(0, 2),
+    //     color: bgColor ?? Theme.of(ctx).primaryColor.withValues(alpha: 0.01),
+    //   ),
+    // ],
   );
+  }
+
+static Color strongerOf(Color base, BuildContext context) {
+  // Nudge towards theme primary for better contrast if too pale
+  if (base.a < 0.8) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Color.alphaBlend(base.withValues(alpha: 0.6), primary);
+  }
+  return base;
+}
+
 
   static BoxDecoration cardContainer(BuildContext ctx) {
     final theme = Theme.of(ctx);

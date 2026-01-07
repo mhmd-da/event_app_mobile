@@ -495,6 +495,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get timeZone => 'Time zone';
+
+  @override
+  String get timeZoneSystem => 'System';
+
+  @override
+  String get timeZoneHelper => 'Default: System time zone';
+
+  @override
   String get theme => 'Theme';
 
   @override

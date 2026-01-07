@@ -1,5 +1,6 @@
 import 'package:event_app/features/agenda/presentation/agenda_page.dart';
 import 'package:event_app/features/auth/presentation/login_controller.dart';
+import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
 import 'package:event_app/features/settings/presentation/settings_page.dart';
 import 'package:event_app/features/speakers/presentation/speakers_page.dart';
 import 'package:event_app/features/faqs/presentation/faqs_page.dart';
@@ -21,6 +22,7 @@ class SideNavigationDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(mainNavigationIndexProvider);
+    final event = ref.watch(selectedEventProvider);
 
     Widget tile({
       required IconData icon,
@@ -75,7 +77,7 @@ class SideNavigationDrawer extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      AppLocalizations.of(context)!.appTitle,
+                      event!.name ?? AppLocalizations.of(context)!.appTitle,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),

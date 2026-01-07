@@ -1,20 +1,24 @@
+import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
-import 'package:event_app/core/utilities/session_category_helper.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/agenda/presentation/session_details_page.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_time_slots_page.dart';
 import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/l10n/app_localizations.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyScheduleListWidget extends StatelessWidget {
+class MyScheduleListWidget extends ConsumerWidget {
   final List<SessionModel> sessions;
 
   const MyScheduleListWidget(this.sessions, {super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final timezonePreference = ref.watch(appTimezonePreferenceProvider);
+
     if (sessions.isEmpty) {
       return Center(
         child: Text(
@@ -28,10 +32,14 @@ class MyScheduleListWidget extends StatelessWidget {
     final Map<DateTime, List<SessionModel>> grouped = {};
 
     for (var s in sessions) {
+      final displayStart = AppTimeFormatting.toDisplayTime(
+        s.startTime,
+        timezonePreference: timezonePreference,
+      );
       final key = DateTime(
-        s.startTime.year,
-        s.startTime.month,
-        s.startTime.day,
+        displayStart.year,
+        displayStart.month,
+        displayStart.day,
       );
       grouped.putIfAbsent(key, () => []).add(s);
     }
@@ -45,9 +53,24 @@ class MyScheduleListWidget extends StatelessWidget {
       itemBuilder: (_, index) {
         final day = sortedKeys[index];
         final daySessions = grouped[day]!
-          ..sort((a, b) => a.startTime.compareTo(b.startTime));
+          ..sort(
+            (a, b) =>
+                AppTimeFormatting.toDisplayTime(
+                  a.startTime,
+                  timezonePreference: timezonePreference,
+                ).compareTo(
+                  AppTimeFormatting.toDisplayTime(
+                    b.startTime,
+                    timezonePreference: timezonePreference,
+                  ),
+                ),
+          );
 
-        return _DaySection(day: day, sessions: daySessions);
+        return _DaySection(
+          day: day,
+          sessions: daySessions,
+          timezonePreference: timezonePreference,
+        );
       },
     );
   }
@@ -56,13 +79,21 @@ class MyScheduleListWidget extends StatelessWidget {
 class _DaySection extends StatelessWidget {
   final DateTime day;
   final List<SessionModel> sessions;
+  final String timezonePreference;
 
-  const _DaySection({required this.day, required this.sessions});
+  const _DaySection({
+    required this.day,
+    required this.sessions,
+    required this.timezonePreference,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final now = DateTime.now();
+    final now = AppTimeFormatting.toDisplayTime(
+      DateTime.now(),
+      timezonePreference: timezonePreference,
+    );
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = today.add(const Duration(days: 1));
     final isToday = DateTime(day.year, day.month, day.day) == today;
@@ -83,7 +114,9 @@ class _DaySection extends StatelessWidget {
         ),
 
         // --- Sessions of the day ---
-        ...sessions.map((s) => _ListSessionRow(s)),
+        ...sessions.map(
+          (s) => _ListSessionRow(s, timezonePreference: timezonePreference),
+        ),
 
         const SizedBox(height: AppSpacing.section * 1.5),
       ],
@@ -93,17 +126,20 @@ class _DaySection extends StatelessWidget {
 
 class _ListSessionRow extends StatelessWidget {
   final SessionModel session;
+  final String timezonePreference;
 
-  const _ListSessionRow(this.session);
+  const _ListSessionRow(this.session, {required this.timezonePreference});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final baseColor = SessionCategoryHelper.getCategoryColor(
-      context,
-      session.categoryTag,
-    );
+    // final baseColor = SessionCategoryHelper.getCategoryColor(
+    //   context,
+    //   session.categoryTag,
+    // );
+
+    final baseColor = AppColors.defaultBg(context);
 
     final accent = _strongerOf(baseColor, context);
     final bg = baseColor.withValues(alpha: 0.08);
@@ -133,7 +169,11 @@ class _ListSessionRow extends StatelessWidget {
                   Directionality(
                     textDirection: TextDirection.ltr,
                     child: Text(
-                      AppTimeFormatting.formatTime(context, session.startTime),
+                      AppTimeFormatting.formatTime(
+                        context,
+                        session.startTime,
+                        timezonePreference: timezonePreference,
+                      ),
                       style: AppTextStyles.bodyMedium,
                     ),
                   ),

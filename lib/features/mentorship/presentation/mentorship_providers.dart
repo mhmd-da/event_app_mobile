@@ -1,5 +1,4 @@
 import 'package:event_app/core/network/api_client_provider.dart';
-import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/mentorship/data/mentorship_repository.dart';
 import 'package:event_app/features/mentorship/domain/mentorship_details_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -2,6 +2,7 @@ import 'package:event_app/core/notifications/local_notification_service.dart';
 import 'package:event_app/core/notifications/notification_manager.dart';
 import 'package:event_app/shared/providers/language_provider.dart';
 import 'package:event_app/shared/providers/theme_provider.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:event_app/startup/startup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/core/theme/app_theme.dart';
 import 'package:event_app/shared/providers/language_storage.dart';
 import 'package:event_app/shared/providers/theme_storage.dart';
+import 'package:event_app/shared/providers/timezone_storage.dart';
 
 // Ensure the navigatorKey is globally accessible.
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -46,6 +48,12 @@ void main() async {
         : ThemeMode.system;
     container.read(appThemeModeProvider.notifier).set(mode);
   }
+
+  // Load persisted timezone preference (defaults to system timezone)
+  final tzSaved = await const TimezoneStorage().loadTimezonePreference();
+  container
+      .read(appTimezonePreferenceProvider.notifier)
+      .set((tzSaved == null || tzSaved.isEmpty) ? kTimezoneSystem : tzSaved);
 
   // Riverpod 3+: use UncontrolledProviderScope to pass an external container
   runApp(UncontrolledProviderScope(container: container, child: const MyApp()));

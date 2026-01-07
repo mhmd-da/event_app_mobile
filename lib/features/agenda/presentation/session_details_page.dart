@@ -2,7 +2,6 @@ import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:event_app/core/utilities/logger.dart';
-import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/core/widgets/app_buttons.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/core/network/api_client_provider.dart';
@@ -349,7 +348,7 @@ class SessionDetailsPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${person.firstName} ${person.lastName}',
+                    '${person.title} ${person.firstName} ${person.lastName}',
                     style: AppTextStyles.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -364,7 +363,7 @@ class SessionDetailsPage extends ConsumerWidget {
                 ],
               ],
             ),
-            subtitle: Text(person.title, style: AppTextStyles.bodySmall),
+            //subtitle: Text(person.title, style: AppTextStyles.bodySmall),
             trailing: const Icon(Icons.chevron_right),
             onTap: () async {
               await _openSpeakerDetails(context, ref, person);
@@ -372,53 +371,6 @@ class SessionDetailsPage extends ConsumerWidget {
           ),
         );
       }).toList(),
-    );
-  }
-
-  Widget _buildLogoList(
-    BuildContext context,
-    List<dynamic> items, {
-    required Future<void> Function(dynamic item) onTapItem,
-  }) {
-    return SizedBox(
-      height: 110,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.section),
-        itemBuilder: (_, index) {
-          final item = items[index];
-          return InkWell(
-            onTap: () async => onTapItem(item),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 85,
-              padding: const EdgeInsets.all(AppSpacing.small),
-              decoration: AppDecorations.cardContainer(context),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Image.network(
-                      item.logoUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.business_outlined, size: 32),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.small),
-                  Text(
-                    item.name,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodySmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 

@@ -86,4 +86,4 @@ final class FaqsListProvider
   }
 }
 
-String _$faqsListHash() => r'2b941ac21454a2ce58a5ea10ab88115172eebe1f';
+String _$faqsListHash() => r'16d67525ebde988e146dcaf6e54b12555c4bcd06';

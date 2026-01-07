@@ -99,7 +99,8 @@ class _LogoList extends StatelessWidget {
               decoration: AppDecorations.cardContainer(context),
               child: Column(
                 children: [
-                  Expanded(
+                  SizedBox(
+                    height: 48,
                     child: Image.network(
                       item.logoUrl,
                       fit: BoxFit.contain,

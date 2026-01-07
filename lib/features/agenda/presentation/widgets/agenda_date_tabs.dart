@@ -1,3 +1,4 @@
+import 'package:event_app/core/theme/app_colors.dart';
 import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class DateTabs extends ConsumerWidget {
   Widget build(BuildContext ctx, WidgetRef ref) {
 
     return Container(
-      height: 70,
+      height: 60,
       alignment: Alignment.center, // ✅ centers the whole list container
       decoration: BoxDecoration(color: Theme.of(ctx).scaffoldBackgroundColor),
       child: Center(
@@ -39,8 +40,8 @@ class DateTabs extends ConsumerWidget {
                 decoration: AppDecorations.tabButton(
                   ctx,
                     bgColor: isActive
-                      ? Theme.of(ctx).colorScheme.primary.withValues(alpha: 0.5)
-                      : Theme.of(ctx).colorScheme.primary.withValues(alpha: 0.07),
+                      ? AppColors.defaultBg(ctx).withValues(alpha: 0.5)
+                      : AppColors.defaultBg(ctx).withValues(alpha: 0.07),
                 ),
                 child: Column(
                   children: [

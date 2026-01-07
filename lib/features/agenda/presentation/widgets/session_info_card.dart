@@ -5,8 +5,10 @@ import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:event_app/shared/providers/timezone_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SessionInfoCard extends StatelessWidget {
+class SessionInfoCard extends ConsumerWidget {
   final SessionModel session;
   final bool showDescription;
   final bool showTime;
@@ -23,7 +25,8 @@ class SessionInfoCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final timezonePreference = ref.watch(appTimezonePreferenceProvider);
     return Container(
       width: double.infinity,
       decoration: AppDecorations.cardContainer(context),
@@ -45,6 +48,7 @@ class SessionInfoCard extends StatelessWidget {
               start: session.startTime,
               end: session.endTime,
               style: AppTextStyles.bodySmall,
+              timezonePreference: timezonePreference,
             ),
           ],
 

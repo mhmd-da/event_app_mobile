@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class EventModel extends BaseModel {
   final int id;
@@ -22,8 +23,10 @@ class EventModel extends BaseModel {
       id: json['id'] as int,
       name: json['name'] ?? '',
       location: json['location'],
-      startDate: DateTime.parse(json['startDate']).toLocal(),
-      endDate: DateTime.parse(json['endDate']).toLocal(),
+      startDate: AppDateTimeParsing.parseServerToLocalOrEpoch(
+        json['startDate'],
+      ),
+      endDate: AppDateTimeParsing.parseServerToLocalOrEpoch(json['endDate']),
       bannerImageUrl: json['bannerImageUrl'],
     );
   }

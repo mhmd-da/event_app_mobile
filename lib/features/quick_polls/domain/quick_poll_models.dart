@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class QuickPollOption extends BaseModel {
   final int id;
@@ -43,12 +44,8 @@ class QuickPollModel extends BaseModel {
       options: rawOptions
           .map((e) => QuickPollOption.fromJson(e as Map<String, dynamic>))
           .toList(),
-      startsAt: json['startsAt'] != null
-          ? DateTime.parse(json['startsAt']).toLocal()
-          : null,
-      endsAt: json['endsAt'] != null
-          ? DateTime.parse(json['endsAt']).toLocal()
-          : null,
+      startsAt: AppDateTimeParsing.tryParseServerToLocal(json['startsAt']),
+      endsAt: AppDateTimeParsing.tryParseServerToLocal(json['endsAt']),
       userVoted: (json['userVoted'] ?? false) as bool,
     );
   }

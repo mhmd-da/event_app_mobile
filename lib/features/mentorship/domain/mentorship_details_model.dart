@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class MentorshipDetailsModel extends BaseModel {
   final Mentor mentor;
@@ -8,10 +9,15 @@ class MentorshipDetailsModel extends BaseModel {
 
   factory MentorshipDetailsModel.fromJson(Map<String, dynamic> json) {
     return MentorshipDetailsModel(
-      mentor: Mentor.fromJson((json['mentor'] as Map<String, dynamic>?) ?? const {}),
+      mentor: Mentor.fromJson(
+        (json['mentor'] as Map<String, dynamic>?) ?? const {},
+      ),
       slots:
-          ((json['slots'] as List<dynamic>?) ?? const <dynamic>[]) // tolerate null
-              .map((e) => Slot.fromJson((e as Map<String, dynamic>?) ?? const {}))
+          ((json['slots'] as List<dynamic>?) ??
+                  const <dynamic>[]) // tolerate null
+              .map(
+                (e) => Slot.fromJson((e as Map<String, dynamic>?) ?? const {}),
+              )
               .toList(),
     );
   }
@@ -59,15 +65,12 @@ class Slot {
   });
 
   factory Slot.fromJson(Map<String, dynamic> json) {
-    final startRaw = json['startTime']?.toString();
-    final endRaw = json['endTime']?.toString();
-    final startParsed = startRaw == null ? null : DateTime.tryParse(startRaw);
-    final endParsed = endRaw == null ? null : DateTime.tryParse(endRaw);
-
     return Slot(
       slotId: (json['slotId'] as num?)?.toInt() ?? 0,
-      startTime: (startParsed ?? DateTime.fromMillisecondsSinceEpoch(0)).toLocal(),
-      endTime: (endParsed ?? DateTime.fromMillisecondsSinceEpoch(0)).toLocal(),
+      startTime: AppDateTimeParsing.parseServerToLocalOrEpoch(
+        json['startTime'],
+      ),
+      endTime: AppDateTimeParsing.parseServerToLocalOrEpoch(json['endTime']),
       isBooked: json['isBooked'] == true,
       isAvailable: json['isAvailable'] == true,
     );

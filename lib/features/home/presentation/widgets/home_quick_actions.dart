@@ -48,6 +48,8 @@ class QuickActionsGrid extends ConsumerWidget {
           onTap: () {
             if (id == 'agenda') {
               ref.read(mainNavigationIndexProvider.notifier).set(1);
+            } else if (id == 'mySchedule') {
+              ref.read(mainNavigationIndexProvider.notifier).set(2);
             } else {
               Navigator.push(
                 context,

@@ -95,7 +95,7 @@ final class SponsorsListProvider
   }
 }
 
-String _$sponsorsListHash() => r'9821f211dbb98d2f5a9e4a017dd782be16c02dd7';
+String _$sponsorsListHash() => r'6f1a644d45270973b756b9b903e1c27506c38cc7';
 
 @ProviderFor(SponsorSearchText)
 const sponsorSearchTextProvider = SponsorSearchTextProvider._();
