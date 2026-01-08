@@ -604,6 +604,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get openMap => 'افتح الخريطة';
 
   @override
+  String get tapToOpenMap => 'انقر لفتح الخريطة';
+
+  @override
   String get noVenueInfo => 'لا تتوفر معلومات عن المكان.';
 
   @override

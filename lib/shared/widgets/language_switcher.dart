@@ -1,9 +1,7 @@
 import 'package:event_app/l10n/app_localizations.dart';
-import 'package:event_app/core/utilities/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/shared/providers/language_provider.dart';
-import 'package:event_app/features/profile/presentation/profile_providers.dart';
 
 class LanguageSwitcherWidget extends ConsumerWidget {
   const LanguageSwitcherWidget({super.key});
@@ -33,19 +31,10 @@ class LanguageSwitcherWidget extends ConsumerWidget {
             // Update UI immediately
             ref.read(appLocaleProvider.notifier).set(newLocale);
 
-            // Save preference
+            // Save preference locally
             await ref
                 .read(languageStorageProvider)
                 .saveLocale(newLocale.languageCode);
-
-            // Sync preference to backend (best-effort)
-            try {
-              await ref
-                  .read(profileRepositoryProvider)
-                  .updatePreferredLanguage(newLocale.languageCode);
-            } catch (e, st) {
-              logError('Failed to update preferred language', e, st);
-            }
           },
         ),
       ],

@@ -1,12 +1,11 @@
 import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
-import 'package:event_app/core/utilities/logger.dart';
 import 'package:event_app/core/widgets/app_buttons.dart';
+import 'package:event_app/core/widgets/app_card.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
-import 'package:event_app/features/agenda/presentation/agenda_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/l10n/app_localizations.dart';
@@ -15,15 +14,10 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:event_app/features/chat/presentation/chat_providers.dart';
-import 'package:event_app/core/utilities/scheduling.dart';
-import 'package:event_app/features/chat/presentation/chat_page.dart';
 import 'package:event_app/core/widgets/notifier.dart';
-import 'package:event_app/features/quick_polls/presentation/quick_polls_panel.dart';
 import 'package:event_app/features/speakers/presentation/speaker_details_page.dart';
 import 'package:event_app/features/speakers/presentation/speaker_providers.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:event_app/features/agenda/presentation/widgets/session_feedback.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_info_card.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_sponsors_partners_sections.dart';
 import 'package:event_app/core/widgets/moderator_badge.dart';
@@ -35,16 +29,6 @@ class SessionDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isRegisteredNow = ref.watch(
-      sessionRegistrationStateProvider(session),
-    );
-
-    deferAfterBuild(() {
-      ref
-          .read(sessionChatMembershipProvider(session.id).notifier)
-          .initialize(session.isChatMember);
-    });
-
     return AppScaffold(
       title: session.name ?? '',
       body: SingleChildScrollView(
@@ -53,12 +37,6 @@ class SessionDetailsPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SessionInfoCard(session: session),
-            const SizedBox(height: AppSpacing.section),
-            _buildRegistrationButton(context, ref, isRegisteredNow),
-            _quickPollsCTA(context, isRegisteredNow),
-            const SizedBox(height: AppSpacing.section),
-            _buildChatActions(context, ref, isRegisteredNow),
-            const SizedBox(height: AppSpacing.section),
             const SizedBox(height: AppSpacing.section),
             if (session.speakers.isNotEmpty)
               _buildSection(
@@ -96,6 +74,15 @@ class SessionDetailsPage extends ConsumerWidget {
     return null;
   }
 
+  bool _isStaleData(DateTime? sessionTimestamp, DateTime? cachedTimestamp) {
+    // If either timestamp is null, consider data stale
+    if (sessionTimestamp == null || cachedTimestamp == null) {
+      return sessionTimestamp != cachedTimestamp;
+    }
+    // Compare timestamps - stale if they differ
+    return !sessionTimestamp.isAtSameMomentAs(cachedTimestamp);
+  }
+
   Future<void> _openSpeakerDetails(
     BuildContext context,
     WidgetRef ref,
@@ -104,9 +91,13 @@ class SessionDetailsPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     int? speakerId = person.id;
-    if (speakerId == null) {
-      try {
-        final speakers = await ref.read(speakersListProvider.future);
+    bool needsRefresh = false;
+    
+    try {
+      final speakers = await ref.read(speakersListProvider.future);
+      
+      if (speakerId == null) {
+        // Fallback: Try to match by name
         final targetName = _normalizeKey(
           '${person.firstName} ${person.lastName}',
         );
@@ -122,9 +113,27 @@ class SessionDetailsPage extends ConsumerWidget {
                   _normalizeKey(s.firstName) == _normalizeKey(person.firstName),
             );
         speakerId = match?.id;
-      } catch (_) {
-        speakerId = null;
+        
+        // Check timestamp for matched speaker
+        if (match != null) {
+          needsRefresh = _isStaleData(person.lastUpdatedDate, match.lastUpdatedDate);
+        } else {
+          // Speaker not found in cache - needs refresh
+          needsRefresh = true;
+        }
+      } else {
+        // ID is available - find speaker and compare timestamp
+        final match = _firstWhereOrNull(speakers, (s) => s.id == speakerId);
+        if (match == null) {
+          // Speaker not found in cache - needs refresh
+          needsRefresh = true;
+        } else {
+          needsRefresh = _isStaleData(person.lastUpdatedDate, match.lastUpdatedDate);
+        }
       }
+    } catch (_) {
+      // Error fetching speakers - try to refresh
+      needsRefresh = true;
     }
 
     if (speakerId == null) {
@@ -132,174 +141,15 @@ class SessionDetailsPage extends ConsumerWidget {
       return;
     }
 
+    // Invalidate provider if data is stale or missing
+    if (needsRefresh) {
+      ref.invalidate(speakersListProvider);
+    }
+
     if (!context.mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => SpeakerDetailsPage(speakerId: speakerId!),
-      ),
-    );
-  }
-
-  Widget _buildChatActions(
-    BuildContext context,
-    WidgetRef ref,
-    bool isRegisteredNow,
-  ) {
-    if (!isRegisteredNow) return const SizedBox.shrink();
-    final joined = ref.watch(sessionChatMembershipProvider(session.id));
-    final l10n = AppLocalizations.of(context)!;
-
-    if (joined) {
-      return SizedBox(
-        width: double.infinity,
-        child: AppElevatedButton(
-          icon: const Icon(Icons.chat_bubble_outline),
-          label: Text(l10n.openChat),
-          onPressed: () async {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => ChatPage(sessionId: session.id),
-              ),
-            );
-          },
-          style: AppDecorations.primaryButton(context),
-        ),
-      );
-    } else {
-      return SizedBox(
-        width: double.infinity,
-        child: AppElevatedButton(
-          icon: const Icon(Icons.group_add_outlined),
-          label: Text(l10n.joinChat),
-          onPressed: () async {
-            final navigator = Navigator.of(context);
-            try {
-              final svc = ref.read(chatRealtimeServiceProvider);
-              await svc.start();
-              await svc.joinSession(session.id);
-              ref
-                  .read(sessionChatMembershipProvider(session.id).notifier)
-                  .set(true);
-              if (!context.mounted) return;
-              AppNotifier.success(context, l10n.chatJoined);
-              // Auto-open chat after successful join to give immediate feedback
-              navigator.push(
-                MaterialPageRoute(
-                  builder: (_) => ChatPage(sessionId: session.id),
-                ),
-              );
-            } catch (e, st) {
-              logError('Join chat failed', e, st);
-              AppNotifier.error(context, l10n.actionFailed);
-            }
-          },
-          style: AppDecorations.primaryButton(context),
-        ),
-      );
-    }
-  }
-
-  Widget _buildRegistrationButton(
-    BuildContext context,
-    WidgetRef ref,
-    bool isRegisteredNow,
-  ) {
-    final capacityReached = session.isMaxCapacityReached;
-    final shouldDisableRegister = capacityReached && !isRegisteredNow;
-    return SizedBox(
-      width: double.infinity,
-      child: Row(
-        children: [
-          Expanded(
-            child: AppElevatedButton(
-              label: Text(
-                isRegisteredNow
-                    ? AppLocalizations.of(context)!.unregister
-                    : shouldDisableRegister
-                    ? AppLocalizations.of(context)!.maxCapacityReached
-                    : AppLocalizations.of(context)!.addToAgenda,
-              ),
-              icon: Icon(
-                isRegisteredNow
-                    ? Icons.remove_circle_outline
-                    : shouldDisableRegister
-                    ? Icons.block
-                    : Icons.check_circle_outline,
-              ),
-              onPressed: shouldDisableRegister
-                  ? null
-                  : () async {
-                      final l10n = AppLocalizations.of(context)!;
-                      final addedText = l10n.addedSuccess;
-                      final removedText = l10n.removedSuccess;
-                      final failedText = l10n.actionFailed;
-                      try {
-                        if (isRegisteredNow) {
-                          await ref
-                              .read(sessionRepositoryProvider)
-                              .cancelSessionRegistration(session.id);
-                          // Ensure chat membership resets when unregistering
-                          ref
-                              .read(
-                                sessionChatMembershipProvider(
-                                  session.id,
-                                ).notifier,
-                              )
-                              .set(false);
-                        } else {
-                          await ref
-                              .read(sessionRepositoryProvider)
-                              .registerSession(session.id);
-                        }
-                        Future.microtask(() {
-                          ref
-                              .read(
-                                sessionRegistrationStateProvider(
-                                  session,
-                                ).notifier,
-                              )
-                              .set(!isRegisteredNow);
-                        });
-                        if (!context.mounted) return;
-                        AppNotifier.success(
-                          context,
-                          isRegisteredNow ? removedText : addedText,
-                        );
-                      } catch (e) {
-                        final raw = e is String ? e : e.toString();
-                        final cleaned = raw.replaceFirst(
-                          RegExp(r'^Exception:\s*'),
-                          '',
-                        );
-                        final message = cleaned.trim();
-                        AppNotifier.error(
-                          context,
-                          message.isNotEmpty ? message : failedText,
-                        );
-                      }
-                    },
-              style: isRegisteredNow
-                  ? ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                      foregroundColor: Theme.of(context).colorScheme.onError,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    )
-                  : shouldDisableRegister
-                  ? ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).disabledColor,
-                      foregroundColor: Theme.of(context).colorScheme.onSurface,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    )
-                  : AppDecorations.primaryButton(context),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.item),
-          Expanded(child: SessionFeedbackButton(sessionId: session.id)),
-        ],
       ),
     );
   }
@@ -311,13 +161,17 @@ class SessionDetailsPage extends ConsumerWidget {
     required String title,
     required Widget child,
   }) {
-    return Column(
+    return AppCard(
+      title: title,
+      centerTitle: true,
+      useGradient: true,
+      margin: null,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppTextStyles.headlineMedium),
-        const SizedBox(height: AppSpacing.item),
         child,
       ],
+      )
     );
   }
 
@@ -551,42 +405,5 @@ class SessionDetailsPage extends ConsumerWidget {
     if (ct.contains('image/png')) return 'png';
     if (ct.contains('image/jpeg')) return 'jpg';
     return null;
-  }
-
-  void _showQuickPollsModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.page),
-            child: QuickPollsPanel(sessionId: session.id),
-          ),
-        );
-      },
-    );
-  }
-
-  // Full-width Quick Polls CTA below the row for better tap target
-  Widget _quickPollsCTA(BuildContext context, bool isRegisteredNow) {
-    if (!(isRegisteredNow && session.hasQuickPolls))
-      return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.item),
-      child: SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          icon: const Icon(Icons.poll_outlined),
-          label: Text(AppLocalizations.of(context)!.quickPolls),
-          onPressed: () {
-            _showQuickPollsModal(context);
-          },
-        ),
-      ),
-    );
   }
 }

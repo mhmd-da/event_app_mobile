@@ -9,11 +9,19 @@ part of 'selected_event_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SelectedEvent)
+@ProviderFor(selectedEvent)
 const selectedEventProvider = SelectedEventProvider._();
 
 final class SelectedEventProvider
-    extends $NotifierProvider<SelectedEvent, EventDetailsModel?> {
+    extends
+        $FunctionalProvider<
+          AsyncValue<EventDetailsModel?>,
+          EventDetailsModel?,
+          FutureOr<EventDetailsModel?>
+        >
+    with
+        $FutureModifier<EventDetailsModel?>,
+        $FutureProvider<EventDetailsModel?> {
   const SelectedEventProvider._()
     : super(
         from: null,
@@ -30,34 +38,14 @@ final class SelectedEventProvider
 
   @$internal
   @override
-  SelectedEvent create() => SelectedEvent();
+  $FutureProviderElement<EventDetailsModel?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(EventDetailsModel? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<EventDetailsModel?>(value),
-    );
-  }
-}
-
-String _$selectedEventHash() => r'63ef723c26dd0fd03848d5cb3aa7ef8e6443674a';
-
-abstract class _$SelectedEvent extends $Notifier<EventDetailsModel?> {
-  EventDetailsModel? build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<EventDetailsModel?, EventDetailsModel?>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<EventDetailsModel?, EventDetailsModel?>,
-              EventDetailsModel?,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
+  FutureOr<EventDetailsModel?> create(Ref ref) {
+    return selectedEvent(ref);
   }
 }
+
+String _$selectedEventHash() => r'09d671bd712151986e8884f38fcbc802e2416445';

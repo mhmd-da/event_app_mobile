@@ -238,6 +238,7 @@
   "type": "Type",
   "openWebsite": "Open Website",
   "openMap": "Open Map",
+  "tapToOpenMap": "Tap to open map",
   "noVenueInfo": "No venue information available.",
   "floorPlans": "Floor Plans",
   "mapOpenFailed": "Could not open map.",

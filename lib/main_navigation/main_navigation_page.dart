@@ -1,5 +1,4 @@
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
-import 'package:event_app/features/my_schedule/presentation/my_schedule_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/agenda/presentation/agenda_page.dart';
-import '../features/profile/presentation/profile_page.dart';
 import 'main_navigation_providers.dart';
 import 'side_navigation_drawer.dart';
 import 'package:event_app/core/widgets/notifier.dart';
@@ -29,10 +27,6 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
         return const HomePage();
       case 1:
         return const AgendaPage();
-      case 2:
-        return const MySchedulePage();
-      case 3:
-        return const ProfilePage();
       default:
         return const HomePage();
     }
@@ -50,14 +44,24 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final event = ref.watch(selectedEventProvider);
+    final eventAsync = ref.watch(selectedEventProvider);
     final currentIndex = ref.watch(mainNavigationIndexProvider);
 
-    // No PageView, so no listener needed for controller.
+    return eventAsync.when(
+      data: (event) {
+        if (event == null) {
+          return Center(child: Text(AppLocalizations.of(context)!.noEventSelected));
+        }
+        return _buildMainScaffold(context, currentIndex);
+      },
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, stack) => Scaffold(
+        body: Center(child: Text('Error: $error')),
+      ),
+    );
+  }
 
-    if (event == null) {
-      return Center(child: Text(AppLocalizations.of(context)!.noEventSelected));
-    }
+  Widget _buildMainScaffold(BuildContext context, int currentIndex) {
 
     return PopScope(
       canPop: false,
@@ -95,14 +99,6 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
             icon: const Icon(Icons.event_rounded),
             label: AppLocalizations.of(context)!.agenda,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.schedule_rounded),
-            label: AppLocalizations.of(context)!.mySchedule,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person_rounded),
-            label: AppLocalizations.of(context)!.profile,
-          ),
         ],
         ),
         body: _pageForIndex(currentIndex),
@@ -116,10 +112,6 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
         return AppLocalizations.of(context)!.home;
       case 1:
         return AppLocalizations.of(context)!.agenda;
-      case 2:
-        return AppLocalizations.of(context)!.mySchedule;
-      case 3:
-        return AppLocalizations.of(context)!.profile;
       default:
         return "";
     }

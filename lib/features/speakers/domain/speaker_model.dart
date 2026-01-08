@@ -1,4 +1,5 @@
 import 'package:event_app/core/base/base_model.dart';
+import 'package:event_app/core/utilities/date_time_parsing.dart';
 
 class SpeakerModel extends BaseModel {
   final int id;
@@ -14,6 +15,7 @@ class SpeakerModel extends BaseModel {
   final String? profileImageUrl;
   final List<SpeakerSocialLink> socialLinks;
   final List<SpeakerSession> sessions;
+  final DateTime? lastUpdatedDate;
 
   SpeakerModel({
     required this.id,
@@ -29,6 +31,7 @@ class SpeakerModel extends BaseModel {
     this.profileImageUrl,
     required this.socialLinks,
     required this.sessions,
+    this.lastUpdatedDate,
   });
 
   factory SpeakerModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +49,9 @@ class SpeakerModel extends BaseModel {
       profileImageUrl: json['profileImageUrl'],
       socialLinks: (json['socialLinks'] as List<dynamic>?)?.map((e) => SpeakerSocialLink.fromJson(e)).toList() ?? <SpeakerSocialLink>[],
       sessions: (json['sessions'] as List<dynamic>?)?.map((e) => SpeakerSession.fromJson(e)).toList() ?? <SpeakerSession>[],
+      lastUpdatedDate: json['lastUpdatedDate'] != null
+          ? AppDateTimeParsing.parseServerToLocalOrEpoch(json['lastUpdatedDate'])
+          : null,
     );
   }
 }

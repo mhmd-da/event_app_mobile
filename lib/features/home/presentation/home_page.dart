@@ -15,35 +15,39 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final event = ref.watch(selectedEventProvider);
+    final eventAsync = ref.watch(selectedEventProvider);
 
-    if (event == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const HomeHeader(),
-          const SizedBox(height: AppSpacing.section),
-          AppSectionTitle(title: l10n.quickActions),
-          const SizedBox(height: AppSpacing.item),
-          const QuickActionsGrid(),
-          //const SizedBox(height: AppSpacing.section),
-          //const AppSectionTitle(title: "Announcements"),
-          //const SizedBox(height: AppSpacing.item),
-          // const AnnouncementCard(), // Disabled for now
-          const SizedBox(height: AppSpacing.section),
-          AppSectionTitle(title: l10n.aboutEvent),
-          const SizedBox(height: AppSpacing.item),
-          const AboutCard(),
-          const SizedBox(height: AppSpacing.section),
-          AppSectionTitle(title: l10n.venueAndInfo),
-          const SizedBox(height: AppSpacing.item),
-          const VenueInfoList(),
-          const SizedBox(height: 80),
-        ],
+    return eventAsync.when(
+      data: (event) {
+        if (event == null) {
+          return const Center(child: Text('No event selected'));
+        }
+        
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HomeHeader(),
+              const SizedBox(height: AppSpacing.section),
+              AppSectionTitle(title: l10n.quickActions),
+              const SizedBox(height: AppSpacing.item),
+              const QuickActionsGrid(),
+              const SizedBox(height: AppSpacing.section),
+              // AppSectionTitle(title: l10n.aboutEvent),
+              const SizedBox(height: AppSpacing.item),
+              const AboutCard(),
+              const SizedBox(height: AppSpacing.section),
+              // AppSectionTitle(title: l10n.venueAndInfo),
+              const SizedBox(height: AppSpacing.item),
+              const VenueInfoList(),
+              const SizedBox(height: 80),
+            ],
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Text('Error loading event: $error'),
       ),
     );
   }

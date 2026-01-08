@@ -97,7 +97,10 @@ class SessionTile extends ConsumerWidget {
                         ),
                       ),
                       Container(
-                        //color: AppColors.defaultBg(context),
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.small,
+                        ),
                         decoration: AppDecorations.agendaSessionCard(
                           context,
                           bgColor: AppColors.defaultBg(context),
@@ -105,160 +108,10 @@ class SessionTile extends ConsumerWidget {
                           radius: 0,
                           borderWidth: 0.4,
                         ),
-                        child: Column(
-                          children: [
-                            // const Divider(color: Colors.black),
-                            Text(
-                              session.name ?? '',
-                              style: AppTextStyles.headlineMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: AppSpacing.xSmall),
-                            if (((session.maxCapacity != null &&
-                                        session.maxCapacity == 0) ||
-                                    (session.currentBookings != null &&
-                                        session.maxCapacity != null)) ||
-                                session.hasQuickPolls)
-                              Row(
-                                children: [
-                                  if ((session.maxCapacity != null &&
-                                          session.maxCapacity == 0) ||
-                                      (session.currentBookings != null &&
-                                          session.maxCapacity != null))
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.group_outlined,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                            size: 16,
-                                          ),
-                                          const SizedBox(width: 6),
-                                          Text(
-                                            (session.maxCapacity == 0)
-                                                ? AppLocalizations.of(
-                                                    context,
-                                                  )!.unlimitedCapacity
-                                                : '${session.currentBookings}/${session.maxCapacity}',
-                                            style: AppTextStyles.bodySmall
-                                                .copyWith(
-                                                  color: Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  if (((session.maxCapacity != null &&
-                                              session.maxCapacity == 0) ||
-                                          (session.currentBookings != null &&
-                                              session.maxCapacity != null)) &&
-                                      session.hasQuickPolls)
-                                    const Spacer(),
-                                  if (session.hasQuickPolls)
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withValues(alpha: 0.12),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.poll_outlined,
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                              size: 16,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.quickPolls,
-                                              style: AppTextStyles.bodySmall
-                                                  .copyWith(
-                                                    color: Theme.of(
-                                                      context,
-                                                    ).colorScheme.primary,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            const SizedBox(height: AppSpacing.xSmall),
-                            if (session.isMaxCapacityReached &&
-                                !session.isRegistered)
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.error.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.warning_amber_outlined,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.maxCapacityReached,
-                                        style: AppTextStyles.bodySmall.copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.error,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            const SizedBox(height: AppSpacing.xSmall),
-                            //const Divider(color: Colors.black),
-                          ],
+                        child: Text(
+                          session.name ?? '',
+                          style: AppTextStyles.headlineMedium,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       Column(

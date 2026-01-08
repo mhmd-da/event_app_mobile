@@ -1,6 +1,7 @@
 import 'package:event_app/core/utilities/time_formatting.dart';
 import 'package:event_app/core/utilities/date_time_parsing.dart';
 import 'package:event_app/core/widgets/tappable_circle_image.dart';
+import 'package:event_app/core/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,95 +32,71 @@ class PersonSessionsCard<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Card(
-        color: theme.brightness == Brightness.dark
-            ? theme.colorScheme.surfaceVariant
-            : theme.colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (sessions.isEmpty)
-                Text(emptyText, style: theme.textTheme.bodyMedium)
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: sessions.length,
-                  separatorBuilder: (_, __) => const Divider(height: 16),
-                  itemBuilder: (context, index) {
-                    final session = sessions[index];
-                    final location = (getLocation(session) ?? '').trim();
+    return AppCard(
+      title: title,
+      centerTitle: true,
+      useGradient: true,
+      child: sessions.isEmpty
+          ? Text(emptyText, style: theme.textTheme.bodyMedium)
+          : ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: sessions.length,
+              separatorBuilder: (_, __) => const Divider(height: 16),
+              itemBuilder: (context, index) {
+                final session = sessions[index];
+                final location = (getLocation(session) ?? '').trim();
 
-                    final start = _tryParseDateTime(getStartTime(session));
-                    final end = _tryParseDateTime(getEndTime(session));
+                final start = _tryParseDateTime(getStartTime(session));
+                final end = _tryParseDateTime(getEndTime(session));
 
-                    final String? dateText;
-                    if (start != null && end != null) {
-                      final sameDay =
-                          start.year == end.year &&
-                          start.month == end.month &&
-                          start.day == end.day;
-                      dateText = sameDay
-                          ? AppTimeFormatting.formatDateYMMMd(context, start)
-                          : AppTimeFormatting.formatDateRangeYMMMd(
-                              context,
-                              start: start,
-                              end: end,
-                            );
-                    } else if (start != null) {
-                      dateText = AppTimeFormatting.formatDateYMMMd(
-                        context,
-                        start,
-                      );
-                    } else {
-                      dateText = null;
-                    }
+                final String? dateText;
+                if (start != null && end != null) {
+                  final sameDay =
+                      start.year == end.year &&
+                      start.month == end.month &&
+                      start.day == end.day;
+                  dateText = sameDay
+                      ? AppTimeFormatting.formatDateYMMMd(context, start)
+                      : AppTimeFormatting.formatDateRangeYMMMd(
+                          context,
+                          start: start,
+                          end: end,
+                        );
+                } else if (start != null) {
+                  dateText = AppTimeFormatting.formatDateYMMMd(context, start);
+                } else {
+                  dateText = null;
+                }
 
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.event_note_outlined),
-                      title: Text(getTitle(session)),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (dateText != null && dateText.trim().isNotEmpty)
-                            Text(dateText),
-                          if (start != null && end != null)
-                            AppTimeFormatting.timeRangeText(
-                              context,
-                              start: start,
-                              end: end,
-                            )
-                          else
-                            Text(
-                              [
-                                getStartTime(session).trim(),
-                                getEndTime(session).trim(),
-                              ].where((s) => s.isNotEmpty).join(' – '),
-                            ),
-                          if (location.isNotEmpty) Text(location),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-            ],
-          ),
-        ),
-      ),
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.event_note_outlined),
+                  title: Text(getTitle(session)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (dateText != null && dateText.trim().isNotEmpty)
+                        Text(dateText),
+                      if (start != null && end != null)
+                        AppTimeFormatting.timeRangeText(
+                          context,
+                          start: start,
+                          end: end,
+                        )
+                      else
+                        Text(
+                          [
+                            getStartTime(session).trim(),
+                            getEndTime(session).trim(),
+                          ].where((s) => s.isNotEmpty).join(' – '),
+                        ),
+                      if (location.isNotEmpty) Text(location),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 }
@@ -152,66 +129,45 @@ class PersonSocialLinksCard<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Card(
-        color: theme.brightness == Brightness.dark
-            ? theme.colorScheme.surfaceVariant
-            : theme.colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (links.isEmpty)
-                Text(emptyText, style: theme.textTheme.bodyMedium)
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: links.length,
-                  separatorBuilder: (_, __) => const Divider(height: 16),
-                  itemBuilder: (context, index) {
-                    final link = links[index];
-                    final name = (getName(link) ?? '').trim();
-                    final url = getUrl(link).trim();
-                    final thumbnail = (getThumbnailUrl(link) ?? '').trim();
+    return AppCard(
+      title: title,
+      centerTitle: true,
+      useGradient: true,
+      child: links.isEmpty
+          ? Text(emptyText, style: theme.textTheme.bodyMedium)
+          : ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: links.length,
+              separatorBuilder: (_, __) => const Divider(height: 16),
+              itemBuilder: (context, index) {
+                final link = links[index];
+                final name = (getName(link) ?? '').trim();
+                final url = getUrl(link).trim();
+                final thumbnail = (getThumbnailUrl(link) ?? '').trim();
 
-                    final displayTitle = name.isNotEmpty ? name : url;
+                final displayTitle = name.isNotEmpty ? name : url;
 
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: thumbnail.isEmpty
-                            ? const CircleAvatar(child: Icon(Icons.link))
-                            : TappableCircleImage(
-                                imageUrl: thumbnail,
-                                radius: 20,
-                                placeholderIcon: Icons.link,
-                              ),
-                      ),
-                      title: Text(displayTitle),
-                      subtitle: name.isNotEmpty ? Text(url) : null,
-                      trailing: const Icon(Icons.open_in_new),
-                      onTap: url.isEmpty ? null : () => _openUrl(context, url),
-                    );
-                  },
-                ),
-            ],
-          ),
-        ),
-      ),
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: thumbnail.isEmpty
+                        ? const CircleAvatar(child: Icon(Icons.link))
+                        : TappableCircleImage(
+                            imageUrl: thumbnail,
+                            radius: 20,
+                            placeholderIcon: Icons.link,
+                          ),
+                  ),
+                  title: Text(displayTitle),
+                  subtitle: name.isNotEmpty ? Text(url) : null,
+                  trailing: const Icon(Icons.open_in_new),
+                  onTap: url.isEmpty ? null : () => _openUrl(context, url),
+                );
+              },
+            ),
     );
   }
 }

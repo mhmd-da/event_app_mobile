@@ -7,6 +7,7 @@ import 'package:event_app/features/agenda/presentation/widgets/session_feedback.
 import 'package:event_app/features/agenda/presentation/widgets/session_info_card.dart';
 import 'package:event_app/features/agenda/presentation/widgets/session_sponsors_partners_sections.dart';
 import 'package:event_app/features/mentors/presentation/mentor_details_page.dart';
+import 'package:event_app/features/mentors/presentation/mentor_providers.dart';
 import 'package:event_app/features/mentorship/presentation/mentorship_providers.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:event_app/core/utilities/time_formatting.dart';
@@ -70,7 +71,27 @@ class MentorshipTimeSlotsPage extends ConsumerWidget {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
+                    onTap: () async {
+                      // Check if mentor data is stale before navigation
+                      if (session.mentor != null) {
+                        try {
+                          final mentors = await ref.read(mentorsListProvider.future);
+                          final cachedMentor = mentors.firstWhere(
+                            (m) => m.id == mentor.id,
+                            orElse: () => throw Exception('Mentor not found'),
+                          );
+                          
+                          // Compare timestamps
+                          if (_isStaleData(session.mentor!.lastUpdatedDate, cachedMentor.lastUpdatedDate)) {
+                            ref.invalidate(mentorsListProvider);
+                          }
+                        } catch (_) {
+                          // Mentor not found or error - invalidate to refresh
+                          ref.invalidate(mentorsListProvider);
+                        }
+                      }
+                      
+                      if (!context.mounted) return;
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) =>
@@ -177,29 +198,7 @@ class MentorshipTimeSlotsPage extends ConsumerWidget {
                                     ),
                                   )
                                 : AppDecorations.primaryButton(context),
-                            onPressed: timeSlot.isBooked
-                                ? () async {
-                                    await ref
-                                        .read(mentorshipRepositoryProvider)
-                                        .cancelTimeSlot(timeSlot.slotId);
-                                    await ref.refresh(
-                                      mentorshipSessionsProvider(
-                                        session.id,
-                                      ).future,
-                                    );
-                                  }
-                                : timeSlot.isAvailable
-                                ? () async {
-                                    await ref
-                                        .read(mentorshipRepositoryProvider)
-                                        .bookTimeSlot(timeSlot.slotId);
-                                    await ref.refresh(
-                                      mentorshipSessionsProvider(
-                                        session.id,
-                                      ).future,
-                                    );
-                                  }
-                                : null,
+                            onPressed: null,
                           ),
                         ),
                       ),
@@ -212,5 +211,14 @@ class MentorshipTimeSlotsPage extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  bool _isStaleData(DateTime? sessionTimestamp, DateTime? cachedTimestamp) {
+    // If either timestamp is null, consider data stale
+    if (sessionTimestamp == null || cachedTimestamp == null) {
+      return sessionTimestamp != cachedTimestamp;
+    }
+    // Compare timestamps - stale if they differ
+    return !sessionTimestamp.isAtSameMomentAs(cachedTimestamp);
   }
 }

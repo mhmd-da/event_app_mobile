@@ -603,6 +603,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openMap => 'Open Map';
 
   @override
+  String get tapToOpenMap => 'Tap to open map';
+
+  @override
   String get noVenueInfo => 'No venue information available.';
 
   @override

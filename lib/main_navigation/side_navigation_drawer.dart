@@ -1,5 +1,4 @@
 import 'package:event_app/features/agenda/presentation/agenda_page.dart';
-import 'package:event_app/features/auth/presentation/login_controller.dart';
 import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
 import 'package:event_app/features/settings/presentation/settings_page.dart';
 import 'package:event_app/features/speakers/presentation/speakers_page.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'main_navigation_providers.dart';
 import 'package:event_app/features/partners/presentation/partners_page.dart';
-import 'package:event_app/features/auth/presentation/login_page.dart';
 import 'package:event_app/features/contact/presentation/contact_form_page.dart';
 import 'package:event_app/features/event_photos/presentation/event_photos_page.dart';
 import 'package:event_app/features/mentors/presentation/mentors_page.dart';
@@ -22,7 +20,16 @@ class SideNavigationDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(mainNavigationIndexProvider);
-    final event = ref.watch(selectedEventProvider);
+    final eventAsync = ref.watch(selectedEventProvider);
+    
+    return eventAsync.when(
+      data: (event) => _buildDrawer(context, ref, currentIndex, event),
+      loading: () => const Drawer(child: Center(child: CircularProgressIndicator())),
+      error: (error, stack) => Drawer(child: Center(child: Text('Error: $error'))),
+    );
+  }
+  
+  Widget _buildDrawer(BuildContext context, WidgetRef ref, int currentIndex, dynamic event) {
 
     Widget tile({
       required IconData icon,
@@ -136,13 +143,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    tile(
-                      icon: Icons.schedule_rounded,
-                      label: AppLocalizations.of(context)!.mySchedule,
-                      onTap: () =>
-                          ref.read(mainNavigationIndexProvider.notifier).set(2),
-                      // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MySchedulePage())),
-                    ),
                     const Divider(),
                     tile(
                       icon: Icons.record_voice_over_rounded,
@@ -173,11 +173,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                         MaterialPageRoute(builder: (_) => const PartnersPage()),
                       ),
                     ),
-                    // tile(
-                    //   icon: Icons.storefront_rounded,
-                    //   label: AppLocalizations.of(context)!.exhibitions,
-                    //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Exhibitions'))),
-                    // ),
                     const Divider(),
                     tile(
                       icon: Icons.photo_library_outlined,
@@ -206,14 +201,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                       ),
                     ),
                     const Divider(),
-                    // Settings above logout
-                    tile(
-                      icon: Icons.person_rounded,
-                      label: AppLocalizations.of(context)!.profile,
-                      selected: currentIndex == 3,
-                      onTap: () =>
-                          ref.read(mainNavigationIndexProvider.notifier).set(3),
-                    ),
                     tile(
                       icon: Icons.settings_rounded,
                       label: AppLocalizations.of(context)!.settings,
@@ -231,31 +218,6 @@ class SideNavigationDrawer extends ConsumerWidget {
                           builder: (_) => const ContactFormPage(),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Logout button anchored near bottom with destructive style
-                    ListTile(
-                      leading: const Icon(Icons.logout, color: Colors.red),
-                      title: Text(
-                        AppLocalizations.of(context)!.logout,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      onTap: () async {
-                        final navigator = Navigator.of(context);
-                        final loginController = ref.read(
-                          loginControllerProvider.notifier,
-                        );
-                        await loginController.logout();
-                        navigator.pushReplacement(
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      },
                     ),
                   ],
                 ),

@@ -26,29 +26,8 @@ class SelectedAgendaDate extends _$SelectedAgendaDate {
 }
 
 @riverpod
-class SessionRegistrationState extends _$SessionRegistrationState {
-  @override
-  bool build(SessionModel session) => session.isRegistered;
-  void set(bool value) => state = value;
-}
-
-@riverpod
 class GroupingMethod extends _$GroupingMethod {
   @override
   String build() => 'time';
   void set(String value) => state = value;
-}
-
-@riverpod
-class SessionChatMembership extends _$SessionChatMembership {
-  @override
-  bool build(int sessionId) => false;
-  void set(bool value) => state = value;
-  void initialize(bool initial) {
-    // Only initialize to true when backend says user is a member.
-    // Do NOT force to false, to avoid overriding a freshly joined state.
-    if (initial && state != true) {
-      Future.microtask(() => state = true);
-    }
-  }
 }

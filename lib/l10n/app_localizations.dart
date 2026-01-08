@@ -1262,6 +1262,12 @@ abstract class AppLocalizations {
   /// **'Open Map'**
   String get openMap;
 
+  /// No description provided for @tapToOpenMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to open map'**
+  String get tapToOpenMap;
+
   /// No description provided for @noVenueInfo.
   ///
   /// In en, this message translates to:

@@ -3,7 +3,6 @@ import 'package:event_app/features/agenda/presentation/agenda_page.dart';
 import 'package:event_app/features/faqs/presentation/faqs_page.dart';
 import 'package:event_app/features/mentors/presentation/mentors_page.dart';
 import 'package:event_app/features/speakers/presentation/speakers_page.dart';
-import 'package:event_app/features/my_schedule/presentation/my_schedule_page.dart';
 import 'package:event_app/features/venue/presentation/venue_page.dart';
 import 'package:event_app/main_navigation/main_navigation_providers.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ class QuickActionsGrid extends ConsumerWidget {
       // ("Round-Tables", Icons.table_restaurant, AgendaPage()),
       ('speakers', l10n.speakers, Icons.mic, SpeakersPage()),
       ('mentors', l10n.mentors, Icons.people, MentorsPage()),
-      ('mySchedule', l10n.mySchedule, Icons.schedule, MySchedulePage()),
       ('venueMap', l10n.venueMap, Icons.map, VenuePage()),
       ('faqs', l10n.faqs, Icons.help_outline, FaqsPage()),
     ];
@@ -48,8 +46,6 @@ class QuickActionsGrid extends ConsumerWidget {
           onTap: () {
             if (id == 'agenda') {
               ref.read(mainNavigationIndexProvider.notifier).set(1);
-            } else if (id == 'mySchedule') {
-              ref.read(mainNavigationIndexProvider.notifier).set(2);
             } else {
               Navigator.push(
                 context,

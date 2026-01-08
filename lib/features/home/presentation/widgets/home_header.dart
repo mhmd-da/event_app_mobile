@@ -42,7 +42,19 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
 
   @override
   Widget build(BuildContext context) {
-    final event = ref.watch(selectedEventProvider)!;
+    final eventAsync = ref.watch(selectedEventProvider);
+    
+    return eventAsync.when(
+      data: (event) {
+        if (event == null) return const SizedBox.shrink();
+        return _buildHeader(context, event);
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+  }
+  
+  Widget _buildHeader(BuildContext context, dynamic event) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     final dateText = AppTimeFormatting.formatDateRangeYMMMd(
@@ -161,5 +173,4 @@ class _HomeHeaderState extends ConsumerState<HomeHeader>
         ],
       ),
     );
-  }
-}
+  }}

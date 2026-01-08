@@ -243,6 +243,7 @@
   "type": "النوع",
   "openWebsite": "افتح الموقع",
   "openMap": "افتح الخريطة",
+  "tapToOpenMap": "انقر لفتح الخريطة",
   "noVenueInfo": "لا تتوفر معلومات عن المكان.",
   "floorPlans": "مخططات الطوابق",
   "mapOpenFailed": "تعذر فتح الخريطة.",

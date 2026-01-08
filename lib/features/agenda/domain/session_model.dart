@@ -102,6 +102,7 @@ class Person {
   final String lastName;
   final String profileImageUrl;
   final bool isModerator;
+  final DateTime? lastUpdatedDate;
 
   Person({
     this.id,
@@ -110,6 +111,7 @@ class Person {
     required this.lastName,
     required this.profileImageUrl,
     required this.isModerator,
+    this.lastUpdatedDate,
   });
 
   factory Person.fromJson(Map<String, dynamic> json) {
@@ -120,6 +122,9 @@ class Person {
       lastName: json['lastName'] ?? '',
       profileImageUrl: json['profileImageUrl'] ?? '',
       isModerator: json['isModerator'] ?? false,
+      lastUpdatedDate: json['lastUpdatedDate'] != null
+          ? AppDateTimeParsing.parseServerToLocalOrEpoch(json['lastUpdatedDate'])
+          : null,
     );
   }
 }

@@ -41,83 +41,51 @@ class SessionInfoCard extends ConsumerWidget {
             Text(session.description, style: AppTextStyles.bodyMedium),
           ],
 
-          if (showTime) ...[
+          if (showTime || showLocation) ...[
             const SizedBox(height: AppSpacing.small),
-            AppTimeFormatting.timeRangeText(
-              context,
-              start: session.startTime,
-              end: session.endTime,
-              style: AppTextStyles.bodySmall,
-              timezonePreference: timezonePreference,
-            ),
-          ],
-
-          if (showLocation) ...[
-            const SizedBox(height: AppSpacing.small),
-            if (session.location.isNotEmpty)
-              Row(
-                children: [
-                  Icon(
-                    Icons.location_on,
-                    size: 18,
-                    color: Theme.of(context).colorScheme.primary,
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (showTime)
+                  Chip(
+                    avatar: Icon(
+                      Icons.access_time,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    label: AppTimeFormatting.timeRangeText(
+                      context,
+                      start: session.startTime,
+                      end: session.endTime,
+                      style: AppTextStyles.bodySmall,
+                      timezonePreference: timezonePreference,
+                    ),
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.1),
                   ),
-                  const SizedBox(width: AppSpacing.small),
-                  Expanded(
-                    child: Text(
+                if (showLocation && session.location.isNotEmpty)
+                  Chip(
+                    avatar: Icon(
+                      Icons.location_on,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    label: Text(
                       session.location,
                       style: AppTextStyles.bodySmall,
                     ),
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.1),
                   ),
-                ],
-              ),
+              ],
+            ),
           ],
 
-          if (showCapacity) ...[
-            const SizedBox(height: AppSpacing.small),
-            if (session.maxCapacity != null)
-              Row(
-                children: [
-                  const Icon(Icons.group_outlined, size: 18),
-                  const SizedBox(width: AppSpacing.xSmall),
-                  Text(
-                    '${session.maxCapacity}',
-                    style: AppTextStyles.bodySmall,
-                  ),
-                  const Spacer(),
-                  if (session.isMaxCapacityReached && !session.isRegistered)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.error.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.warning_amber_outlined,
-                            color: Theme.of(context).colorScheme.error,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            AppLocalizations.of(context)!.maxCapacityReached,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-          ],
         ],
       ),
     );

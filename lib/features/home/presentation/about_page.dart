@@ -10,10 +10,25 @@ class AboutCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final event = ref.watch(selectedEventProvider)!;
+    final eventAsync = ref.watch(selectedEventProvider);
+    
+    return eventAsync.when(
+      data: (event) {
+        if (event == null) return const SizedBox.shrink();
+        return _buildCard(context, event);
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+  }
+  
+  Widget _buildCard(BuildContext context, dynamic event) {
     final l10n = AppLocalizations.of(context)!;
 
     return AppCard(
+      title: l10n.aboutEvent,
+      centerTitle: true,
+      useGradient: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -21,8 +36,8 @@ class AboutCard extends ConsumerWidget {
             event.description ?? l10n.noDescriptionAvailable,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: 10),
-          AppPrimaryButton(label: l10n.readMore, onPressed: () {}),
+          // const SizedBox(height: 10),
+          // AppPrimaryButton(label: l10n.readMore, onPressed: () {}),
         ],
       ),
     );

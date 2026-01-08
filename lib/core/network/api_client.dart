@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import '../config/app_config.dart';
-import '../storage/secure_storage_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared/global_loading.dart';
 import 'package:event_app/shared/providers/language_provider.dart';
@@ -25,21 +24,9 @@ class ApiClient {
           if (_ref != null && !suppress) {
             _ref.read(globalLoadingProvider.notifier).begin();
           }
-          // Load token from secure storage
-          var storage = SecureStorageService();
 
-          try {
-            final token = await storage.getToken();
-            if (token != null && token.isNotEmpty) {
-              options.headers["Authorization"] = "Bearer $token";
-            }
-
-            final eventId = await storage.getEventId();
-            options.headers["Event-Id"] = eventId;
-          } catch (_) {
-            // If secure storage throws (e.g. keystore decrypt error), don't crash the request.
-            // Proceed without auth headers; caller will handle unauthorized responses.
-          }
+          // Add default event ID header (no auth required)
+          options.headers["Event-Id"] = 1;
 
           // Add language header from current app locale
           if (_ref != null) {

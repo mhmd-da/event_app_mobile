@@ -1,6 +1,7 @@
 import 'package:event_app/core/theme/app_decorations.dart';
 import 'package:event_app/core/theme/app_spacing.dart';
 import 'package:event_app/core/theme/app_text_styles.dart';
+import 'package:event_app/core/widgets/app_card.dart';
 import 'package:event_app/core/widgets/notifier.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
 import 'package:event_app/features/partners/domain/partner_model.dart';
@@ -63,13 +64,12 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: AppTextStyles.headlineMedium),
-        const SizedBox(height: AppSpacing.item),
-        child,
-      ],
+    return AppCard(
+      title: title,
+      centerTitle: true,
+      useGradient: true,
+      margin: null,
+      child: child,
     );
   }
 }

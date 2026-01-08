@@ -38,6 +38,9 @@ void main() async {
         ? ThemeMode.light
         : ThemeMode.system;
     container.read(appThemeModeProvider.notifier).set(mode);
+  } else {
+    // Default to light mode if no preference saved
+    container.read(appThemeModeProvider.notifier).set(ThemeMode.light);
   }
 
   // Load persisted timezone preference (defaults to system timezone)

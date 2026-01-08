@@ -1,4 +1,5 @@
 import 'package:event_app/core/widgets/app_scaffold.dart';
+import 'package:event_app/core/widgets/app_card.dart';
 import 'package:event_app/core/widgets/person_extra_cards.dart';
 import 'package:event_app/features/speakers/presentation/speaker_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -121,79 +122,39 @@ class _SpeakerDetailsPageState extends ConsumerState<SpeakerDetailsPage> {
                   ),
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  child: Card(
-                    color: theme.brightness == Brightness.dark
-                        ? theme.colorScheme.surfaceVariant
-                        : theme.colorScheme.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 18,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.contactInfo,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                if ((person.email ?? '').isNotEmpty ||
+                    (person.phoneNumber ?? '').isNotEmpty)
+                  AppCard(
+                    title: l10n.contactInfo,
+                    centerTitle: true,
+                    useGradient: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if ((person.email ?? '').isNotEmpty)
+                          InfoRow(
+                            icon: Icons.email,
+                            label: l10n.email,
+                            value: person.email!,
+                            copyable: true,
                           ),
-                          const SizedBox(height: 12),
-                          if ((person.email ?? '').isNotEmpty)
-                            InfoRow(
-                              icon: Icons.email,
-                              label: l10n.email,
-                              value: person.email!,
-                              copyable: true,
-                            ),
-                          if ((person.phoneNumber ?? '').isNotEmpty)
-                            InfoRow(
-                              icon: Icons.phone,
-                              label: l10n.phone,
-                              value: person.phoneNumber!,
-                              copyable: true,
-                            ),
-                        ],
-                      ),
+                        if ((person.phoneNumber ?? '').isNotEmpty)
+                          InfoRow(
+                            icon: Icons.phone,
+                            label: l10n.phone,
+                            value: person.phoneNumber!,
+                            copyable: true,
+                          ),
+                      ],
                     ),
                   ),
-                ),
 
                 if ((person.bio ?? '').isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    child: Card(
-                      color: theme.brightness == Brightness.dark
-                          ? theme.colorScheme.surfaceVariant
-                          : theme.colorScheme.surface,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 18,
-                        ),
-                        child: Text(
-                          person.bio!,
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                      ),
-                    ),
+                  AppCard(
+                    title: l10n.bio,
+                    centerTitle: true,
+                    useGradient: true,
+                    child: Text(person.bio!, style: theme.textTheme.bodyLarge),
                   ),
 
                 PersonSessionsCard(

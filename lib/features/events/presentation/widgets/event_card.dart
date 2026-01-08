@@ -1,4 +1,4 @@
-import 'package:event_app/features/events/presentation/events_providers.dart';
+import 'package:event_app/core/storage/secure_storage_provider.dart';
 import 'package:event_app/main_navigation/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:event_app/core/widgets/app_buttons.dart';
@@ -141,17 +141,16 @@ class EventCard extends ConsumerWidget {
                             ),
                           );
 
-                          // 1. Fetch event details (locale-aware)
-                          final details = await ref.read(
-                            eventDetailsProvider(event.id).future,
-                          );
+                          // Save event ID to storage - this will trigger selectedEventProvider to refetch
+                          final storage = ref.read(secureStorageProvider);
+                          await storage.saveEventId(event.id);
+                          
+                          // Invalidate provider to force refetch
+                          ref.invalidate(selectedEventProvider);
 
                           navigator.pop(); // remove loader
 
-                          // 2. Save full event details into selected provider
-                          ref.read(selectedEventProvider.notifier).set(details);
-
-                          // 3. Navigate to main navigation
+                          // Navigate to main navigation
                           navigator.pushReplacement(
                             MaterialPageRoute(
                               builder: (_) => const MainNavigationPage(),

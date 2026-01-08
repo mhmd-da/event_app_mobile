@@ -9,10 +9,6 @@ class SessionRepository extends BaseApiRepository<SessionModel> {
 
   Future<List<SessionModel>> getSessions({String? category}) async => await fetchList(category == null ? AppConfig.getSessionsForAgenda : AppConfig.getSessionsByCategory(category)); 
 
-  Future<bool> registerSession(int sessionId) async  => await postData<bool>(AppConfig.registerSession(sessionId), null);
-
-  Future<bool> cancelSessionRegistration(int sessionId) async  => await postData<bool>(AppConfig.cancelSessionRegistration(sessionId), null);
-
   Future<bool> submitFeedback(int sessionId, int rating, String? comment) async {
     final payload = {
       'rating': rating,
