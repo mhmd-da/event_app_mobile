@@ -6,6 +6,7 @@ import 'package:event_app/core/widgets/app_card.dart';
 import 'package:event_app/core/widgets/app_scaffold.dart';
 import 'package:event_app/core/network/api_client_provider.dart';
 import 'package:event_app/features/agenda/domain/session_model.dart';
+import 'package:event_app/features/agenda/presentation/widgets/session_feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:event_app/l10n/app_localizations.dart';
@@ -37,6 +38,9 @@ class SessionDetailsPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SessionInfoCard(session: session),
+            const SizedBox(height: AppSpacing.section),
+            SessionFeedbackButton(sessionId: session.id),
+            const SizedBox(height: AppSpacing.section),
             const SizedBox(height: AppSpacing.section),
             if (session.speakers.isNotEmpty)
               _buildSection(

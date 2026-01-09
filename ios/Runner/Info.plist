@@ -48,10 +48,10 @@
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<true/>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>This app may request access to your photo library to allow optional content-related features if enabled.</string>
+		<string>This app does not access your photo library directly.</string>
 		<key>NSCameraUsageDescription</key>
-		<string>This app may request camera access for optional features if enabled.</string>
+		<string>This app does not use the camera.</string>
 		<key>NSMicrophoneUsageDescription</key>
-		<string>This app may request microphone access for optional features if enabled.</string>
+		<string>This app does not use the microphone.</string>
 	</dict>
 </plist>
