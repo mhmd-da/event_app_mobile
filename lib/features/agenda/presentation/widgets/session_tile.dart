@@ -190,9 +190,13 @@ class SessionTile extends ConsumerWidget {
                             const Spacer(),
                             const Icon(Icons.location_on_outlined, size: 15),
                             const SizedBox(width: AppSpacing.xSmall),
-                            Text(
-                              session.location,
-                              style: AppTextStyles.bodySmall,
+                            Expanded(
+                              child: Text(
+                                session.location,
+                                style: AppTextStyles.bodySmall,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),

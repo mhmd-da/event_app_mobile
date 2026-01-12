@@ -48,4 +48,4 @@ final class SelectedEventProvider
   }
 }
 
-String _$selectedEventHash() => r'09d671bd712151986e8884f38fcbc802e2416445';
+String _$selectedEventHash() => r'69c5cbd87d43dc19d2e6dadba80173168713851d';

@@ -5,8 +5,12 @@ import 'package:event_app/features/home/presentation/widgets/home_numbers_sectio
 import 'package:event_app/features/home/presentation/widgets/home_countdown_section.dart';
 import 'package:event_app/features/home/presentation/widgets/home_quote_section.dart';
 import 'package:event_app/features/home/presentation/widgets/home_quick_actions.dart';
-import 'package:event_app/features/home/presentation/widgets/home_axes_section.dart';
+import 'package:event_app/features/home/presentation/widgets/home_topics_section.dart';
 import 'package:event_app/features/home/presentation/widgets/home_goal_cards.dart';
+import 'package:event_app/features/home/presentation/widgets/home_patronage_card.dart';
+import 'package:event_app/features/home/presentation/widgets/home_people_carousel.dart';
+import 'package:event_app/features/speakers/presentation/speaker_providers.dart';
+import 'package:event_app/features/speakers/presentation/speaker_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_section_title.dart';
@@ -33,33 +37,32 @@ class HomePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HomeHeader(),
-              const SizedBox(height: AppSpacing.section),
+              const SizedBox(height: AppSpacing.largeSection),
               const HomeNumbersSection(),
-              const SizedBox(height: AppSpacing.section),
               const HomeCountdownSection(),
-              const SizedBox(height: AppSpacing.section),
               const HomeQuoteSection(),
-              const SizedBox(height: AppSpacing.section),
-              AppSectionTitle(title: l10n.quickActions),
-              const SizedBox(height: AppSpacing.item),
-              const QuickActionsGrid(),
-              const SizedBox(height: AppSpacing.section),
+              //const SizedBox(height: AppSpacing.section),
+              //AppSectionTitle(title: l10n.quickActions),
+              //const SizedBox(height: AppSpacing.item),
+              //const QuickActionsGrid(),
+              //const SizedBox(height: AppSpacing.section),
               // AppSectionTitle(title: l10n.aboutEvent),
-              const SizedBox(height: AppSpacing.item),
+              const SizedBox(height: AppSpacing.largeSection),
               const AboutCard(),
-              const SizedBox(height: AppSpacing.section),
+              const SizedBox(height: AppSpacing.largeSection),
+              const HomePatronageCard(),
+              const SizedBox(height: AppSpacing.largeSection),
               const HomeGeneralObjectiveCard(),
-              const SizedBox(height: AppSpacing.section),
+              const SizedBox(height: AppSpacing.largeSection),
               const HomeVisionCard(),
-              const SizedBox(height: AppSpacing.section),
+              const SizedBox(height: AppSpacing.largeSection),
               const HomeMissionCard(),
-              const SizedBox(height: AppSpacing.section),
+              const SizedBox(height: AppSpacing.largeSection),
+              const SizedBox(height: AppSpacing.largeSection),
               const HomeAxesSection(),
-              const SizedBox(height: AppSpacing.section),
-              // AppSectionTitle(title: l10n.venueAndInfo),
-              const SizedBox(height: AppSpacing.item),
-              const VenueInfoList(),
-              const SizedBox(height: 80),
+              const SizedBox(height: AppSpacing.largeSection),
+              // _buildSpeakersCarousel(context, ref, l10n),
+              // const SizedBox(height: AppSpacing.largeSection),
             ],
           ),
         );
@@ -71,5 +74,51 @@ class HomePage extends ConsumerWidget {
     );
   }
 
+  Widget _buildSpeakersCarousel(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final speakersAsync = ref.watch(speakersListProvider);
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+          child: AppSectionTitle(title: l10n.speakers),
+        ),
+        const SizedBox(height: AppSpacing.item),
+        speakersAsync.when(
+          data: (items) {
+            final carouselItems = items
+                .map(
+                  (s) => HomeCarouselItem(
+                    title: "${s.title} ${s.firstName} ${s.lastName}",
+                    subtitle: [
+                      if ((s.position ?? '').isNotEmpty) s.position!,
+                      if ((s.companyName ?? '').isNotEmpty) s.companyName!,
+                    ].join(' - '),
+                    imageUrl: s.profileImageUrl,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SpeakerDetailsPage(speakerId: s.id),
+                        ),
+                      );
+                    },
+                  ),
+                )
+                .toList();
+            return HomePeopleCarousel(items: carouselItems);
+          },
+          loading: () => const SizedBox(
+            height: 240,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (e, _) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+            child: Text('${l10n.errorLoadingSpeakers}: $e'),
+          ),
+        ),
+      ],
+    );
+  }
 }

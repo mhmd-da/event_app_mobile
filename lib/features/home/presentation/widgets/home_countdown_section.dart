@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:event_app/core/theme/app_spacing.dart';
-import 'package:event_app/core/widgets/app_card.dart';
-import 'package:event_app/core/widgets/app_primary_button.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -49,16 +47,39 @@ class _HomeCountdownSectionState extends State<HomeCountdownSection> {
     final minutes = _remaining.inMinutes % 60;
     final seconds = _remaining.inSeconds % 60;
 
-    return AppCard(
-      title: l10n.countdownTitle,
-      centerTitle: true,
-      useGradient: true,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+          colors: [
+            const Color(0xFFFFFFFF),
+            const Color(0xFFFFFFFF),
+            const Color(0xFFD6E4F0),
+          ],
+        ),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.section),
       child: Column(
         children: [
+          const SizedBox(height: AppSpacing.largeSection),
+          Text(
+            l10n.countdownTitle,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF2D9CDB),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.page),
           Text(
             l10n.countdownEventDateLine,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF1F2937),
+              fontWeight: FontWeight.w600,
+              fontSize: 24,
+            ),
           ),
           const SizedBox(height: AppSpacing.item),
           _MetricsRow(
@@ -69,11 +90,7 @@ class _HomeCountdownSectionState extends State<HomeCountdownSection> {
               _Metric(value: seconds, label: l10n.countdownSeconds),
             ],
           ),
-          const SizedBox(height: AppSpacing.item),
-          AppPrimaryButton(
-            label: l10n.register,
-            onPressed: () {},
-          ),
+          const SizedBox(height: AppSpacing.largeSection),
         ],
       ),
     );
@@ -99,15 +116,15 @@ class _MetricsRow extends StatelessWidget {
         return Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 6),
-            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.white.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: theme.brightness == Brightness.dark ? 0.2 : 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -116,14 +133,18 @@ class _MetricsRow extends StatelessWidget {
               children: [
                 Text(
                   m.value.toString(),
-                  style: theme.textTheme.titleLarge?.copyWith(
+                  style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w800,
+                    color: const Color(0xFF1F2937),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   m.label,
-                  style: theme.textTheme.bodySmall,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF6B7280),
+                  ),
                 ),
               ],
             ),

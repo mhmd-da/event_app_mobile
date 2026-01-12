@@ -26,26 +26,25 @@ class HomePeopleCarousel extends StatefulWidget {
 }
 
 class _HomePeopleCarouselState extends State<HomePeopleCarousel> {
-  late final ScrollController _controller;
-  int _activeIndex = 0;
+  late final PageController _controller;
+  static const int _infiniteMultiplier = 10000; // Large number for pseudo-infinite scroll
 
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController()..addListener(_onScroll);
+    final items = widget.items;
+    // Start at middle of "infinite" list to allow scrolling both directions
+    final initialPage = items.isEmpty ? 0 : (_infiniteMultiplier ~/ 2) * items.length;
+    _controller = PageController(
+      viewportFraction: 0.85, // Shows peek of adjacent items
+      initialPage: initialPage,
+    );
   }
 
   @override
   void dispose() {
-    _controller
-      ..removeListener(_onScroll)
-      ..dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    // Updated inside LayoutBuilder where itemExtent is known.
-    // Intentionally no-op here.
   }
 
   @override
@@ -53,105 +52,24 @@ class _HomePeopleCarouselState extends State<HomePeopleCarousel> {
     final items = widget.items;
     if (items.isEmpty) return const SizedBox.shrink();
 
-    final theme = Theme.of(context);
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        final available = (constraints.maxWidth - (AppSpacing.page * 2)).clamp(
-          0.0,
-          double.infinity,
-        );
-
-        // Target: show 3–5 cards at the same time (smaller cards).
-        const minItemWidth = 95.0;
-        final spacing = AppSpacing.item;
-        final candidate = ((available + spacing) / (minItemWidth + spacing))
-            .floor();
-        final visibleCount = candidate.clamp(3, 5);
-
-        final itemWidth = visibleCount <= 0
-            ? minItemWidth
-            : (available - (spacing * (visibleCount - 1))) / visibleCount;
-        final itemExtent = itemWidth + spacing;
-
-        void updateActiveIndexFromOffset() {
-          if (!_controller.hasClients) return;
-
-          // Determine the index of the item closest to the center of the viewport
-          // (so the active dot corresponds to the “middle person”).
-          final viewport = _controller.position.viewportDimension;
-          final center = _controller.offset + (viewport / 2);
-          final contentStartPadding = AppSpacing.page;
-          final raw = ((center - contentStartPadding) / itemExtent).round();
-          final next = raw.clamp(
-            0,
-            (items.length - 1).clamp(0, items.length - 1),
-          );
-          if (next != _activeIndex) {
-            setState(() => _activeIndex = next);
-          }
-        }
-
-        // Attach/update the listener using the current computed extent.
-        _controller
-          ..removeListener(_onScroll)
-          ..addListener(updateActiveIndexFromOffset);
-
-        // Ensure the initial dot state matches the initial scroll offset.
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          updateActiveIndexFromOffset();
-        });
-
+        // Show one main item with slight peek of adjacent items
         return Column(
           children: [
             SizedBox(
-              height: 240,
-              child: ListView.separated(
+              height: 480,
+              child: PageView.builder(
                 controller: _controller,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.page,
-                ),
-                scrollDirection: Axis.horizontal,
-                itemCount: items.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: AppSpacing.item),
+                itemCount: items.length * _infiniteMultiplier, // Pseudo-infinite
                 itemBuilder: (context, index) {
-                  final item = items[index];
-                  return SizedBox(
-                    width: itemWidth,
+                  final actualIndex = index % items.length;
+                  final item = items[actualIndex];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.small),
                     child: _PersonCarouselCard(item: item),
                   );
                 },
-              ),
-            ),
-            const SizedBox(height: AppSpacing.small),
-            SizedBox(
-              height: 16,
-              child: Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(items.length, (i) {
-                      final isActive = i == _activeIndex;
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: isActive
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurfaceVariant.withValues(
-                                  alpha: 0.35,
-                                ),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
               ),
             ),
           ],

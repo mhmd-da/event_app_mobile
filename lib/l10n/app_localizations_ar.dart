@@ -273,80 +273,99 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get homeNumbersVolunteers => 'متطوع ومتطوعة';
 
-    @override
-    String get countdownTitle => 'العد التنازلي حتى بدء الملتقى';
+  @override
+  String get countdownTitle => 'العد التنازلي حتى بدء الملتقى';
 
-    @override
-    String get countdownEventDateLine => '19 يناير 2026 • الساعة 10 صباحًا';
+  @override
+  String get countdownEventDateLine => '19 يناير 2026 • الساعة 10 صباحًا';
 
-    @override
-    String get countdownDays => 'يوم';
+  @override
+  String get countdownDays => 'يوم';
 
-    @override
-    String get countdownHours => 'ساعة';
+  @override
+  String get countdownHours => 'ساعة';
 
-    @override
-    String get countdownMinutes => 'دقيقة';
+  @override
+  String get countdownMinutes => 'دقيقة';
 
-    @override
-    String get countdownSeconds => 'ثانية';
+  @override
+  String get countdownSeconds => 'ثانية';
 
-    @override
-    String get homeQuoteText =>
+  @override
+  String get homeQuoteText =>
       'إن مستقبل المملكة أيها الإخوة والأخوات مبشر وواعد، بإذن الله، و تستحق بلادنا الغالية أكثر مما تحقق. لدينا قدرات سنقوم بمضاعفة دورها وزيادة إسهامها في صناعة هذا المستقبل.';
 
-    @override
-    String get homeQuoteLeaderTitle => 'صاحب السمو الملكي';
+  @override
+  String get homeQuoteLeaderTitle => 'صاحب السمو الملكي';
 
-    @override
-    String get homeQuoteLeaderName =>
+  @override
+  String get homeQuoteLeaderName =>
       'الأمير محمد بن سلمان بن عبد العزيز آل سعود';
 
-    @override
-    String get homeQuoteLeaderRole =>
+  @override
+  String get homeQuoteLeaderRole =>
       'ولي العهد، رئيس مجلس الوزراء، ورئيس مجلس الشؤون الاقتصادية والتنمية';
 
-      @override
-      String get forumAxesTitle => 'محاور الملتقى';
+  @override
+  String get patronageTitle => 'برعاية معالي';
 
-      @override
-      String get day1Title => 'اليوم الأول';
+  @override
+  String get patronPosition => 'رئيس مجلس إدارة جامعة الملك سعود';
 
-      @override
-      String get day1Description => 'بناء القدرات لمستقبل تنافسي';
+  @override
+  String get patronName => 'الأستاذ. يوسف بن عبد الله البنيان';
 
-      @override
-      String get day2Title => 'اليوم الثاني';
+  @override
+  String get patronDescription =>
+      'نظم عماد تطوير المهارات والموارد البشرية ملتقى الجامعة للتدريب';
 
-      @override
-      String get day2Description => 'بناء المهارات للجيل القادم: التمكين للمستقبل';
+  @override
+  String get patronSlogan => 'بنسخته الأولى « تمكين X2026»';
 
-      @override
-      String get day3Title => 'اليوم الثالث';
+  @override
+  String get patronSloganSubtitle => '« مهارتك تصنع مستقبلك »';
 
-      @override
-      String get day3Description => 'الأثر المجتمعي من خلال التدريب والتطوير';
+  @override
+  String get eventTopicsTitle => 'محاور الملتقى';
 
-      @override
-      String get generalObjectiveTitle => 'الهدف العام';
+  @override
+  String get day1Title => 'اليوم الأول';
 
-      @override
-      String get generalObjectiveDescription =>
-        'تنمية القدرات البشرية لمنسوبي الجامعة من خلال التدريب وتعزيز بناء الشراكات المحلية والدولية لدعم التحول والتطوير المهني والأكاديمي بالجامعة بما يساهم في خدمة المجتمع.';
+  @override
+  String get day1Description => 'بناء القدرات لمستقبل تنافسي';
 
-      @override
-      String get visionTitle => 'الرؤية';
+  @override
+  String get day2Title => 'اليوم الثاني';
 
-      @override
-      String get visionDescription =>
-        'الريادة في تطوير المهارات وتمكين رأس المال البشري عبر برامج تدريبية وشراكات نوعية.';
+  @override
+  String get day2Description => 'بناء المهارات للجيل القادم: التمكين للمستقبل';
 
-      @override
-      String get missionTitle => 'الرسالة';
+  @override
+  String get day3Title => 'اليوم الثالث';
 
-      @override
-      String get missionDescription =>
-        'الإسهام في تنمية قدرات منسوبي الجامعة لتمكينهم من المساهمة الفاعلة في خدمة المجتمع.';
+  @override
+  String get day3Description => 'الأثر المجتمعي من خلال التدريب والتطوير';
+
+  @override
+  String get generalObjectiveTitle => 'الهدف العام';
+
+  @override
+  String get generalObjectiveDescription =>
+      'تنمية القدرات البشرية لمنسوبي الجامعة من خلال التدريب وتعزيز بناء الشراكات المحلية والدولية لدعم التحول والتطوير المهني والأكاديمي بالجامعة بما يساهم في خدمة المجتمع.';
+
+  @override
+  String get visionTitle => 'الرؤية';
+
+  @override
+  String get visionDescription =>
+      'الريادة في تطوير المهارات وتمكين رأس المال البشري عبر برامج تدريبية وشراكات نوعية.';
+
+  @override
+  String get missionTitle => 'الرسالة';
+
+  @override
+  String get missionDescription =>
+      'الإسهام في تنمية قدرات منسوبي الجامعة لتمكينهم من المساهمة الفاعلة في خدمة المجتمع.';
 
   @override
   String get profile_name => 'الاسم';

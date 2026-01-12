@@ -174,16 +174,16 @@ class SideNavigationDrawer extends ConsumerWidget {
                       ),
                     ),
                     const Divider(),
-                    tile(
-                      icon: Icons.photo_library_outlined,
-                      label: AppLocalizations.of(context)!.eventPhotos,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const EventPhotosPage(),
-                        ),
-                      ),
-                    ),
+                    // tile(
+                    //   icon: Icons.photo_library_outlined,
+                    //   label: AppLocalizations.of(context)!.eventPhotos,
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (_) => const EventPhotosPage(),
+                    //     ),
+                    //   ),
+                    // ),
                     tile(
                       icon: Icons.apartment_outlined,
                       label: AppLocalizations.of(context)!.venue,

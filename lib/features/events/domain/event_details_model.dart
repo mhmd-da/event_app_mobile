@@ -1,5 +1,31 @@
 import 'package:event_app/core/utilities/date_time_parsing.dart';
 
+class EventExtra {
+  final int? speakers;
+  final int? guidanceHours;
+  final int? workshopsExperiences;
+  final int? participatingEntities;
+  final int? volunteers;
+
+  EventExtra({
+    this.speakers,
+    this.guidanceHours,
+    this.workshopsExperiences,
+    this.participatingEntities,
+    this.volunteers,
+  });
+
+  factory EventExtra.fromJson(Map<String, dynamic> json) {
+    return EventExtra(
+      speakers: json['speakers'] as int?,
+      guidanceHours: json['guidanceHours'] as int?,
+      workshopsExperiences: json['workshopsExperiences'] as int?,
+      participatingEntities: json['participatingEntities'] as int?,
+      volunteers: json['volunteers'] as int?,
+    );
+  }
+}
+
 class EventDetailsModel {
   final int id;
   final String name;
@@ -7,8 +33,8 @@ class EventDetailsModel {
   final DateTime startDate;
   final DateTime endDate;
   final String? bannerImageUrl;
-  //final List<EventDaySchedule> schedule;
   final Venue? venue;
+  final EventExtra? extra;
 
   EventDetailsModel({
     required this.id,
@@ -18,7 +44,7 @@ class EventDetailsModel {
     required this.startDate,
     required this.endDate,
     required this.bannerImageUrl,
-    //required this.schedule,
+    this.extra,
   });
 
   factory EventDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -34,9 +60,7 @@ class EventDetailsModel {
         json['endDate'] as String?,
       ),
       bannerImageUrl: json['bannerImageUrl'] as String?,
-      //schedule: (json['schedule'] as List<dynamic>)
-      //    .map((e) => EventDaySchedule.fromJson(e as Map<String, dynamic>))
-      //    .toList(),
+      extra: json['extra'] != null ? EventExtra.fromJson(json['extra']) : null,
     );
   }
 }

@@ -1,28 +1,72 @@
 import 'package:event_app/core/theme/app_spacing.dart';
-import 'package:event_app/core/widgets/app_card.dart';
+import 'package:event_app/features/events/presentation/state/selected_event_provider.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeNumbersSection extends StatelessWidget {
+class HomeNumbersSection extends ConsumerWidget {
   const HomeNumbersSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final eventAsync = ref.watch(selectedEventProvider);
 
-    return AppCard(
-      title: l10n.homeNumbersTitle,
-      centerTitle: true,
-      useGradient: true,
-      child: _NumbersGrid(
-        items: [
-          _StatItem(label: l10n.homeNumbersGuidanceHours, value: 38),
-          _StatItem(label: l10n.homeNumbersSpeakersExperts, value: 62),
-          _StatItem(label: l10n.homeNumbersParticipatingEntities, value: 11),
-          _StatItem(label: l10n.homeNumbersWorkshopsExperiences, value: 15),
-          _StatItem(label: l10n.homeNumbersVolunteers, value: 77),
-        ],
+    return eventAsync.when(
+      data: (event) {
+        final extra = event?.extra;
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                const Color(0xFF4B5563),
+                const Color(0xFF6B7280),
+                const Color(0xFF4B5563),
+              ],
+            ),
+          ),
+          padding: const EdgeInsets.all(AppSpacing.section),
+          child: Column(
+            children: [
+              Text(
+                l10n.homeNumbersTitle,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.section),
+              _NumbersGrid(
+                items: [
+                  _StatItem(
+                      label: l10n.homeNumbersSpeakersExperts,
+                      value: extra?.speakers ?? 0),
+                  _StatItem(
+                      label: l10n.homeNumbersGuidanceHours,
+                      value: extra?.guidanceHours ?? 0),
+                  _StatItem(
+                      label: l10n.homeNumbersWorkshopsExperiences,
+                      value: extra?.workshopsExperiences ?? 0),
+                  _StatItem(
+                      label: l10n.homeNumbersParticipatingEntities,
+                      value: extra?.participatingEntities ?? 0),
+                  _StatItem(
+                      label: l10n.homeNumbersVolunteers,
+                      value: extra?.volunteers ?? 0),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox(
+        height: 300,
+        child: Center(child: CircularProgressIndicator()),
       ),
+      error: (error, stack) => const SizedBox.shrink(),
     );
   }
 }
@@ -59,7 +103,7 @@ class _NumbersGrid extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.item),
             SizedBox(
-              width: constraints.maxWidth,
+              width: halfWidth,
               child: _StatCard(item: items[4], theme: theme),
             ),
           ],
@@ -82,37 +126,36 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = theme.colorScheme;
-
-    return Card(
-      elevation: 1.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: theme.brightness == Brightness.dark
-          ? color.surfaceVariant
-          : color.surface,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "+${item.value}",
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: color.primary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              item.label,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.9),
-              ),
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
         ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "+${item.value}",
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: const Color(0xFF60D4F7),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            item.label,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

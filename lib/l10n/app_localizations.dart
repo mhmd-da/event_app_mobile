@@ -587,13 +587,13 @@ abstract class AppLocalizations {
   /// No description provided for @homeNumbersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Forum in Numbers'**
+  /// **'Event in Numbers'**
   String get homeNumbersTitle;
 
   /// No description provided for @homeNumbersGuidanceHours.
   ///
   /// In en, this message translates to:
-  /// **'Guidance hours'**
+  /// **'Mentorship hours'**
   String get homeNumbersGuidanceHours;
 
   /// No description provided for @homeNumbersSpeakersExperts.
@@ -633,66 +633,165 @@ abstract class AppLocalizations {
   String get countdownEventDateLine;
 
   /// No description provided for @countdownDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
   String get countdownDays;
 
   /// No description provided for @countdownHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
   String get countdownHours;
 
   /// No description provided for @countdownMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
   String get countdownMinutes;
 
   /// No description provided for @countdownSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds'**
   String get countdownSeconds;
 
   /// No description provided for @homeQuoteText.
+  ///
+  /// In en, this message translates to:
+  /// **'The future of the Kingdom, dear brothers and sisters, is promising, God willing, and our beloved country deserves more than what has been achieved. We have capabilities whose role we will multiply, increasing their contribution to shaping this future.'**
   String get homeQuoteText;
 
   /// No description provided for @homeQuoteLeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'His Royal Highness'**
   String get homeQuoteLeaderTitle;
 
   /// No description provided for @homeQuoteLeaderName.
+  ///
+  /// In en, this message translates to:
+  /// **'Mohammed bin Salman bin Abdulaziz Al Saud'**
   String get homeQuoteLeaderName;
 
   /// No description provided for @homeQuoteLeaderRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Crown Prince, Prime Minister, and Chairman of the Council for Economic and Development Affairs'**
   String get homeQuoteLeaderRole;
 
-  /// No description provided for @forumAxesTitle.
-  String get forumAxesTitle;
+  /// No description provided for @patronageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Under the patronage of His Excellency'**
+  String get patronageTitle;
+
+  /// No description provided for @patronPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Chairman of the Board of Directors of King Saud University'**
+  String get patronPosition;
+
+  /// No description provided for @patronName.
+  ///
+  /// In en, this message translates to:
+  /// **'Mr. Yousef bin Abdullah Al-Bunyan'**
+  String get patronName;
+
+  /// No description provided for @patronDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The University Training Forum is organized by the Deanship for Skills Development and Human Resources'**
+  String get patronDescription;
+
+  /// No description provided for @patronSlogan.
+  ///
+  /// In en, this message translates to:
+  /// **'In its first edition: Tamkeen X 2026'**
+  String get patronSlogan;
+
+  /// No description provided for @patronSloganSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'« Your skill shapes your future »'**
+  String get patronSloganSubtitle;
+
+  /// No description provided for @eventTopicsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Event topics'**
+  String get eventTopicsTitle;
 
   /// No description provided for @day1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Day One'**
   String get day1Title;
 
   /// No description provided for @day1Description.
+  ///
+  /// In en, this message translates to:
+  /// **'Building capabilities for a competitive future'**
   String get day1Description;
 
   /// No description provided for @day2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Day Two'**
   String get day2Title;
 
   /// No description provided for @day2Description.
+  ///
+  /// In en, this message translates to:
+  /// **'Building next-generation skills: empowerment for the future'**
   String get day2Description;
 
   /// No description provided for @day3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Day Three'**
   String get day3Title;
 
   /// No description provided for @day3Description.
+  ///
+  /// In en, this message translates to:
+  /// **'Social impact through training and development'**
   String get day3Description;
 
   /// No description provided for @generalObjectiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'General Objective'**
   String get generalObjectiveTitle;
 
   /// No description provided for @generalObjectiveDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Developing the human capabilities of university employees through training and strengthening local and international partnerships to support transformation and professional and academic development at the university, contributing to serving the community.'**
   String get generalObjectiveDescription;
 
   /// No description provided for @visionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vision'**
   String get visionTitle;
 
   /// No description provided for @visionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Leadership in developing skills and empowering human capital through training programs and qualitative partnerships.'**
   String get visionDescription;
 
   /// No description provided for @missionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission'**
   String get missionTitle;
 
   /// No description provided for @missionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Contributing to developing the capabilities of the university\'s affiliates to enable their active contribution in serving the community.'**
   String get missionDescription;
 
   /// No description provided for @profile_name.
