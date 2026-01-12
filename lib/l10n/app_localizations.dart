@@ -584,6 +584,117 @@ abstract class AppLocalizations {
   /// **'No description available.'**
   String get noDescriptionAvailable;
 
+  /// No description provided for @homeNumbersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forum in Numbers'**
+  String get homeNumbersTitle;
+
+  /// No description provided for @homeNumbersGuidanceHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Guidance hours'**
+  String get homeNumbersGuidanceHours;
+
+  /// No description provided for @homeNumbersSpeakersExperts.
+  ///
+  /// In en, this message translates to:
+  /// **'Speakers and Experts'**
+  String get homeNumbersSpeakersExperts;
+
+  /// No description provided for @homeNumbersParticipatingEntities.
+  ///
+  /// In en, this message translates to:
+  /// **'Participating entities'**
+  String get homeNumbersParticipatingEntities;
+
+  /// No description provided for @homeNumbersWorkshopsExperiences.
+  ///
+  /// In en, this message translates to:
+  /// **'Workshops and practical experiences'**
+  String get homeNumbersWorkshopsExperiences;
+
+  /// No description provided for @homeNumbersVolunteers.
+  ///
+  /// In en, this message translates to:
+  /// **'Volunteers'**
+  String get homeNumbersVolunteers;
+
+  /// No description provided for @countdownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Countdown to event start'**
+  String get countdownTitle;
+
+  /// No description provided for @countdownEventDateLine.
+  ///
+  /// In en, this message translates to:
+  /// **'January 19, 2026 • 10:00 AM'**
+  String get countdownEventDateLine;
+
+  /// No description provided for @countdownDays.
+  String get countdownDays;
+
+  /// No description provided for @countdownHours.
+  String get countdownHours;
+
+  /// No description provided for @countdownMinutes.
+  String get countdownMinutes;
+
+  /// No description provided for @countdownSeconds.
+  String get countdownSeconds;
+
+  /// No description provided for @homeQuoteText.
+  String get homeQuoteText;
+
+  /// No description provided for @homeQuoteLeaderTitle.
+  String get homeQuoteLeaderTitle;
+
+  /// No description provided for @homeQuoteLeaderName.
+  String get homeQuoteLeaderName;
+
+  /// No description provided for @homeQuoteLeaderRole.
+  String get homeQuoteLeaderRole;
+
+  /// No description provided for @forumAxesTitle.
+  String get forumAxesTitle;
+
+  /// No description provided for @day1Title.
+  String get day1Title;
+
+  /// No description provided for @day1Description.
+  String get day1Description;
+
+  /// No description provided for @day2Title.
+  String get day2Title;
+
+  /// No description provided for @day2Description.
+  String get day2Description;
+
+  /// No description provided for @day3Title.
+  String get day3Title;
+
+  /// No description provided for @day3Description.
+  String get day3Description;
+
+  /// No description provided for @generalObjectiveTitle.
+  String get generalObjectiveTitle;
+
+  /// No description provided for @generalObjectiveDescription.
+  String get generalObjectiveDescription;
+
+  /// No description provided for @visionTitle.
+  String get visionTitle;
+
+  /// No description provided for @visionDescription.
+  String get visionDescription;
+
+  /// No description provided for @missionTitle.
+  String get missionTitle;
+
+  /// No description provided for @missionDescription.
+  String get missionDescription;
+
   /// No description provided for @profile_name.
   ///
   /// In en, this message translates to:

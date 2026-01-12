@@ -255,6 +255,102 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDescriptionAvailable => 'No description available.';
 
   @override
+  String get homeNumbersTitle => 'Forum in Numbers';
+
+  @override
+  String get homeNumbersGuidanceHours => 'Guidance hours';
+
+  @override
+  String get homeNumbersSpeakersExperts => 'Speakers and Experts';
+
+  @override
+  String get homeNumbersParticipatingEntities => 'Participating entities';
+
+  @override
+  String get homeNumbersWorkshopsExperiences =>
+      'Workshops and practical experiences';
+
+  @override
+  String get homeNumbersVolunteers => 'Volunteers';
+
+    @override
+    String get countdownTitle => 'Countdown to event start';
+
+    @override
+    String get countdownEventDateLine => 'January 19, 2026 • 10:00 AM';
+
+    @override
+    String get countdownDays => 'Days';
+
+    @override
+    String get countdownHours => 'Hours';
+
+    @override
+    String get countdownMinutes => 'Minutes';
+
+    @override
+    String get countdownSeconds => 'Seconds';
+
+    @override
+    String get homeQuoteText =>
+      'The future of the Kingdom, dear brothers and sisters, is promising, God willing, and our beloved country deserves more than what has been achieved. We have capabilities whose role we will multiply, increasing their contribution to shaping this future.';
+
+    @override
+    String get homeQuoteLeaderTitle => 'His Royal Highness';
+
+    @override
+    String get homeQuoteLeaderName =>
+      'Mohammed bin Salman bin Abdulaziz Al Saud';
+
+    @override
+    String get homeQuoteLeaderRole =>
+      'Crown Prince, Prime Minister, and Chairman of the Council for Economic and Development Affairs';
+
+      @override
+      String get forumAxesTitle => 'Forum Axes';
+
+      @override
+      String get day1Title => 'Day One';
+
+      @override
+      String get day1Description => 'Building capabilities for a competitive future';
+
+      @override
+      String get day2Title => 'Day Two';
+
+      @override
+      String get day2Description =>
+        'Building next-generation skills: empowerment for the future';
+
+      @override
+      String get day3Title => 'Day Three';
+
+      @override
+      String get day3Description =>
+        'Social impact through training and development';
+
+      @override
+      String get generalObjectiveTitle => 'General Objective';
+
+      @override
+      String get generalObjectiveDescription =>
+        'Developing the human capabilities of university employees through training and strengthening local and international partnerships to support transformation and professional and academic development at the university, contributing to serving the community.';
+
+      @override
+      String get visionTitle => 'Vision';
+
+      @override
+      String get visionDescription =>
+        'Leadership in developing skills and empowering human capital through training programs and qualitative partnerships.';
+
+      @override
+      String get missionTitle => 'Mission';
+
+      @override
+      String get missionDescription =>
+        'Contributing to developing the capabilities of the university\'s affiliates to enable their active contribution in serving the community.';
+
+  @override
   String get profile_name => 'Name';
 
   @override
