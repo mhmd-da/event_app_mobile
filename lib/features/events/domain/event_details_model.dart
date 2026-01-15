@@ -33,6 +33,7 @@ class EventDetailsModel {
   final DateTime startDate;
   final DateTime endDate;
   final String? bannerImageUrl;
+  final String? feedbackUrl;
   final Venue? venue;
   final EventExtra? extra;
 
@@ -44,6 +45,7 @@ class EventDetailsModel {
     required this.startDate,
     required this.endDate,
     required this.bannerImageUrl,
+    this.feedbackUrl,
     this.extra,
   });
 
@@ -60,6 +62,7 @@ class EventDetailsModel {
         json['endDate'] as String?,
       ),
       bannerImageUrl: json['bannerImageUrl'] as String?,
+      feedbackUrl: json['feedbackUrl'] as String?,
       extra: json['extra'] != null ? EventExtra.fromJson(json['extra']) : null,
     );
   }

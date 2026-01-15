@@ -15,6 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_section_title.dart';
 import '../../../core/theme/app_spacing.dart';
+import 'package:event_app/core/config/app_config.dart';
+import 'package:event_app/core/widgets/app_buttons.dart';
+import 'package:event_app/core/widgets/notifier.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'about_page.dart';
 import 'package:event_app/l10n/app_localizations.dart';
 
@@ -31,13 +35,42 @@ class HomePage extends ConsumerWidget {
         if (event == null) {
           return const Center(child: Text('No event selected'));
         }
-        
+
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HomeHeader(),
-              const SizedBox(height: AppSpacing.largeSection),
+              const SizedBox(height: AppSpacing.item),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.page,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AppOutlinedButton(
+                        icon: const Icon(Icons.public),
+                        label: Text(l10n.homeMainWebsite),
+                        onPressed: () async {
+                          await _openMainWebsite(context);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AppOutlinedButton(
+                        icon: const Icon(Icons.poll_outlined),
+                        label: Text(l10n.homeEventSurvey),
+                        onPressed: () async {
+                          await _openEventSurvey(context, event.feedbackUrl);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.section),
               const HomeNumbersSection(),
               const HomeCountdownSection(),
               const HomeQuoteSection(),
@@ -68,13 +101,56 @@ class HomePage extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('Error loading event: $error'),
-      ),
+      error: (error, stack) =>
+          Center(child: Text('Error loading event: $error')),
     );
   }
 
-  Widget _buildSpeakersCarousel(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+  Future<void> _openMainWebsite(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final url = AppConfig.mainWebsiteUrl.trim();
+    if (url.isEmpty) {
+      AppNotifier.bottomMessage(context, l10n.linkNotConfigured);
+      return;
+    }
+
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      AppNotifier.error(context, l10n.actionFailed);
+      return;
+    }
+
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      AppNotifier.error(context, l10n.actionFailed);
+    }
+  }
+
+  Future<void> _openEventSurvey(BuildContext context, String? url) async {
+    final l10n = AppLocalizations.of(context)!;
+    final trimmedUrl = (url ?? '').trim();
+    if (trimmedUrl.isEmpty) {
+      AppNotifier.bottomMessage(context, l10n.linkNotConfigured);
+      return;
+    }
+
+    final uri = Uri.tryParse(trimmedUrl);
+    if (uri == null) {
+      AppNotifier.error(context, l10n.actionFailed);
+      return;
+    }
+
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      AppNotifier.error(context, l10n.actionFailed);
+    }
+  }
+
+  Widget _buildSpeakersCarousel(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) {
     final speakersAsync = ref.watch(speakersListProvider);
 
     return Column(

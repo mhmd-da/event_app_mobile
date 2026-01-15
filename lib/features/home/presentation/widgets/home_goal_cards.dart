@@ -9,7 +9,7 @@ class HomeGeneralObjectiveCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return _GoalContent(
-      icon: Icons.arrow_upward_rounded,
+      icon: Icons.track_changes,
       title: l10n.generalObjectiveTitle,
       description: l10n.generalObjectiveDescription,
       iconColor: const Color(0xFF1E88E5),
@@ -81,7 +81,10 @@ class _GoalContent extends StatelessWidget {
           ),
         ],
       ),
-      margin: const EdgeInsets.only(left: AppSpacing.section, right: AppSpacing.section),
+      margin: const EdgeInsets.only(
+        left: AppSpacing.section,
+        right: AppSpacing.section,
+      ),
       padding: const EdgeInsets.all(AppSpacing.section),
       child: Column(
         children: [

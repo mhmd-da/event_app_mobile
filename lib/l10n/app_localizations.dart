@@ -542,6 +542,18 @@ abstract class AppLocalizations {
   /// **'Quick Actions'**
   String get quickActions;
 
+  /// No description provided for @homeMainWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Main website'**
+  String get homeMainWebsite;
+
+  /// No description provided for @homeEventSurvey.
+  ///
+  /// In en, this message translates to:
+  /// **'Event survey'**
+  String get homeEventSurvey;
+
   /// No description provided for @aboutEvent.
   ///
   /// In en, this message translates to:
@@ -701,13 +713,13 @@ abstract class AppLocalizations {
   /// No description provided for @patronDescription.
   ///
   /// In en, this message translates to:
-  /// **'The University Training Forum is organized by the Deanship for Skills Development and Human Resources'**
+  /// **'Organized by the Deanship of Skills Development and the Deanship of Human Resources'**
   String get patronDescription;
 
   /// No description provided for @patronSlogan.
   ///
   /// In en, this message translates to:
-  /// **'In its first edition: Tamkeen X 2026'**
+  /// **'University Training Forum: Tamkeen X 2026'**
   String get patronSlogan;
 
   /// No description provided for @patronSloganSubtitle.
@@ -860,6 +872,18 @@ abstract class AppLocalizations {
   /// **'All Categories'**
   String get allCategories;
 
+  /// No description provided for @agendaDownloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download agenda (PDF)'**
+  String get agendaDownloadPdf;
+
+  /// No description provided for @agendaRegisterWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Session registration'**
+  String get agendaRegisterWebsite;
+
   /// No description provided for @sessionSpeakers.
   ///
   /// In en, this message translates to:
@@ -937,6 +961,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Action failed. Please try again.'**
   String get actionFailed;
+
+  /// No description provided for @linkNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Link is not configured.'**
+  String get linkNotConfigured;
 
   /// No description provided for @saveDialogUnavailableRestart.
   ///

@@ -96,10 +96,10 @@ class SessionDetailsPage extends ConsumerWidget {
 
     int? speakerId = person.id;
     bool needsRefresh = false;
-    
+
     try {
       final speakers = await ref.read(speakersListProvider.future);
-      
+
       if (speakerId == null) {
         // Fallback: Try to match by name
         final targetName = _normalizeKey(
@@ -117,10 +117,13 @@ class SessionDetailsPage extends ConsumerWidget {
                   _normalizeKey(s.firstName) == _normalizeKey(person.firstName),
             );
         speakerId = match?.id;
-        
+
         // Check timestamp for matched speaker
         if (match != null) {
-          needsRefresh = _isStaleData(person.lastUpdatedDate, match.lastUpdatedDate);
+          needsRefresh = _isStaleData(
+            person.lastUpdatedDate,
+            match.lastUpdatedDate,
+          );
         } else {
           // Speaker not found in cache - needs refresh
           needsRefresh = true;
@@ -132,7 +135,10 @@ class SessionDetailsPage extends ConsumerWidget {
           // Speaker not found in cache - needs refresh
           needsRefresh = true;
         } else {
-          needsRefresh = _isStaleData(person.lastUpdatedDate, match.lastUpdatedDate);
+          needsRefresh = _isStaleData(
+            person.lastUpdatedDate,
+            match.lastUpdatedDate,
+          );
         }
       }
     } catch (_) {
@@ -171,11 +177,9 @@ class SessionDetailsPage extends ConsumerWidget {
       useGradient: true,
       margin: null,
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        child,
-      ],
-      )
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [child],
+      ),
     );
   }
 
@@ -185,32 +189,38 @@ class SessionDetailsPage extends ConsumerWidget {
     List<Person> people,
   ) {
     final l10n = AppLocalizations.of(context)!;
+
+    bool isFemaleGender(String? gender) {
+      final g = (gender ?? '').trim().toLowerCase();
+      return g == 'female' || g == 'f' || g.contains('female');
+    }
+
     return Column(
       children: people.map((person) {
+        final trimmedImageUrl = (person.profileImageUrl ?? '').trim();
+        final ImageProvider avatarProvider = trimmedImageUrl.isNotEmpty
+            ? NetworkImage(trimmedImageUrl)
+            : AssetImage(
+                isFemaleGender(person.gender)
+                    ? 'assets/images/default_avatar_female.png'
+                    : 'assets/images/default_avatar.png',
+              );
+
         return Container(
           margin: const EdgeInsets.only(bottom: AppSpacing.item),
           decoration: AppDecorations.cardContainer(context),
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: person.profileImageUrl.isNotEmpty
-                  ? NetworkImage(person.profileImageUrl)
-                  : null,
-              child: person.profileImageUrl.isEmpty
-                  ? const Icon(Icons.person_outline)
-                  : null,
-            ),
+            leading: CircleAvatar(backgroundImage: avatarProvider),
             title: Row(
               children: [
                 Expanded(
                   child: Text(
                     '${person.title} ${person.firstName} ${person.lastName}',
                     style: AppTextStyles.bodyMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (person.isModerator) ...[
-                  const SizedBox(width: 6),
+                  //const SizedBox(width: 6),
                   Semantics(
                     label: l10n.moderator,
                     child: const ModeratorBadge(),
@@ -218,7 +228,17 @@ class SessionDetailsPage extends ConsumerWidget {
                 ],
               ],
             ),
-            //subtitle: Text(person.title, style: AppTextStyles.bodySmall),
+            subtitle: Text(
+              [
+                if ((person.position ?? '').isNotEmpty) person.position,
+                if ((person.companyName ?? '').isNotEmpty) person.companyName,
+              ].whereType<String>().join(' - '),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.65),
+              ),
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () async {
               await _openSpeakerDetails(context, ref, person);

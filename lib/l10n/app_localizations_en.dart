@@ -234,6 +234,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickActions => 'Quick Actions';
 
   @override
+  String get homeMainWebsite => 'Main website';
+
+  @override
+  String get homeEventSurvey => 'Event survey';
+
+  @override
   String get aboutEvent => 'About Event';
 
   @override
@@ -317,10 +323,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get patronDescription =>
-      'The University Training Forum is organized by the Deanship for Skills Development and Human Resources';
+      'Organized by the Deanship of Skills Development and the Deanship of Human Resources';
 
   @override
-  String get patronSlogan => 'In its first edition: Tamkeen X 2026';
+  String get patronSlogan => 'University Training Forum: Tamkeen X 2026';
 
   @override
   String get patronSloganSubtitle => '« Your skill shapes your future »';
@@ -404,6 +410,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allCategories => 'All Categories';
 
   @override
+  String get agendaDownloadPdf => 'Download agenda (PDF)';
+
+  @override
+  String get agendaRegisterWebsite => 'Session registration';
+
+  @override
   String get sessionSpeakers => 'Session Speakers';
 
   @override
@@ -441,6 +453,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionFailed => 'Action failed. Please try again.';
+
+  @override
+  String get linkNotConfigured => 'Link is not configured.';
 
   @override
   String get saveDialogUnavailableRestart =>

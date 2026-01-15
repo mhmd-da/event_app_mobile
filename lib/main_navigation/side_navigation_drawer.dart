@@ -121,17 +121,17 @@ class SideNavigationDrawer extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    tile(
-                      icon: Icons.forum_rounded,
-                      label: AppLocalizations.of(context)!.roundtables,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const AgendaPage(category: 'ROUNDTABLE'),
-                        ),
-                      ),
-                    ),
+                    // tile(
+                    //   icon: Icons.forum_rounded,
+                    //   label: AppLocalizations.of(context)!.roundtables,
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (_) =>
+                    //           const AgendaPage(category: 'ROUNDTABLE'),
+                    //     ),
+                    //   ),
+                    // ),
                     tile(
                       icon: Icons.group_rounded,
                       label: AppLocalizations.of(context)!.mentorship,
@@ -152,14 +152,14 @@ class SideNavigationDrawer extends ConsumerWidget {
                         MaterialPageRoute(builder: (_) => const SpeakersPage()),
                       ),
                     ),
-                    tile(
-                      icon: Icons.psychology_alt_outlined,
-                      label: AppLocalizations.of(context)!.mentors,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const MentorsPage()),
-                      ),
-                    ),
+                    // tile(
+                    //   icon: Icons.psychology_alt_outlined,
+                    //   label: AppLocalizations.of(context)!.mentors,
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (_) => const MentorsPage()),
+                    //   ),
+                    // ),
                     tile(
                       icon: Icons.favorite_border,
                       label: AppLocalizations.of(context)!.sponsors,
@@ -184,23 +184,23 @@ class SideNavigationDrawer extends ConsumerWidget {
                     //     ),
                     //   ),
                     // ),
-                    tile(
-                      icon: Icons.apartment_outlined,
-                      label: AppLocalizations.of(context)!.venue,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const VenuePage()),
-                      ),
-                    ),
-                    tile(
-                      icon: Icons.question_answer_outlined,
-                      label: AppLocalizations.of(context)!.faqs,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const FaqsPage()),
-                      ),
-                    ),
-                    const Divider(),
+                    // tile(
+                    //   icon: Icons.apartment_outlined,
+                    //   label: AppLocalizations.of(context)!.venue,
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (_) => const VenuePage()),
+                    //   ),
+                    // ),
+                    // tile(
+                    //   icon: Icons.question_answer_outlined,
+                    //   label: AppLocalizations.of(context)!.faqs,
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (_) => const FaqsPage()),
+                    //   ),
+                    // ),
+                    // const Divider(),
                     tile(
                       icon: Icons.settings_rounded,
                       label: AppLocalizations.of(context)!.settings,
@@ -209,16 +209,16 @@ class SideNavigationDrawer extends ConsumerWidget {
                         MaterialPageRoute(builder: (_) => const SettingsPage()),
                       ),
                     ),
-                    tile(
-                      icon: Icons.contact_page_outlined,
-                      label: AppLocalizations.of(context)!.contactUs,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ContactFormPage(),
-                        ),
-                      ),
-                    ),
+                    // tile(
+                    //   icon: Icons.contact_page_outlined,
+                    //   label: AppLocalizations.of(context)!.contactUs,
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (_) => const ContactFormPage(),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

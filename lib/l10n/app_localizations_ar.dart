@@ -30,7 +30,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home => 'الرئيسية';
 
   @override
-  String get agenda => 'برنامج';
+  String get agenda => 'برنامج الملتقى';
 
   @override
   String get profile => 'الملف الشخصي';
@@ -235,6 +235,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quickActions => 'إجراءات سريعة';
 
   @override
+  String get homeMainWebsite => 'زيارة الموقع الإلكتروني لملتقى تمكين x';
+
+  @override
+  String get homeEventSurvey => 'استبيان الملتقى';
+
+  @override
   String get aboutEvent => 'عن الفعالية';
 
   @override
@@ -317,10 +323,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get patronDescription =>
-      'نظم عماد تطوير المهارات والموارد البشرية ملتقى الجامعة للتدريب';
+      'تنظم عمادة تطوير المهارات وعمادة الموارد البشرية';
 
   @override
-  String get patronSlogan => 'بنسخته الأولى « تمكين X2026»';
+  String get patronSlogan => 'ملتقى الجامعة للتدريب تمكيـــن X 2026';
 
   @override
   String get patronSloganSubtitle => '« مهارتك تصنع مستقبلك »';
@@ -401,6 +407,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allCategories => 'جميع الفئات';
 
   @override
+  String get agendaDownloadPdf => 'تحميل برنامج الملتقى (PDF)';
+
+  @override
+  String get agendaRegisterWebsite => 'تسجيل الجلسات';
+
+  @override
   String get sessionSpeakers => 'متحدثو الجلسة';
 
   @override
@@ -438,6 +450,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get actionFailed => 'فشلت العملية. حاول مرة أخرى.';
+
+  @override
+  String get linkNotConfigured => 'الرابط غير مُعدّ.';
 
   @override
   String get saveDialogUnavailableRestart =>

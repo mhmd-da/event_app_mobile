@@ -57,9 +57,7 @@ class AppElevatedButton extends ConsumerWidget {
     }
 
     final contentTextStyle = TextStyle(
-      color: isOffline
-          ? Theme.of(context).disabledColor
-          : Colors.white,
+      color: isOffline ? Theme.of(context).disabledColor : Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.w600,
     );
@@ -67,16 +65,27 @@ class AppElevatedButton extends ConsumerWidget {
     final Widget content = (icon != null && label != null)
         ? Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconTheme.merge(
                 data: IconThemeData(color: contentTextStyle.color),
                 child: icon!,
               ),
               const SizedBox(width: 8),
-              DefaultTextStyle.merge(style: contentTextStyle, child: label!),
+              Flexible(
+                child: DefaultTextStyle(
+                  style: contentTextStyle,
+                  textAlign: TextAlign.center,
+                  child: label!,
+                ),
+              ),
             ],
           )
-        : DefaultTextStyle.merge(style: contentTextStyle, child: child!);
+        : DefaultTextStyle(
+            style: contentTextStyle,
+            textAlign: TextAlign.center,
+            child: child!,
+          );
 
     final decoratedChild = Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -147,11 +156,33 @@ class AppOutlinedButton extends ConsumerWidget {
         );
 
     if (icon != null && label != null) {
-      return OutlinedButton.icon(
-        icon: icon!,
-        label: label!,
+      final contentTextStyle = TextStyle(
+        color: isOffline ? Colors.grey : AppColors.primary,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      );
+
+      return OutlinedButton(
         style: effectiveStyle,
         onPressed: effectiveOnPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconTheme.merge(
+              data: IconThemeData(color: contentTextStyle.color),
+              child: icon!,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: DefaultTextStyle(
+                style: contentTextStyle,
+                textAlign: TextAlign.center,
+                child: label!,
+              ),
+            ),
+          ],
+        ),
       );
     }
     return OutlinedButton(

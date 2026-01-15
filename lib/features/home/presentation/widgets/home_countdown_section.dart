@@ -139,11 +139,15 @@ class _MetricsRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  m.label,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF6B7280),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    m.label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF6B7280),
+                    ),
+                    maxLines: 1,
                   ),
                 ),
               ],

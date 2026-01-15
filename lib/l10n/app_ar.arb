@@ -8,7 +8,7 @@
 
   "noEventSelected": "لم يتم اختيار أي حدث",
   "home": "الرئيسية",
-  "agenda": "برنامج",
+  "agenda": "برنامج الملتقى",
   "profile": "الملف الشخصي",
   "sessions": "المحاضرات",
 
@@ -58,6 +58,8 @@
   "venue": "المكان",
   "venueMap": "خريطة المكان",
   "quickActions": "إجراءات سريعة",
+  "homeMainWebsite": "زيارة الموقع الإلكتروني لملتقى تمكين x",
+  "homeEventSurvey": "استبيان الملتقى",
   "aboutEvent": "عن الفعالية",
   "venueAndInfo": "المكان والمعلومات",
   "venueMapSubtitle": "عرض جميع القاعات والغرف",
@@ -84,8 +86,8 @@
   "patronageTitle": "برعاية معالي",
   "patronPosition": "رئيس مجلس إدارة جامعة الملك سعود",
   "patronName": "الأستاذ. يوسف بن عبد الله البنيان",
-  "patronDescription": "نظم عماد تطوير المهارات والموارد البشرية ملتقى الجامعة للتدريب",
-  "patronSlogan": "بنسخته الأولى « تمكين X2026»",
+  "patronDescription": "تنظم عمادة تطوير المهارات وعمادة الموارد البشرية",
+  "patronSlogan": "ملتقى الجامعة للتدريب تمكيـــن X 2026",
   "patronSloganSubtitle": "« مهارتك تصنع مستقبلك »",
   "eventTopicsTitle": "محاور الملتقى",
   "day1Title": "اليوم الأول",
@@ -145,6 +147,9 @@
   "allTracks": "جميع المسارات",
   "allCategories": "جميع الفئات",
 
+  "agendaDownloadPdf": "تحميل برنامج الملتقى (PDF)",
+  "agendaRegisterWebsite": "تسجيل الجلسات",
+
   "sessionSpeakers": "متحدثو الجلسة",
   "poweredBy": "برعاية",
   "materials": "المواد",
@@ -158,6 +163,7 @@
   "addedSuccess": "تمت الإضافة بنجاح!",
   "removedSuccess": "تمت الإزالة بنجاح!",
   "actionFailed": "فشلت العملية. حاول مرة أخرى.",
+  "linkNotConfigured": "الرابط غير مُعدّ.",
   "saveDialogUnavailableRestart": "تعذّر فتح نافذة الحفظ الآن. الرجاء إعادة تشغيل التطبيق ثم المحاولة مرة أخرى.",
   "failedToUpdateReminder": "فشل تحديث التذكير",
   "savedToFile": "تم الحفظ في {fileName}",

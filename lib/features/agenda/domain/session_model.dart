@@ -100,9 +100,12 @@ class Person {
   final String title;
   final String firstName;
   final String lastName;
-  final String profileImageUrl;
+  final String? profileImageUrl;
+  final String? gender;
   final bool isModerator;
   final DateTime? lastUpdatedDate;
+  final String? position;
+  final String? companyName;
 
   Person({
     this.id,
@@ -110,21 +113,35 @@ class Person {
     required this.firstName,
     required this.lastName,
     required this.profileImageUrl,
+    this.gender,
     required this.isModerator,
     this.lastUpdatedDate,
+    this.position,
+    this.companyName,
   });
 
   factory Person.fromJson(Map<String, dynamic> json) {
+    final rawProfileImageUrl = json['profileImageUrl']?.toString();
+    final trimmedProfileImageUrl = rawProfileImageUrl?.trim();
+
     return Person(
       id: (json['id'] as num?)?.toInt(),
       title: json['title'] ?? '',
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
-      profileImageUrl: json['profileImageUrl'] ?? '',
+      profileImageUrl:
+          (trimmedProfileImageUrl == null || trimmedProfileImageUrl.isEmpty)
+          ? null
+          : trimmedProfileImageUrl,
+      gender: json['gender']?.toString(),
       isModerator: json['isModerator'] ?? false,
       lastUpdatedDate: json['lastUpdatedDate'] != null
-          ? AppDateTimeParsing.parseServerToLocalOrEpoch(json['lastUpdatedDate'])
+          ? AppDateTimeParsing.parseServerToLocalOrEpoch(
+              json['lastUpdatedDate'],
+            )
           : null,
+      position: json['position'],
+      companyName: json['companyName'],
     );
   }
 }

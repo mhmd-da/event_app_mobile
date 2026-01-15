@@ -2,6 +2,22 @@ class AppConfig {
   static const String baseApiUrl =
       "https://api.event-management-digital-ocean.online/api";
 
+    /// Public URL to the agenda PDF (full https:// URL).
+    /// Leave empty to disable the button.
+    static const String agendaPdfUrl = 'https://api.event-management-digital-ocean.online/data/agenda/agenda.pdf';
+
+    /// Public URL to the session registration website (full https:// URL).
+    /// Leave empty to disable the button.
+    static const String sessionRegistrationUrl = 'https://tamkeenx.eventfull.sa/register';
+
+    /// Public URL to the main website (full https:// URL).
+    /// Leave empty to disable the button.
+    static const String mainWebsiteUrl = 'https://tamkeenx.ksu.edu.sa/';
+
+    /// Public URL to the event survey (Google Form) (full https:// URL).
+    /// Leave empty to disable the button.
+    static const String eventSurveyUrl = '';
+
   // 🔹 Events Endpoints
   static const String getEvents = "/events";
   static String getEventDetails(int eventId) => "/events/$eventId";
