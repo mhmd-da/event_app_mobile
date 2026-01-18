@@ -136,7 +136,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSocialLinksAvailable => 'No social links available.';
 
   @override
-  String get sponsors => 'Sponsors';
+  String get sponsors => 'NGOs';
 
   @override
   String get partners => 'Partners';

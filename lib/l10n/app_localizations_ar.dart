@@ -136,7 +136,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noSocialLinksAvailable => 'لا توجد روابط تواصل.';
 
   @override
-  String get sponsors => 'الرعاة';
+  String get sponsors => 'الجمعيات الخيرية';
 
   @override
   String get partners => 'الشركاء';

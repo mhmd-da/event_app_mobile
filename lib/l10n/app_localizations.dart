@@ -353,7 +353,7 @@ abstract class AppLocalizations {
   /// No description provided for @sponsors.
   ///
   /// In en, this message translates to:
-  /// **'Sponsors'**
+  /// **'NGOs'**
   String get sponsors;
 
   /// No description provided for @partners.
